@@ -263,11 +263,14 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 @media(max-width:600px){
   /* HEADER — istatistik pilleri ve logo küçült, taşmayı önle */
   header{padding:calc(10px + env(safe-area-inset-top)) 12px 0;}
-  .htop{gap:8px;margin-bottom:6px;}
-  .logo{font-size:calc(17px * var(--fs-scale));}
-  .sub{font-size:calc(11px * var(--fs-scale));}
-  .stats{gap:5px;margin-left:0;width:100%;justify-content:flex-start;}
-  .pill{padding:2px 8px;font-size:calc(11px * var(--fs-scale));white-space:nowrap;}
+  .htop{gap:6px;margin-bottom:6px;flex-wrap:nowrap;align-items:flex-start;}
+  .logo{font-size:calc(16px * var(--fs-scale));}
+  .sub{font-size:calc(10px * var(--fs-scale));}
+  .stats{
+    gap:4px;margin-left:auto;flex-shrink:0;
+    display:flex;flex-wrap:wrap;justify-content:flex-end;max-width:55%;
+  }
+  .pill{padding:2px 6px;font-size:calc(10px * var(--fs-scale));white-space:nowrap;}
 
   /* TABS — yatay scroll ile taşmayı çöz, küçük yaz */
   .tabs{
@@ -280,12 +283,12 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   }
   .tabs::-webkit-scrollbar{display:none;}
   .tbtn{
-    padding:7px 10px;
-    font-size:calc(11.5px * var(--fs-scale));
+    padding:7px 9px;
+    font-size:calc(11px * var(--fs-scale));
     flex-shrink:0;
     white-space:nowrap;
   }
-  .tbadge{font-size:calc(10px * var(--fs-scale));padding:0 5px;margin-left:2px;}
+  .tbadge{font-size:calc(10px * var(--fs-scale));padding:0 4px;margin-left:2px;}
 
   /* BANNER — kenar boşluklarını ve yazı boyutunu küçült */
   .banner{margin:10px 12px 0;padding:10px 12px;gap:8px;}
@@ -330,9 +333,10 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 }
 
 @media(max-width:380px){
-  .pill{font-size:calc(10px * var(--fs-scale));padding:2px 6px;}
-  .logo{font-size:calc(15px * var(--fs-scale));}
-  .tbtn{font-size:calc(10.5px * var(--fs-scale));padding:6px 8px;}
+  .pill{font-size:calc(9.5px * var(--fs-scale));padding:2px 5px;}
+  .logo{font-size:calc(14px * var(--fs-scale));}
+  .tbtn{font-size:calc(10px * var(--fs-scale));padding:6px 7px;}
+  .stats{max-width:50%;}
 }
 
 /* YAN EKRAN (landscape) — telefonu döndürünce header'ı sıkıştır */
