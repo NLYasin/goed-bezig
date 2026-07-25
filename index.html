@@ -3845,20 +3845,22 @@ function celebrate(msg){
 }
 
 function checkGoalReached(previousDone){
-  var done = activityLog[dateKey()] || 0;
-  // Hedefe tam bu adımda ulaşıldıysa kutla
+  var done = getMergedCount(dateKey());
+  // Hedefe TAM BU ADIMDA ulaşıldıysa kutla (önceden geçilmemişse)
   if(previousDone < dailyGoal && done >= dailyGoal){
     celebrate('🎯 Günlük hedef tamamlandı!<br>'+done+' cümle — Harika gidiyorsun!');
+    return; // hedef kutlandıysa streak kutlamasını bu turda yapma
   }
-  // Streak milestone'ları
+  // Streak milestone — sadece bugün ilk kez o sayıya ulaşıldıysa
   var streak = calcStreak();
-  if([3,7,14,30,60,90].indexOf(streak) !== -1){
-    var prevStreak = streak-1;
-    // Sadece bugün yeni bu streak'e ulaştıysak kutla
-    if(!(activityLog[dateKey(new Date(new Date()-864e5))])){
-      // dün çalışılmamışsa yeni streak
+  var milestones = [3,7,14,30,60,90];
+  if(milestones.indexOf(streak) !== -1){
+    // Bu milestone'u bugün kutladık mı? localStorage'da kontrol et
+    var milKey = 'gb3-milestone-' + dateKey() + '-' + streak;
+    if(!localStorage.getItem(milKey)){
+      localStorage.setItem(milKey, '1');
+      celebrate('🔥 '+streak+' günlük seri!<br>'+getBadge(streak));
     }
-    celebrate('🔥 '+streak+' günlük seri!<br>'+getBadge(streak));
   }
 }
 
