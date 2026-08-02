@@ -4507,14 +4507,17 @@ function loadAppearancePrefs(){
 function exportData(){
   var payload = {
     app: 'goed-bezig',
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
+    profile: activeProfile,
     data: {
       learned: [...learned],
       permDel: [...permDel],
       trulyDeleted: [...trulyDeleted],
       prios: prios,
-      repData: repData
+      repData: repData,
+      activityLog: activityLog,
+      timeLog: timeLog
     }
   };
   var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
@@ -4522,7 +4525,7 @@ function exportData(){
   var a = document.createElement('a');
   var dateStr = new Date().toISOString().slice(0,10);
   a.href = url;
-  a.download = 'goed-bezig-yedek-' + dateStr + '.json';
+  a.download = 'goed-bezig-yedek-' + activeProfile + '-' + dateStr + '.json';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -4549,6 +4552,9 @@ function importData(event){
       trulyDeleted = new Set(d.trulyDeleted || []);
       prios = d.prios || {};
       repData = d.repData || {};
+      if(d.activityLog) activityLog = d.activityLog;
+      if(d.timeLog) timeLog = d.timeLog;
+      saveActivityData();
 
       save();
       renderStudy();
