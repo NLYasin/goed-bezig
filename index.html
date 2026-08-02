@@ -701,7 +701,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 
     <div class="setting-card">
       <div class="setting-title">📊 Mevcut Veri Özeti</div>
-      <div class="setting-desc" id="data-summary">Yükleniyor...</div>
+      <div class="setting-desc" id="data-summary"></div>
     </div>
 
     <div class="setting-card" style="border-color:rgba(224,92,92,.3)">
@@ -5054,6 +5054,8 @@ if(savedProfile){
   activeProfile = savedProfile;
   load();
   finishProfileSelection();
+  // Ayarlar sekmesi için veriyi hemen doldur
+  setTimeout(function(){ renderSettings(); }, 100);
   if(fbReady){
     pullFromCloud(savedProfile, function(success, cloudData){
       if(success && cloudData){
@@ -5077,20 +5079,28 @@ if(savedProfile){
   showProfilePicker();
 }
 
-// ── PWA: Service Worker — eski SW'leri temizle ──────────────────────────
+// ── PWA: Service Worker — temiz yükleme ─────────────────────────────────
 if ('serviceWorker' in navigator) {
-  // Tüm eski service worker'ları sil
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    registrations.forEach(function(registration) {
-      registration.unregister();
+  // Tüm eski SW'leri ve cache'leri temizle, sonra yenisini kaydet
+  Promise.all([
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      return Promise.all(regs.map(function(r){ return r.unregister(); }));
+    }),
+    window.caches ? caches.keys().then(function(keys){
+      return Promise.all(keys.map(function(k){ return caches.delete(k); }));
+    }) : Promise.resolve()
+  ]).then(function(){
+    return navigator.serviceWorker.register('sw.js');
+  }).then(function(reg){
+    reg.addEventListener('updatefound', function(){
+      var nw = reg.installing;
+      nw.addEventListener('statechange', function(){
+        if(nw.state === 'installed') window.location.reload();
+      });
     });
+  }).catch(function(err){
+    console.log('SW hata:', err);
   });
-  // Tüm cache'leri sil
-  if (window.caches) {
-    caches.keys().then(function(names) {
-      names.forEach(function(name) { caches.delete(name); });
-    });
-  }
 }
 
 // ── PWA: Ana ekrana ekle banner'ı ─────────────────────────────────────────
