@@ -521,7 +521,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
     <button class="tbtn"        id="tb-learned" onclick="switchTab('learned')">✅ Ezberlenenler <span class="tbadge" id="tbg-learned">0</span></button>
     <button class="tbtn"        id="tb-repeat"  onclick="switchTab('repeat')">🔁 Tekrarlar <span class="tbadge" id="tbg-repeat">0</span></button>
     <button class="tbtn"        id="tb-perm"    onclick="switchTab('perm')">🗑 Silinenler <span class="tbadge" id="tbg-perm">0</span></button>
-    <button class="tbtn"        id="tb-settings"  onclick="switchTab('settings')">⚙️ Ayarlar</button>
+    <button class="tbtn"        id="tb-settings"  onclick="switchTab('settings');renderSettings();">⚙️ Ayarlar</button>
     <button class="tbtn"        id="tb-progress" onclick="switchTab('progress')">📊 İlerleme</button>
   </div>
 </header>
@@ -4412,7 +4412,9 @@ function restoreAll(){
 
 // ── AYARLAR: DIŞA / İÇE AKTARMA ──────────────────────────────────────────
 function renderSettings(){
+  console.log('[renderSettings] çağrıldı, learned:', learned ? learned.size : 'YOK', 'SMAP:', Object.keys(SMAP).length);
   var el=document.getElementById('data-summary');
+  console.log('[renderSettings] data-summary el:', el ? 'bulundu' : 'BULUNAMADI');
   if(!el) return;
   updateGoalButtons();
   updateThemeButtons();
