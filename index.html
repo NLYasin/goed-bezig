@@ -3692,70 +3692,108 @@ function dateKey(d){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
-// ── AKTİVİTE LOGu (profil bazlı + süre takibi) ────────────────────────────
-// activityLog: { "2026-07-01": {count:3, mins:12}, ... }
-// timeLog: { "2026-07-01": 25, ... } — günde kaç dakika (sadece aktif profil)
-var activityLog = {};   // aktif profilin logu
-var ortakLog    = {};   // ortak profilin logu (her zaman yüklü)
-var timeLog     = {};   // aktif profilin süre logu (dakika cinsinden)
-var ortakTimeLog= {};   // ortak profilin süre logu
+// ── AKTİVİTE & SÜRE LOGu (tek yapı) ─────────────────────────────────────
+// dayLog: { "2026-07-01": {count:3, mins:12}, ... }
+var dayLog      = {};   // aktif profilin günlük logu (count + mins birleşik)
+var ortakLog    = {};   // ortak profilin logu
 var dailyGoal   = 5;
 var quickMode   = false;
 var todayLearned= 0;
-var sessionStart= null; // oturum başlangıç zamanı (ms)
+var sessionStart= null;
+
+// Geriye dönük uyumluluk için alias
+var activityLog = dayLog;
+var timeLog     = dayLog;
+var ortakTimeLog= ortakLog;
+
+function getEntry(log, key){
+  var e = log[key];
+  if(!e) return {count:0, mins:0};
+  if(typeof e === 'object') return {count: e.count||0, mins: e.mins||0};
+  return {count: e, mins: 0};
+}
 
 function loadActivityData(){
   try{
     var prefix = 'gb3-' + activeProfile + '-';
-    var al = localStorage.getItem(prefix + 'activity');
-    activityLog = al ? JSON.parse(al) : {};
-    var tl = localStorage.getItem(prefix + 'timelog');
-    timeLog = tl ? JSON.parse(tl) : {};
 
-    // Ortak logu her zaman yükle (Yasin ve Tuğba profilleri de görür)
-    var ol = localStorage.getItem('gb3-Ortak-activity');
-    ortakLog = ol ? JSON.parse(ol) : {};
-    var otl = localStorage.getItem('gb3-Ortak-timelog');
-    ortakTimeLog = otl ? JSON.parse(otl) : {};
+    // Yeni birleşik format
+    var dl = localStorage.getItem(prefix + 'daylog');
+    if(dl){
+      dayLog = JSON.parse(dl);
+    } else {
+      // Eski ayrı formatları birleştir (migration)
+      var al = localStorage.getItem(prefix + 'activity');
+      var tl = localStorage.getItem(prefix + 'timelog');
+      var oldAl = al ? JSON.parse(al) : {};
+      var oldTl = tl ? JSON.parse(tl) : {};
+      dayLog = {};
+      var allKeys = new Set(Object.keys(oldAl).concat(Object.keys(oldTl)));
+      allKeys.forEach(function(k){
+        var ac = getEntry(oldAl, k);
+        var tc = getEntry(oldTl, k);
+        dayLog[k] = {count: ac.count, mins: ac.mins + tc.mins};
+      });
+      // Yeni formata kaydet
+      localStorage.setItem(prefix + 'daylog', JSON.stringify(dayLog));
+    }
+    activityLog = dayLog;
+    timeLog = dayLog;
+
+    // Ortak logu yükle
+    var ol = localStorage.getItem('gb3-Ortak-daylog');
+    if(ol){
+      ortakLog = JSON.parse(ol);
+    } else {
+      var oal = localStorage.getItem('gb3-Ortak-activity');
+      var otl = localStorage.getItem('gb3-Ortak-timelog');
+      var oldOal = oal ? JSON.parse(oal) : {};
+      var oldOtl = otl ? JSON.parse(otl) : {};
+      ortakLog = {};
+      var ortakKeys = new Set(Object.keys(oldOal).concat(Object.keys(oldOtl)));
+      ortakKeys.forEach(function(k){
+        var ac = getEntry(oldOal, k);
+        var tc = getEntry(oldOtl, k);
+        ortakLog[k] = {count: ac.count, mins: ac.mins + tc.mins};
+      });
+    }
+    ortakTimeLog = ortakLog;
 
     var dg = localStorage.getItem('gb3-daily-goal');
     if(dg) dailyGoal = parseInt(dg);
     todayLearned = getMergedCount(dateKey());
-  }catch(e){}
+  }catch(e){ console.error('loadActivityData hata:', e); }
 }
 
 function saveActivityData(){
   try{
     var prefix = 'gb3-' + activeProfile + '-';
-    localStorage.setItem(prefix + 'activity', JSON.stringify(activityLog));
-    localStorage.setItem(prefix + 'timelog', JSON.stringify(timeLog));
+    localStorage.setItem(prefix + 'daylog', JSON.stringify(dayLog));
     if(activeProfile === 'Ortak'){
-      ortakLog = activityLog;
-      ortakTimeLog = timeLog;
+      ortakLog = dayLog;
+      localStorage.setItem('gb3-Ortak-daylog', JSON.stringify(dayLog));
     }
   }catch(e){}
 }
 
-// Profil logu + Ortak logu birleştir
 function getMergedCount(key){
-  var own   = (activityLog[key] && activityLog[key].count) ? activityLog[key].count : (activityLog[key] || 0);
-  var ortak = (activeProfile !== 'Ortak') ?
-    ((ortakLog[key] && ortakLog[key].count) ? ortakLog[key].count : (ortakLog[key] || 0)) : 0;
+  var own   = getEntry(dayLog, key).count;
+  var ortak = (activeProfile !== 'Ortak') ? getEntry(ortakLog, key).count : 0;
   return own + ortak;
 }
 
 function getMergedMins(key){
-  var own   = (timeLog[key] && timeLog[key]) ? (typeof timeLog[key]==='object' ? timeLog[key].mins||0 : timeLog[key]) : 0;
-  var ortak = (activeProfile !== 'Ortak') ?
-    ((ortakTimeLog[key]) ? (typeof ortakTimeLog[key]==='object' ? ortakTimeLog[key].mins||0 : ortakTimeLog[key]) : 0) : 0;
+  var own   = getEntry(dayLog, key).mins;
+  var ortak = (activeProfile !== 'Ortak') ? getEntry(ortakLog, key).mins : 0;
   return own + ortak;
 }
 
 function logActivity(){
   var key = dateKey();
-  var cur = (activityLog[key] && typeof activityLog[key]==='object') ? activityLog[key] : {count: activityLog[key]||0, mins:0};
-  cur.count = (cur.count||0) + 1;
-  activityLog[key] = cur;
+  var cur = getEntry(dayLog, key);
+  cur.count = cur.count + 1;
+  dayLog[key] = cur;
+  activityLog = dayLog;
   todayLearned = getMergedCount(key);
   saveActivityData();
 }
@@ -3768,18 +3806,17 @@ function startSession(){
 function endSession(){
   if(!sessionStart || !activeProfile) return;
   var mins = Math.round((Date.now() - sessionStart) / 60000);
-  if(mins < 1) return; // 1 dakikadan az oturumları sayma
+  if(mins < 1) return;
   var key = dateKey();
-  var cur = (timeLog[key] && typeof timeLog[key]==='object') ? timeLog[key] : {count:0, mins: timeLog[key]||0};
-  cur.mins = (cur.mins||0) + mins;
-  timeLog[key] = cur;
+  var cur = getEntry(dayLog, key);
+  cur.mins = cur.mins + mins;
+  dayLog[key] = cur;
+  timeLog = dayLog;
   saveActivityData();
   sessionStart = null;
 }
 
-// Sayfa kapanınca süreyi kaydet
 window.addEventListener('beforeunload', function(){ endSession(); });
-// Sekme gizlenince de kaydet (telefonda arka plana alınınca)
 document.addEventListener('visibilitychange', function(){
   if(document.hidden){ endSession(); }
   else { startSession(); }
@@ -4507,7 +4544,7 @@ function loadAppearancePrefs(){
 function exportData(){
   var payload = {
     app: 'goed-bezig',
-    version: 2,
+    version: 3,
     exportedAt: new Date().toISOString(),
     profile: activeProfile,
     data: {
@@ -4516,8 +4553,7 @@ function exportData(){
       trulyDeleted: [...trulyDeleted],
       prios: prios,
       repData: repData,
-      activityLog: activityLog,
-      timeLog: timeLog
+      dayLog: dayLog
     }
   };
   var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
@@ -4552,9 +4588,27 @@ function importData(event){
       trulyDeleted = new Set(d.trulyDeleted || []);
       prios = d.prios || {};
       repData = d.repData || {};
-      if(d.activityLog) activityLog = d.activityLog;
-      if(d.timeLog) timeLog = d.timeLog;
-      saveActivityData();
+
+      // Aktivite + süre loglarını birleştirerek yükle
+      if(d.activityLog || d.timeLog || d.dayLog){
+        var al = d.activityLog || {};
+        var tl = d.timeLog || {};
+        var dl = d.dayLog || {};
+        var allKeys = new Set(Object.keys(al).concat(Object.keys(tl)).concat(Object.keys(dl)));
+        dayLog = {};
+        allKeys.forEach(function(k){
+          var ae = getEntry(al, k);
+          var te = getEntry(tl, k);
+          var de = getEntry(dl, k);
+          dayLog[k] = {
+            count: Math.max(ae.count, de.count),
+            mins: (ae.mins + te.mins + de.mins) || (de.mins || ae.mins || te.mins)
+          };
+        });
+        activityLog = dayLog;
+        timeLog = dayLog;
+        saveActivityData();
+      }
 
       save();
       renderStudy();
