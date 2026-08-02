@@ -5052,8 +5052,26 @@ if(savedProfile){
 // ── PWA: Service Worker kaydı ───────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').catch(function(err) {
-      console.log('Service worker kaydı başarısız:', err);
+    // Önce eski service worker'ları temizle
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      var oldCaches = registrations.filter(function(r) {
+        return r.active && r.active.scriptURL.indexOf('sw.js') > -1;
+      });
+      // Yeni sw.js'i kaydet
+      navigator.serviceWorker.register('sw.js').then(function(reg) {
+        // Güncelleme varsa hemen aktifleştir
+        reg.addEventListener('updatefound', function() {
+          var newWorker = reg.installing;
+          newWorker.addEventListener('statechange', function() {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              newWorker.postMessage({type: 'SKIP_WAITING'});
+              window.location.reload();
+            }
+          });
+        });
+      }).catch(function(err) {
+        console.log('Service worker kaydı başarısız:', err);
+      });
     });
   });
 }
