@@ -4412,14 +4412,55 @@ function renderSettings(){
   var el=document.getElementById('data-summary');
   if(!el) return;
   updateGoalButtons();
-  el.innerHTML =
-    '✅ Ezberlenen: <strong style="color:var(--text)">'+learned.size+'</strong> cümle<br>' +
-    '🗑 Silinenler (geri alınabilir): <strong style="color:var(--text)">'+permDel.size+'</strong> cümle<br>' +
-    '❌ Tamamen silinmiş: <strong style="color:var(--text)">'+trulyDeleted.size+'</strong> cümle<br>' +
-    '🎨 Öncelik işaretli: <strong style="color:var(--text)">'+Object.keys(prios).length+'</strong> cümle<br>' +
-    '🔁 Tekrar takibi olan: <strong style="color:var(--text)">'+Object.keys(repData).length+'</strong> cümle';
   updateThemeButtons();
   updateFontSizeButtons();
+
+  // Toplam aktif cümle (silinmişler hariç)
+  var totalSentences = Object.keys(SMAP).length;
+  var activeTotal = totalSentences - trulyDeleted.size - permDel.size;
+
+  // Ezberlenen yüzdesi
+  var learnedPct = activeTotal > 0 ? Math.round(learned.size / activeTotal * 100) : 0;
+
+  // Tekrar süreci tamamen bitmişler (7. adıma ulaşmış)
+  var completed = 0;
+  Object.keys(repData).forEach(function(key){
+    var rd = repData[key];
+    if(rd && Array.isArray(rd.steps) && rd.steps.length >= 7) completed++;
+  });
+  var completedPct = learned.size > 0 ? Math.round(completed / learned.size * 100) : 0;
+
+  el.innerHTML =
+    '<div style="margin-bottom:10px">' +
+    '<div style="font-size:calc(13px * var(--fs-scale));color:var(--muted);margin-bottom:4px">📚 Toplam aktif cümle</div>' +
+    '<div style="font-size:calc(22px * var(--fs-scale));font-weight:800;color:var(--text)">' + activeTotal + '</div>' +
+    '</div>' +
+
+    '<div style="margin-bottom:12px">' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
+    '<span style="font-size:calc(12px * var(--fs-scale));color:var(--muted)">✅ Ezberlenen</span>' +
+    '<span style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--accent)">' + learned.size + ' cümle (%' + learnedPct + ')</span>' +
+    '</div>' +
+    '<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">' +
+    '<div style="height:100%;width:' + learnedPct + '%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .4s"></div>' +
+    '</div>' +
+    '</div>' +
+
+    '<div style="margin-bottom:12px">' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
+    '<span style="font-size:calc(12px * var(--fs-scale));color:var(--muted)">🏆 Tekrar süreci tamamlanan</span>' +
+    '<span style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--green)">' + completed + ' cümle (%' + completedPct + ')</span>' +
+    '</div>' +
+    '<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">' +
+    '<div style="height:100%;width:' + completedPct + '%;background:linear-gradient(90deg,var(--green),#22d3a0);border-radius:4px;transition:width .4s"></div>' +
+    '</div>' +
+    '</div>' +
+
+    '<div style="font-size:calc(12px * var(--fs-scale));color:var(--muted);line-height:1.8">' +
+    '🗑 Silinenler (geri alınabilir): <strong style="color:var(--text)">' + permDel.size + '</strong><br>' +
+    '❌ Tamamen silinmiş: <strong style="color:var(--text)">' + trulyDeleted.size + '</strong><br>' +
+    '🎨 Öncelik işaretli: <strong style="color:var(--text)">' + Object.keys(prios).length + '</strong>' +
+    '</div>';
 }
 
 // ── TEMA & YAZI BOYUTU ─────────────────────────────────────────────────────
