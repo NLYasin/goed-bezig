@@ -3716,47 +3716,13 @@ function getEntry(log, key){
 function loadActivityData(){
   try{
     var prefix = 'gb3-' + activeProfile + '-';
-
-    // Yeni birleşik format
     var dl = localStorage.getItem(prefix + 'daylog');
-    if(dl){
-      dayLog = JSON.parse(dl);
-    } else {
-      // Eski ayrı formatları birleştir (migration)
-      var al = localStorage.getItem(prefix + 'activity');
-      var tl = localStorage.getItem(prefix + 'timelog');
-      var oldAl = al ? JSON.parse(al) : {};
-      var oldTl = tl ? JSON.parse(tl) : {};
-      dayLog = {};
-      var allKeys = new Set(Object.keys(oldAl).concat(Object.keys(oldTl)));
-      allKeys.forEach(function(k){
-        var ac = getEntry(oldAl, k);
-        var tc = getEntry(oldTl, k);
-        dayLog[k] = {count: ac.count, mins: ac.mins + tc.mins};
-      });
-      // Yeni formata kaydet
-      localStorage.setItem(prefix + 'daylog', JSON.stringify(dayLog));
-    }
+    dayLog = dl ? JSON.parse(dl) : {};
     activityLog = dayLog;
     timeLog = dayLog;
 
-    // Ortak logu yükle
     var ol = localStorage.getItem('gb3-Ortak-daylog');
-    if(ol){
-      ortakLog = JSON.parse(ol);
-    } else {
-      var oal = localStorage.getItem('gb3-Ortak-activity');
-      var otl = localStorage.getItem('gb3-Ortak-timelog');
-      var oldOal = oal ? JSON.parse(oal) : {};
-      var oldOtl = otl ? JSON.parse(otl) : {};
-      ortakLog = {};
-      var ortakKeys = new Set(Object.keys(oldOal).concat(Object.keys(oldOtl)));
-      ortakKeys.forEach(function(k){
-        var ac = getEntry(oldOal, k);
-        var tc = getEntry(oldOtl, k);
-        ortakLog[k] = {count: ac.count, mins: ac.mins + tc.mins};
-      });
-    }
+    ortakLog = ol ? JSON.parse(ol) : {};
     ortakTimeLog = ortakLog;
 
     var dg = localStorage.getItem('gb3-daily-goal');
@@ -4449,60 +4415,63 @@ function restoreAll(){
 
 // ── AYARLAR: DIŞA / İÇE AKTARMA ──────────────────────────────────────────
 function renderSettings(){
-  console.log('[renderSettings] çağrıldı, learned:', learned ? learned.size : 'YOK', 'SMAP:', Object.keys(SMAP).length);
   var el=document.getElementById('data-summary');
-  console.log('[renderSettings] data-summary el:', el ? 'bulundu' : 'BULUNAMADI');
   if(!el) return;
-  updateGoalButtons();
-  updateThemeButtons();
-  updateFontSizeButtons();
+  try{ updateGoalButtons(); }catch(e){}
+  try{ updateThemeButtons(); }catch(e){}
+  try{ updateFontSizeButtons(); }catch(e){}
 
-  // Toplam aktif cümle (silinmişler hariç)
-  var totalSentences = Object.keys(SMAP).length;
-  var activeTotal = totalSentences - trulyDeleted.size - permDel.size;
+  try{
+    // Toplam aktif cümle (silinmişler hariç)
+    var totalSentences = Object.keys(SMAP).length;
+    var activeTotal = totalSentences - trulyDeleted.size - permDel.size;
 
-  // Ezberlenen yüzdesi
-  var learnedPct = activeTotal > 0 ? Math.round(learned.size / activeTotal * 100) : 0;
+    // Ezberlenen yüzdesi
+    var learnedPct = activeTotal > 0 ? Math.round(learned.size / activeTotal * 100) : 0;
 
-  // Tekrar süreci tamamen bitmişler (7. adıma ulaşmış)
-  var completed = 0;
-  Object.keys(repData).forEach(function(key){
-    var rd = repData[key];
-    if(rd && Array.isArray(rd.steps) && rd.steps.length >= 7) completed++;
-  });
-  var completedPct = learned.size > 0 ? Math.round(completed / learned.size * 100) : 0;
+    // Tekrar süreci tamamen bitmişler (7. adıma ulaşmış)
+    var completed = 0;
+    Object.keys(repData).forEach(function(key){
+      var rd = repData[key];
+      if(rd && Array.isArray(rd.steps) && rd.steps.length >= 7) completed++;
+    });
+    var completedPct = learned.size > 0 ? Math.round(completed / learned.size * 100) : 0;
 
-  el.innerHTML =
-    '<div style="margin-bottom:10px">' +
-    '<div style="font-size:calc(13px * var(--fs-scale));color:var(--muted);margin-bottom:4px">📚 Toplam aktif cümle</div>' +
-    '<div style="font-size:calc(22px * var(--fs-scale));font-weight:800;color:var(--text)">' + activeTotal + '</div>' +
-    '</div>' +
+    el.innerHTML =
+      '<div style="margin-bottom:10px">' +
+      '<div style="font-size:calc(13px * var(--fs-scale));color:var(--muted);margin-bottom:4px">📚 Toplam aktif cümle</div>' +
+      '<div style="font-size:calc(22px * var(--fs-scale));font-weight:800;color:var(--text)">' + activeTotal + '</div>' +
+      '</div>' +
 
-    '<div style="margin-bottom:12px">' +
-    '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
-    '<span style="font-size:calc(12px * var(--fs-scale));color:var(--muted)">✅ Ezberlenen</span>' +
-    '<span style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--accent)">' + learned.size + ' cümle (%' + learnedPct + ')</span>' +
-    '</div>' +
-    '<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">' +
-    '<div style="height:100%;width:' + learnedPct + '%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .4s"></div>' +
-    '</div>' +
-    '</div>' +
+      '<div style="margin-bottom:12px">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
+      '<span style="font-size:calc(12px * var(--fs-scale));color:var(--muted)">✅ Ezberlenen</span>' +
+      '<span style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--accent)">' + learned.size + ' cümle (%' + learnedPct + ')</span>' +
+      '</div>' +
+      '<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">' +
+      '<div style="height:100%;width:' + learnedPct + '%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .4s"></div>' +
+      '</div>' +
+      '</div>' +
 
-    '<div style="margin-bottom:12px">' +
-    '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
-    '<span style="font-size:calc(12px * var(--fs-scale));color:var(--muted)">🏆 Tekrar süreci tamamlanan</span>' +
-    '<span style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--green)">' + completed + ' cümle (%' + completedPct + ')</span>' +
-    '</div>' +
-    '<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">' +
-    '<div style="height:100%;width:' + completedPct + '%;background:linear-gradient(90deg,var(--green),#22d3a0);border-radius:4px;transition:width .4s"></div>' +
-    '</div>' +
-    '</div>' +
+      '<div style="margin-bottom:12px">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
+      '<span style="font-size:calc(12px * var(--fs-scale));color:var(--muted)">🏆 Tekrar süreci tamamlanan</span>' +
+      '<span style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--green)">' + completed + ' cümle (%' + completedPct + ')</span>' +
+      '</div>' +
+      '<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">' +
+      '<div style="height:100%;width:' + completedPct + '%;background:linear-gradient(90deg,var(--green),#22d3a0);border-radius:4px;transition:width .4s"></div>' +
+      '</div>' +
+      '</div>' +
 
-    '<div style="font-size:calc(12px * var(--fs-scale));color:var(--muted);line-height:1.8">' +
-    '🗑 Silinenler (geri alınabilir): <strong style="color:var(--text)">' + permDel.size + '</strong><br>' +
-    '❌ Tamamen silinmiş: <strong style="color:var(--text)">' + trulyDeleted.size + '</strong><br>' +
-    '🎨 Öncelik işaretli: <strong style="color:var(--text)">' + Object.keys(prios).length + '</strong>' +
-    '</div>';
+      '<div style="font-size:calc(12px * var(--fs-scale));color:var(--muted);line-height:1.8">' +
+      '🗑 Silinenler (geri alınabilir): <strong style="color:var(--text)">' + permDel.size + '</strong><br>' +
+      '❌ Tamamen silinmiş: <strong style="color:var(--text)">' + trulyDeleted.size + '</strong><br>' +
+      '🎨 Öncelik işaretli: <strong style="color:var(--text)">' + Object.keys(prios).length + '</strong>' +
+      '</div>';
+  }catch(e){
+    console.error('[renderSettings] hata:', e);
+    el.innerHTML = '⚠️ Veri yüklenemedi: ' + e.message;
+  }
 }
 
 // ── TEMA & YAZI BOYUTU ─────────────────────────────────────────────────────
@@ -4587,28 +4556,25 @@ function importData(event){
       permDel = new Set(d.permDel || []);
       trulyDeleted = new Set(d.trulyDeleted || []);
       prios = d.prios || {};
-      repData = d.repData || {};
+      repData = normalizeRepData(d.repData || {});
 
-      // Aktivite + süre loglarını birleştirerek yükle
-      if(d.activityLog || d.timeLog || d.dayLog){
+      // dayLog — yeni format veya eski activityLog+timeLog birleştir
+      if(d.dayLog && Object.keys(d.dayLog).length > 0){
+        dayLog = d.dayLog;
+      } else {
         var al = d.activityLog || {};
         var tl = d.timeLog || {};
-        var dl = d.dayLog || {};
-        var allKeys = new Set(Object.keys(al).concat(Object.keys(tl)).concat(Object.keys(dl)));
         dayLog = {};
-        allKeys.forEach(function(k){
+        var allK = new Set(Object.keys(al).concat(Object.keys(tl)));
+        allK.forEach(function(k){
           var ae = getEntry(al, k);
           var te = getEntry(tl, k);
-          var de = getEntry(dl, k);
-          dayLog[k] = {
-            count: Math.max(ae.count, de.count),
-            mins: (ae.mins + te.mins + de.mins) || (de.mins || ae.mins || te.mins)
-          };
+          dayLog[k] = {count: ae.count, mins: ae.mins + te.mins};
         });
-        activityLog = dayLog;
-        timeLog = dayLog;
-        saveActivityData();
       }
+      activityLog = dayLog;
+      timeLog = dayLog;
+      saveActivityData();
 
       save();
       renderStudy();
