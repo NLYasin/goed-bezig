@@ -4085,7 +4085,11 @@ function renderStudy(){
     cont.appendChild(block);
   });
 
-  // Stats
+  // Stats — global olarak sakla, renderStatsCard ve renderSettings de kullansın
+  window._statsTotal = total;
+  window._statsRemain = remain;
+  window._statsLearned = learned.size;
+
   document.getElementById('st-total').textContent=total;
   document.getElementById('st-remain').textContent=remain;
   document.getElementById('st-learned').textContent=learned.size;
@@ -4463,20 +4467,17 @@ function renderSettings(){
   try{ renderStatsCard(); }catch(e){}
 
   try{
-    // Toplam aktif cümle (silinmişler hariç)
-    var totalSentences = Object.keys(SMAP).length;
-    var activeTotal = totalSentences - trulyDeleted.size - permDel.size;
+    // renderStudy'den gelen doğru değerleri kullan
+    var activeTotal  = window._statsTotal   || 0;
+    var learnedCount = window._statsLearned || learned.size;
+    var learnedPct   = activeTotal > 0 ? Math.round(learnedCount / activeTotal * 100) : 0;
 
-    // Ezberlenen yüzdesi
-    var learnedPct = activeTotal > 0 ? Math.round(learned.size / activeTotal * 100) : 0;
-
-    // Tekrar süreci tamamen bitmişler (7. adıma ulaşmış)
     var completed = 0;
     Object.keys(repData).forEach(function(key){
       var rd = repData[key];
       if(rd && Array.isArray(rd.steps) && rd.steps.length >= 7) completed++;
     });
-    var completedPct = learned.size > 0 ? Math.round(completed / learned.size * 100) : 0;
+    var completedPct = learnedCount > 0 ? Math.round(completed / learnedCount * 100) : 0;
 
     el.innerHTML =
       '<div style="margin-bottom:10px">' +
@@ -4487,7 +4488,7 @@ function renderSettings(){
       '<div style="margin-bottom:12px">' +
       '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
       '<span style="font-size:calc(12px * var(--fs-scale));color:var(--muted)">✅ Ezberlenen</span>' +
-      '<span style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--accent)">' + learned.size + ' cümle (%' + learnedPct + ')</span>' +
+      '<span style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--accent)">' + learnedCount + ' cümle (%' + learnedPct + ')</span>' +
       '</div>' +
       '<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">' +
       '<div style="height:100%;width:' + learnedPct + '%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .4s"></div>' +
@@ -4830,16 +4831,18 @@ function speakNLFallback(text, btn){
 }
 
 function renderStatsCard(){
-  var totalSentences = Object.keys(SMAP).length;
-  var activeTotal = totalSentences - trulyDeleted.size - permDel.size;
-  var learnedCount = learned.size;
+  // renderStudy'den gelen doğru değerleri kullan
+  var activeTotal  = window._statsTotal   || 0;
+  var remaining    = window._statsRemain  || 0;
+  var learnedCount = window._statsLearned || learned.size;
+
   var completed = 0;
   Object.keys(repData).forEach(function(key){
     var rd = repData[key];
     if(rd && Array.isArray(rd.steps) && rd.steps.length >= 7) completed++;
   });
-  var remaining = activeTotal - learnedCount;
-  var learnedPct  = activeTotal > 0 ? Math.round(learnedCount / activeTotal * 100) : 0;
+
+  var learnedPct   = activeTotal > 0 ? Math.round(learnedCount / activeTotal * 100) : 0;
   var completedPct = learnedCount > 0 ? Math.round(completed / learnedCount * 100) : 0;
   var remainingPct = activeTotal > 0 ? Math.round(remaining / activeTotal * 100) : 0;
 
