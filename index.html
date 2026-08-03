@@ -43,7 +43,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:calc(16px * var(--fs-scale));}
-body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;min-height:100vh;padding-bottom:env(safe-area-inset-bottom);overflow-x:hidden;transition:background .2s,color .2s;}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;min-height:100vh;padding-bottom:env(safe-area-inset-bottom);overflow-x:clip;transition:background .2s,color .2s;}
 
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:calc(14px + env(safe-area-inset-top)) 18px 0;position:sticky;top:0;z-index:100;}
 .htop{display:flex;align-items:flex-start;gap:8px;flex-wrap:nowrap;margin-bottom:8px;}
@@ -58,7 +58,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:c
 .prog{height:3px;background:var(--border);}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s;}
 
-.tabs{display:flex;gap:2px;margin-top:8px;}
+.tabs{display:flex;gap:2px;margin-top:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;}
+.tabs::-webkit-scrollbar{display:none;}
 .tbtn{background:none;border:none;color:var(--muted);font-size:calc(13px * var(--fs-scale));font-weight:600;padding:8px 13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
 .tbtn:hover{color:var(--text);}
 .tbtn.active{color:var(--accent);border-bottom-color:var(--accent);}
@@ -280,7 +281,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   .pill{padding:2px 6px;font-size:calc(10px * var(--fs-scale));white-space:nowrap;}
 
   /* TABS */
-  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0;margin-top:6px;}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0;margin-top:6px;touch-action:pan-x;}
   .tabs::-webkit-scrollbar{display:none;}
   .tbtn{padding:7px 9px;font-size:calc(11px * var(--fs-scale));flex-shrink:0;white-space:nowrap;}
   .tbadge{font-size:calc(10px * var(--fs-scale));padding:0 4px;margin-left:2px;}
@@ -350,7 +351,18 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   .banner{margin:8px 16px 0;padding:8px 14px;}
 }
 
-/* ── İLERLEME SEKMESİ ──────────────────────────────────────────────────── */
+/* ── VERİ ÖZETİ KARTI (İlerleme sekmesi) ───────────────────────────────── */
+.prog-stats-card{padding:16px 18px;}
+.prog-stats-row{display:flex;align-items:center;gap:0;margin-bottom:12px;}
+.prog-stat-item{flex:1;text-align:center;}
+.prog-stat-num{font-size:calc(26px * var(--fs-scale));font-weight:900;color:var(--text);line-height:1;}
+.prog-stat-lbl{font-size:calc(10px * var(--fs-scale));color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.4px;}
+.prog-stat-pct{font-size:calc(11px * var(--fs-scale));color:var(--accent);font-weight:700;margin-top:1px;}
+.prog-stat-divider{width:1px;height:40px;background:var(--border);flex-shrink:0;}
+.prog-stats-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:flex;}
+.prog-stats-bar-learned{background:var(--accent);transition:width .5s;}
+.prog-stats-bar-completed{background:var(--green);transition:width .5s;}
+.pill-pct{background:rgba(52,201,139,.12);border-color:rgba(52,201,139,.3);color:var(--green);font-weight:700;}
 .prog-card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:16px;padding:20px;margin-bottom:14px;
@@ -513,6 +525,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
       <div class="pill">Toplam: <span id="st-total">0</span></div>
       <div class="pill">Kalan: <span id="st-remain">0</span></div>
       <div class="pill">✅ <span id="st-learned">0</span></div>
+      <div class="pill pill-pct" id="st-pct-pill" style="display:none">🏆 <span id="st-completed-pct">0%</span></div>
     </div>
   </div>
   <div class="prog"><div class="prog-fill" id="pbar"></div></div>
@@ -584,6 +597,33 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 
     <!-- PROFİL ETİKETİ -->
     <div class="prog-profile-label" id="prog-profile-label"></div>
+
+    <!-- VERİ ÖZETİ KARTI -->
+    <div class="prog-card prog-stats-card" id="prog-stats-card">
+      <div class="prog-stats-row">
+        <div class="prog-stat-item">
+          <div class="prog-stat-num" id="pst-learned">—</div>
+          <div class="prog-stat-lbl">Ezberlenen</div>
+          <div class="prog-stat-pct" id="pst-learned-pct"></div>
+        </div>
+        <div class="prog-stat-divider"></div>
+        <div class="prog-stat-item">
+          <div class="prog-stat-num" id="pst-completed">—</div>
+          <div class="prog-stat-lbl">Tamamlanan</div>
+          <div class="prog-stat-pct" id="pst-completed-pct"></div>
+        </div>
+        <div class="prog-stat-divider"></div>
+        <div class="prog-stat-item">
+          <div class="prog-stat-num" id="pst-remaining">—</div>
+          <div class="prog-stat-lbl">Kalan</div>
+          <div class="prog-stat-pct" id="pst-remaining-pct"></div>
+        </div>
+      </div>
+      <div class="prog-stats-bar">
+        <div class="prog-stats-bar-learned" id="pst-bar-learned" style="width:0%"></div>
+        <div class="prog-stats-bar-completed" id="pst-bar-completed" style="width:0%"></div>
+      </div>
+    </div>
 
     <!-- STREAK KARTI -->
     <div class="prog-card prog-streak-card" id="streak-card">
@@ -4420,6 +4460,7 @@ function renderSettings(){
   try{ updateGoalButtons(); }catch(e){}
   try{ updateThemeButtons(); }catch(e){}
   try{ updateFontSizeButtons(); }catch(e){}
+  try{ renderStatsCard(); }catch(e){}
 
   try{
     // Toplam aktif cümle (silinmişler hariç)
@@ -4788,14 +4829,55 @@ function speakNLFallback(text, btn){
   speechSynthesis.speak(utter);
 }
 
+function renderStatsCard(){
+  var totalSentences = Object.keys(SMAP).length;
+  var activeTotal = totalSentences - trulyDeleted.size - permDel.size;
+  var learnedCount = learned.size;
+  var completed = 0;
+  Object.keys(repData).forEach(function(key){
+    var rd = repData[key];
+    if(rd && Array.isArray(rd.steps) && rd.steps.length >= 7) completed++;
+  });
+  var remaining = activeTotal - learnedCount;
+  var learnedPct  = activeTotal > 0 ? Math.round(learnedCount / activeTotal * 100) : 0;
+  var completedPct = learnedCount > 0 ? Math.round(completed / learnedCount * 100) : 0;
+  var remainingPct = activeTotal > 0 ? Math.round(remaining / activeTotal * 100) : 0;
+
+  // İlerleme kartı
+  var lEl = document.getElementById('pst-learned');
+  var cEl = document.getElementById('pst-completed');
+  var rEl = document.getElementById('pst-remaining');
+  if(lEl) lEl.textContent = learnedCount;
+  if(cEl) cEl.textContent = completed;
+  if(rEl) rEl.textContent = remaining;
+  var lpEl = document.getElementById('pst-learned-pct');
+  var cpEl = document.getElementById('pst-completed-pct');
+  var rpEl = document.getElementById('pst-remaining-pct');
+  if(lpEl) lpEl.textContent = '%' + learnedPct;
+  if(cpEl) cpEl.textContent = '%' + completedPct + ' tamamlandı';
+  if(rpEl) rpEl.textContent = '%' + remainingPct;
+  var barL = document.getElementById('pst-bar-learned');
+  var barC = document.getElementById('pst-bar-completed');
+  if(barL) barL.style.width = learnedPct + '%';
+  if(barC) barC.style.width = (learnedPct * completedPct / 100) + '%';
+
+  // Header pill
+  var pctPill = document.getElementById('st-pct-pill');
+  var pctSpan = document.getElementById('st-completed-pct');
+  if(pctPill && completed > 0){
+    pctPill.style.display = '';
+    if(pctSpan) pctSpan.textContent = '%' + completedPct;
+  }
+}
+
 function renderProgress(){
-  // Profil etiketi
   var lbl = document.getElementById('prog-profile-label');
   if(lbl){
     var pName = activeProfile==='Tugba' ? 'Tuğba' : activeProfile;
     var extra = (activeProfile!=='Ortak') ? ' + Ortak' : '';
     lbl.textContent = '👤 ' + pName + extra + ' — kümülatif ilerleme';
   }
+  renderStatsCard();
   renderStreakUI();
   renderGoalUI();
   renderTimeCard();
