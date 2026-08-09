@@ -501,11 +501,12 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   color:var(--accent2);
   background:rgba(124,92,252,.07);
   border-left:2px solid rgba(124,92,252,.35);
-  padding:5px 9px;margin-top:5px;border-radius:0 6px 6px 0;
+  padding:0 9px;margin-top:0;border-radius:0 6px 6px 0;
   line-height:1.5;letter-spacing:.2px;
-  display:none;
+  max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .2s ease, opacity .2s ease, padding .2s ease, margin-top .2s ease;
 }
-.ipa-line.show{display:block;}
+.ipa-line.show{max-height:200px;opacity:1;padding:5px 9px;margin-top:5px;}
 
 </style>
 </head>
@@ -4048,7 +4049,7 @@ function renderStudy(){
 
       // TTS (sesli okuma) butonu
       var spkbtn=document.createElement('button');
-      spkbtn.className='spkbtn';
+      spkbtn.className='spkbtn'; spkbtn.type='button';
       spkbtn.title='Hollandaca seslendir';
       spkbtn.textContent='🔊';
       spkbtn.addEventListener('click',function(e){
@@ -4058,7 +4059,7 @@ function renderStudy(){
 
       // Çeviri butonu
       var trbtn=document.createElement('button');
-      trbtn.className='trbtn';
+      trbtn.className='trbtn'; trbtn.type='button';
       trbtn.title='Türkçeye çevir';
       trbtn.textContent='🇹🇷';
       (function(nlText, trText, btn){
@@ -4070,7 +4071,7 @@ function renderStudy(){
 
       // IPA (fonetik) butonu
       var ipabtn=document.createElement('button');
-      ipabtn.className='ipabtn';
+      ipabtn.className='ipabtn'; ipabtn.type='button';
       ipabtn.title='Fonetik okunuş (IPA)';
       ipabtn.textContent='🔤';
 
@@ -4083,6 +4084,7 @@ function renderStudy(){
 
       (function(btn, line){
         btn.addEventListener('click',function(e){
+          e.preventDefault();
           e.stopPropagation();
           var isOpen = line.classList.toggle('show');
           btn.classList.toggle('active', isOpen);
@@ -4268,7 +4270,7 @@ function renderLearned(){
     card.appendChild(spkBtn);
 
     var lIpaBtn=document.createElement('button');
-    lIpaBtn.className='icnbtn';
+    lIpaBtn.className='icnbtn'; lIpaBtn.type='button';
     lIpaBtn.style.cssText='right:84px;color:var(--muted)';
     lIpaBtn.title='Fonetik okunuş (IPA)';
     lIpaBtn.textContent='🔤';
@@ -4367,7 +4369,7 @@ function renderRepeat(){
 
     // IPA butonu
     var rIpaBtn=document.createElement('button');
-    rIpaBtn.className='ipabtn';
+    rIpaBtn.className='ipabtn'; rIpaBtn.type='button';
     rIpaBtn.style.cssText='margin-top:4px;margin-left:4px;';
     rIpaBtn.title='Fonetik okunuş (IPA)';
     rIpaBtn.textContent='🔤';
