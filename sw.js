@@ -3,7 +3,7 @@
 // başarısız olursa (çevrimdışıysa) cache'den verir. Böylece ders/cümle
 // güncellemeleri her zaman en güncel haliyle gelir, eski cache asılı kalmaz.
 
-const CACHE_NAME = 'goed-bezig-v2'; // her güncellemede bu numarayı artır
+const CACHE_NAME = 'goed-bezig-v3'; // her güncellemede bu numarayı artır
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -16,6 +16,12 @@ const ASSETS = [
   './icon-384.png',
   './icon-512.png'
 ];
+
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
