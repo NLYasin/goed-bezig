@@ -386,6 +386,19 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   white-space:nowrap;
 }
 .prog-streak-sub{font-size:calc(13px * var(--fs-scale));padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.15);}
+.freeze-box{
+  margin-top:10px;padding:12px;border-radius:10px;
+  background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.3);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.freeze-text{flex:1;font-size:calc(12.5px * var(--fs-scale));color:#7dd3fc;min-width:160px;}
+.freeze-btn{
+  background:linear-gradient(135deg,#38bdf8,#6366f1);color:#fff;border:none;
+  border-radius:8px;padding:8px 16px;font-size:calc(12.5px * var(--fs-scale));
+  font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s;
+}
+.freeze-btn:hover{opacity:.85;}
+.freeze-btn:disabled{opacity:.4;cursor:not-allowed;}
 
 /* Günlük hedef */
 .prog-goal-nums{
@@ -654,6 +667,10 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
         <div class="prog-badge" id="prog-badge">Başlangıç</div>
       </div>
       <div class="prog-streak-sub" id="prog-streak-sub">Bugün henüz çalışmadın</div>
+      <div class="freeze-box" id="freeze-box" style="display:none">
+        <div class="freeze-text">🧊 Dün çalışmayı kaçırmışsın — zinciri kurtarabilirsin</div>
+        <button class="freeze-btn" onclick="useStreakFreeze()" id="freeze-btn">Zinciri Kurtar</button>
+      </div>
     </div>
 
     <!-- GÜNLÜK HEDEF KARTI -->
@@ -3595,6 +3612,7 @@ function pushToCloud(){
       trulyDeleted: [...trulyDeleted],
       prios: prios,
       repData: repData,
+      dayLog: dayLog,
       updatedAt: firebase.database.ServerValue.TIMESTAMP,
       updatedBy: (window.deviceId || 'unknown')
     };
@@ -3639,7 +3657,10 @@ function listenToCloud(profileName){
     trulyDeleted = new Set(data.trulyDeleted || []);
     prios = data.prios || {};
     repData = data.repData || {};
+    dayLog = mergeDayLogs(dayLog, data.dayLog || {});
+    activityLog = dayLog; timeLog = dayLog;
     saveLocal();
+    saveActivityDataLocal();
     setSyncIndicator('online');
     renderCurrentTab();
     setTimeout(function(){ syncing=false; }, 300);
@@ -3773,6 +3794,22 @@ function getEntry(log, key){
   return {count: e, mins: 0};
 }
 
+// İki günlük logu birleştir — her gün için daha büyük (kaybolmamış) değeri koru.
+// Cache silinip yerel veri sıfırlandığında bile buluttaki veri kaybolmasın diye.
+function mergeDayLogs(localLog, cloudLog){
+  var merged = {};
+  var allKeys = new Set(Object.keys(localLog || {}).concat(Object.keys(cloudLog || {})));
+  allKeys.forEach(function(key){
+    var l = getEntry(localLog || {}, key);
+    var c = getEntry(cloudLog || {}, key);
+    merged[key] = {
+      count: Math.max(l.count, c.count),
+      mins: Math.max(l.mins, c.mins)
+    };
+  });
+  return merged;
+}
+
 function loadActivityData(){
   try{
     var prefix = 'gb3-' + activeProfile + '-';
@@ -3791,7 +3828,7 @@ function loadActivityData(){
   }catch(e){ console.error('loadActivityData hata:', e); }
 }
 
-function saveActivityData(){
+function saveActivityDataLocal(){
   try{
     var prefix = 'gb3-' + activeProfile + '-';
     localStorage.setItem(prefix + 'daylog', JSON.stringify(dayLog));
@@ -3800,6 +3837,12 @@ function saveActivityData(){
       localStorage.setItem('gb3-Ortak-daylog', JSON.stringify(dayLog));
     }
   }catch(e){}
+}
+
+function saveActivityData(){
+  saveActivityDataLocal();
+  // Çalışma süresini de buluta yedekle — cache temizlense bile kaybolmasın
+  scheduleCloudSync();
 }
 
 function getMergedCount(key){
@@ -3849,14 +3892,23 @@ document.addEventListener('visibilitychange', function(){
 });
 
 // ── STREAK HESAPLAMA (birleşik log) ──────────────────────────────────────
+function isDayActive(key){
+  if(getMergedCount(key) > 0) return true;
+  var e = dayLog[key];
+  if(e && typeof e === 'object' && e.frozen) return true;
+  var oe = ortakLog[key];
+  if(oe && typeof oe === 'object' && oe.frozen) return true;
+  return false;
+}
+
 function calcStreak(){
   var streak = 0;
   var d = new Date();
-  if(!getMergedCount(dateKey(d))){
+  if(!isDayActive(dateKey(d))){
     d.setDate(d.getDate()-1);
   }
   while(true){
-    if(getMergedCount(dateKey(d))){
+    if(isDayActive(dateKey(d))){
       streak++;
       d.setDate(d.getDate()-1);
     } else {
@@ -3864,6 +3916,54 @@ function calcStreak(){
     }
   }
   return streak;
+}
+
+// ── ZİNCİR KORUMASI (streak freeze) ───────────────────────────────────────
+var FREEZE_LIMIT_PER_MONTH = 2;
+
+function getFreezesUsedThisMonth(){
+  var now = new Date();
+  var ym = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  var count = 0;
+  Object.keys(dayLog).forEach(function(key){
+    if(key.startsWith(ym) && dayLog[key] && dayLog[key].frozen) count++;
+  });
+  return count;
+}
+
+// Zincir kırılma riski var mı kontrol et: dün (veya en son boş gün) hiç çalışılmamış
+// ama ondan önceki gün(ler) çalışılmış — yani tam olarak 1 günlük boşluk var.
+function getStreakGapDay(){
+  var today = dateKey(new Date());
+  if(isDayActive(today)) return null; // bugün zaten çalışıldı, sorun yok
+
+  var yesterday = new Date();
+  yesterday.setDate(yesterday.getDate()-1);
+  var yKey = dateKey(yesterday);
+  if(isDayActive(yKey)) return null; // dün zaten aktifti, kırık yok
+
+  // Dünden önceki gün aktif miydi? (yani tam 1 günlük boşluk mu var)
+  var beforeYesterday = new Date();
+  beforeYesterday.setDate(beforeYesterday.getDate()-2);
+  var byKey = dateKey(beforeYesterday);
+  if(!isDayActive(byKey)) return null; // 2+ gündür boş, kurtarılamaz
+
+  return yKey; // işte kurtarılabilecek gün
+}
+
+function useStreakFreeze(){
+  var gapDay = getStreakGapDay();
+  if(!gapDay){ alert('Şu an kurtarılacak bir zincir kaybı yok.'); return; }
+  if(getFreezesUsedThisMonth() >= FREEZE_LIMIT_PER_MONTH){
+    alert('Bu ay zincir koruma hakkın kalmadı (aylık limit: ' + FREEZE_LIMIT_PER_MONTH + ').');
+    return;
+  }
+  var cur = getEntry(dayLog, gapDay);
+  dayLog[gapDay] = {count: cur.count, mins: cur.mins, frozen: true};
+  activityLog = dayLog; timeLog = dayLog;
+  saveActivityData();
+  celebrate('🧊 Zincir kurtarıldı!<br>Kaldığın yerden devam ediyorsun.');
+  renderProgress();
 }
 
 // ── ROZET HESAPLAMA ───────────────────────────────────────────────────────
@@ -5068,6 +5168,27 @@ function renderStreakUI(){
     subEl.style.color = 'var(--yellow)';
     subEl.style.background = 'rgba(240,180,41,.1)';
   }
+
+  // Zincir koruma kutusu — sadece kurtarılabilecek bir boşluk varsa göster
+  var freezeBox = document.getElementById('freeze-box');
+  var freezeBtn = document.getElementById('freeze-btn');
+  if(freezeBox){
+    var gapDay = getStreakGapDay();
+    if(gapDay){
+      freezeBox.style.display = 'flex';
+      var used = getFreezesUsedThisMonth();
+      var left = FREEZE_LIMIT_PER_MONTH - used;
+      if(left > 0){
+        freezeBtn.disabled = false;
+        freezeBtn.textContent = 'Zinciri Kurtar (' + left + ' hak kaldı)';
+      } else {
+        freezeBtn.disabled = true;
+        freezeBtn.textContent = 'Bu ay hakkın bitti';
+      }
+    } else {
+      freezeBox.style.display = 'none';
+    }
+  }
 }
 
 function renderGoalUI(){
@@ -5176,7 +5297,10 @@ function selectProfile(name){
         trulyDeleted = new Set(cloudData.trulyDeleted || []);
         prios = cloudData.prios || {};
         repData = normalizeRepData(cloudData.repData);
+        dayLog = mergeDayLogs(dayLog, cloudData.dayLog || {});
+        activityLog = dayLog; timeLog = dayLog;
         saveLocal();
+        saveActivityData();
         renderCurrentTab();
         setSyncIndicator('online');
         statusEl.textContent = '';
@@ -5236,7 +5360,10 @@ if(savedProfile){
         trulyDeleted = new Set(cloudData.trulyDeleted || []);
         prios = cloudData.prios || {};
         repData = normalizeRepData(cloudData.repData);
+        dayLog = mergeDayLogs(dayLog, cloudData.dayLog || {});
+        activityLog = dayLog; timeLog = dayLog;
         saveLocal();
+        saveActivityData();
         renderCurrentTab();
         setSyncIndicator('online');
       } else if(success && !cloudData){
