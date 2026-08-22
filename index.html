@@ -3605,6 +3605,10 @@ function scheduleCloudSync(){
 
 function pushToCloud(){
   if(!fbReady || !activeProfile) return;
+  if(!activityLoaded){
+    console.warn('pushToCloud: aktivite verisi henüz yüklenmedi, gönderim erteleniyor.');
+    return; // dayLog henüz doğru yüklenmeden buluta ASLA boş veri gönderilmesin
+  }
   try{
     var payload = {
       learned: [...learned],
@@ -3802,15 +3806,24 @@ function mergeDayLogs(localLog, cloudLog){
   allKeys.forEach(function(key){
     var l = getEntry(localLog || {}, key);
     var c = getEntry(cloudLog || {}, key);
+    var lFrozen = (localLog && localLog[key] && localLog[key].frozen) || false;
+    var cFrozen = (cloudLog && cloudLog[key] && cloudLog[key].frozen) || false;
     merged[key] = {
       count: Math.max(l.count, c.count),
-      mins: Math.max(l.mins, c.mins)
+      mins: Math.max(l.mins, c.mins),
+      frozen: lFrozen || cFrozen  // ikisinden biri dondurulmuşsa, dondurulmuş kalsın
     };
   });
   return merged;
 }
 
+var activityLoaded = false; // true olana kadar buluta hiçbir dayLog gönderilmez
+
 function loadActivityData(){
+  if(!activeProfile){
+    console.warn('loadActivityData: activeProfile henüz yok, atlanıyor.');
+    return;
+  }
   try{
     var prefix = 'gb3-' + activeProfile + '-';
     var dl = localStorage.getItem(prefix + 'daylog');
@@ -3825,6 +3838,7 @@ function loadActivityData(){
     var dg = localStorage.getItem('gb3-daily-goal');
     if(dg) dailyGoal = parseInt(dg);
     todayLearned = getMergedCount(dateKey());
+    activityLoaded = true;
   }catch(e){ console.error('loadActivityData hata:', e); }
 }
 
@@ -5341,7 +5355,6 @@ function finishProfileSelection(){
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 loadAppearancePrefs();
-loadActivityData();
 window.deviceId = getDeviceId();
 initFirebase();
 
