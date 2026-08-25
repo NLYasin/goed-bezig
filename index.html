@@ -169,6 +169,12 @@ select{background:var(--card);border:1px solid var(--border);color:var(--text);b
 main{max-width:940px;margin:0 auto;padding:0 16px;}
 
 .lb{margin:12px 0;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.lb-done{border-color:rgba(52,201,139,.4);background:rgba(52,201,139,.05);}
+.lb-done .lnum{background:var(--green);}
+.lb-done .lcnt{background:rgba(52,201,139,.18);color:var(--green);font-weight:700;}
+.lb-partial{border-color:rgba(240,180,41,.4);background:rgba(240,180,41,.04);}
+.lb-partial .lnum{background:var(--yellow);color:#1a1500;}
+.lb-partial .lcnt{background:rgba(240,180,41,.18);color:var(--yellow);font-weight:700;}
 .lh{display:flex;align-items:center;gap:10px;padding:11px 15px;cursor:pointer;background:var(--card);border-bottom:1px solid var(--border);user-select:none;}
 .lh:hover{background:#272b40;}
 .lnum{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:calc(11px * var(--fs-scale));font-weight:800;color:#fff;flex-shrink:0;}
@@ -4094,17 +4100,20 @@ function renderStudy(){
     var remInLesson=rows.filter(function(r){return !r.isL&&!r.isP;}).length;
     remain+=remInLesson;
 
+    var lessonStatus = remInLesson===0 ? 'lb-done' : (remInLesson<activeInLesson ? 'lb-partial' : '');
+
     var block=document.createElement('div');
-    block.className='lb'+(collapsedLessons.has(lesson.id)?' col':'');
+    block.className='lb'+(collapsedLessons.has(lesson.id)?' col':'')+(lessonStatus?' '+lessonStatus:'');
     block.dataset.lid=lesson.id;
 
     var tagH=lesson.tag?'<span class="stag">'+lesson.tag+'</span>':'';
     var hdr=document.createElement('div');
     hdr.className='lh';
+    var statusIcon = lessonStatus==='lb-done' ? '✅ ' : (lessonStatus==='lb-partial' ? '🟡 ' : '');
     hdr.innerHTML=
       '<div class="lnum">'+lesson.id+'</div>'+
       '<div class="ltitle"><span class="lsec">'+lesson.section+'</span>'+lesson.title+tagH+'</div>'+
-      '<div class="lcnt">'+remInLesson+'/'+activeInLesson+'</div>'+
+      '<div class="lcnt">'+statusIcon+remInLesson+'/'+activeInLesson+'</div>'+
       '<div class="ltog">▾</div>';
     hdr.addEventListener('click', function(){
       block.classList.toggle('col');
