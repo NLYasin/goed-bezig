@@ -676,7 +676,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
       <div class="lc-section">
         <div class="lc-label">Kapsam</div>
         <div class="lc-btn-row" id="lc-scope-row">
-          <button class="lc-btn active" data-scope="today" onclick="setListenScope('today')">Bugün</button>
+          <button class="lc-btn active" data-scope="today" onclick="setListenScope('today')"><div>Bugün</div><div class="lc-sub">+ gecikmiş tekrarlar</div></button>
           <button class="lc-btn" data-scope="all" onclick="setListenScope('all')">Tümü</button>
           <button class="lc-btn" data-scope="lesson" onclick="setListenScope('lesson')">Ders Seç</button>
         </div>
@@ -5318,9 +5318,16 @@ function getListenKeysScoped(){
   } else {
     if(listenSettings.scope === 'today'){
       var todayStr = dateKey();
+      var seenKeys = {};
       learned.forEach(function(key){
         var rd = repData[key];
-        if(rd && rd.at && dateKey(new Date(rd.at)) === todayStr) keys.push(key);
+        var isNewToday = rd && rd.at && dateKey(new Date(rd.at)) === todayStr;
+        var rs = getRep(key);
+        var isDueToday = rs && (rs.status === 'ov' || rs.status === 'td');
+        if((isNewToday || isDueToday) && !seenKeys[key]){
+          keys.push(key);
+          seenKeys[key] = true;
+        }
       });
     } else if(listenSettings.scope === 'lesson'){
       learned.forEach(function(key){
