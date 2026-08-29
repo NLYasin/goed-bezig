@@ -31,21 +31,21 @@
 
 <style>
 :root {
-  --bg:#0f1117;--surface:#1a1d27;--card:#22263a;--border:#2e3350;
+  --bg:#0B1A13;--surface2:#111827;--card:#1E293B;--surface:#262E3F;--border:#1A1F2E;--tag:#2A1F1A;
   --accent:#4f8ef7;--accent2:#7c5cfc;--green:#34c98b;--red:#e05c5c;
-  --yellow:#f0b429;--text:#e8eaf6;--muted:#8b90b0;--tag:#252a40;
+  --yellow:#f0b429;--text:#e8eaf6;--muted:#8b90b0;
   --fs-scale:1;
 }
 :root[data-theme="light"] {
-  --bg:#f5f6fa;--surface:#ffffff;--card:#eef0f6;--border:#dde1ec;
+  --bg:#F0FDF4;--surface2:#EFF6FF;--card:#FFFFFF;--surface:#FFFAF0;--border:#F5F3FF;--tag:#FFF5F3;
   --accent:#3b6fe0;--accent2:#6b4fd8;--green:#1f9d6f;--red:#d23f3f;
-  --yellow:#c98a0a;--text:#1a1d27;--muted:#646b85;--tag:#e7e9f2;
+  --yellow:#c98a0a;--text:#1a1d27;--muted:#646b85;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:calc(16px * var(--fs-scale));}
 body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;min-height:100vh;padding-bottom:env(safe-area-inset-bottom);overflow-x:clip;transition:background .2s,color .2s;}
 
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:calc(14px + env(safe-area-inset-top)) 18px 0;position:sticky;top:0;z-index:100;}
+header{background:var(--surface2);border-bottom:1px solid var(--border);padding:calc(14px + env(safe-area-inset-top)) 18px 0;position:sticky;top:0;z-index:100;}
 .htop{display:flex;align-items:flex-start;gap:8px;flex-wrap:nowrap;margin-bottom:8px;}
 .htop > div:first-child{flex:1;min-width:0;}
 .logo{font-size:calc(20px * var(--fs-scale));font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
@@ -186,7 +186,8 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 .lb.col .slist{display:none;}
 .stag{display:inline-block;font-size:calc(10px * var(--fs-scale));background:rgba(79,142,247,.12);color:var(--accent);border-radius:4px;padding:1px 6px;margin-left:5px;}
 
-.sr{display:flex;align-items:flex-start;gap:9px;padding:9px 15px;border-bottom:1px solid var(--border);transition:background .15s;}
+.sr{display:flex;align-items:flex-start;gap:9px;padding:9px 15px;border-bottom:1px solid var(--border);transition:background .15s;flex-wrap:wrap;}
+.sr-actions{display:flex;align-items:center;gap:2px;flex-shrink:0;margin-left:auto;}
 .sr:last-child{border-bottom:none;}
 .sr:hover{background:rgba(79,142,247,.03);}
 .sr.hide{display:none;}
@@ -312,6 +313,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   .lcnt{font-size:calc(10px * var(--fs-scale));padding:1px 6px;}
 
   .sr{padding:8px 12px;gap:7px;}
+  .sr-actions{width:100%;justify-content:flex-end;margin-left:0;margin-top:2px;}
   .snl{font-size:calc(13.5px * var(--fs-scale));}
   .str{font-size:calc(11.5px * var(--fs-scale));}
   .pd{width:12px;height:12px;}
@@ -649,6 +651,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
     <button class="pf" id="pf-green"  onclick="togglePF('green')"><span class="dotsm" style="background:var(--green)"></span>Ekstra</button>
     <button class="btn btn-ghost" onclick="expandAll()">Aç</button>
     <button class="btn btn-ghost" onclick="collapseAll()">Kapat</button>
+    <button class="btn btn-primary" onclick="openListenConfig('study')">🎧 Dinle</button>
   </div>
 </div>
 
@@ -703,10 +706,13 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
       </div>
 
       <div class="lc-section">
-        <div class="lc-label">🇹🇷 Türkçe seslendirme</div>
-        <div class="lc-btn-row" id="lc-tr-row">
-          <button class="lc-btn" data-tr="on" onclick="setListenTurkish(true)">Açık</button>
-          <button class="lc-btn active" data-tr="off" onclick="setListenTurkish(false)">Kapalı</button>
+        <div class="lc-label">⚡ Hız</div>
+        <div class="lc-btn-row" id="lc-speed-row">
+          <button class="lc-btn" data-speed="0.75" onclick="setListenSpeed(0.75)">0.75×</button>
+          <button class="lc-btn active" data-speed="1" onclick="setListenSpeed(1)">1×</button>
+          <button class="lc-btn" data-speed="1.25" onclick="setListenSpeed(1.25)">1.25×</button>
+          <button class="lc-btn" data-speed="1.5" onclick="setListenSpeed(1.5)">1.5×</button>
+          <button class="lc-btn" data-speed="2" onclick="setListenSpeed(2)">2×</button>
         </div>
       </div>
 
@@ -4026,8 +4032,13 @@ function endSession(){
 
 window.addEventListener('beforeunload', function(){ endSession(); });
 document.addEventListener('visibilitychange', function(){
-  if(document.hidden){ endSession(); }
-  else { startSession(); }
+  if(document.hidden){
+    // Dinleme modu aktifse (ses arka planda çalmaya devam edebilir), süre sayacını durdurma
+    if(!listenStopped) return;
+    endSession();
+  } else {
+    startSession();
+  }
 });
 
 // ── STREAK HESAPLAMA (birleşik log) ──────────────────────────────────────
@@ -4355,14 +4366,18 @@ function renderStudy(){
         doPerm(r.key);
       });
 
+      var actionsWrap = document.createElement('div');
+      actionsWrap.className = 'sr-actions';
+      actionsWrap.appendChild(spkbtn);
+      actionsWrap.appendChild(ipabtn);
+      actionsWrap.appendChild(trbtn);
+      actionsWrap.appendChild(cbtn);
+      actionsWrap.appendChild(tbtn);
+
       row.appendChild(numD);
       row.appendChild(contD);
       row.appendChild(pw);
-      row.appendChild(spkbtn);
-      row.appendChild(ipabtn);
-      row.appendChild(trbtn);
-      row.appendChild(cbtn);
-      row.appendChild(tbtn);
+      row.appendChild(actionsWrap);
       slist.appendChild(row);
     });
 
@@ -5195,7 +5210,15 @@ function speakNLFallback(text, btn){
 // ══════════════════════════════════════════════════════════════════════
 // DİNLEME MODU (sürekli/otomatik dinleme)
 // ══════════════════════════════════════════════════════════════════════
-var listenSettings = { scope:'today', lessonId:null, repeat:2, pauseMs:0, turkish:false };
+var listenSettings = { scope:'today', lessonId:null, repeat:2, pauseMs:0, speed:1 };
+var listenContext = 'learned'; // 'learned' (Ezberlenenler) | 'study' (Ezber Listesi — tüm cümleler)
+
+function setListenSpeed(s){
+  listenSettings.speed = s;
+  document.querySelectorAll('#lc-speed-row .lc-btn').forEach(function(b){
+    b.classList.toggle('active', parseFloat(b.dataset.speed)===s);
+  });
+}
 var listenQueue = [];
 var listenIndex = 0;
 var listenPaused = false;
@@ -5203,7 +5226,20 @@ var listenStopped = true;
 var listenRunToken = 0; // her "start" çağrısında artar, eski döngüler kendini iptal eder
 var listenCurAudio = null;
 
-function openListenConfig(){
+function openListenConfig(context){
+  listenContext = context || 'learned';
+  var todayBtn = document.querySelector('#lc-scope-row [data-scope="today"]');
+  var allBtn = document.querySelector('#lc-scope-row [data-scope="all"]');
+  if(listenContext === 'study'){
+    // Çalışma listesinde "Bugün" kavramı yok — Ders Seç varsayılan olsun
+    if(todayBtn) todayBtn.style.display = 'none';
+    if(allBtn) allBtn.textContent = 'Tüm Liste';
+    setListenScope('lesson');
+  } else {
+    if(todayBtn) todayBtn.style.display = '';
+    if(allBtn) allBtn.textContent = 'Tümü';
+    setListenScope('today');
+  }
   populateListenLessonSelect();
   updateListenCountPreview();
   document.getElementById('listen-config-overlay').classList.add('show');
@@ -5232,23 +5268,22 @@ function setListenPause(ms){
     b.classList.toggle('active', parseInt(b.dataset.pause)===ms);
   });
 }
-function setListenTurkish(on){
-  listenSettings.turkish = on;
-  document.querySelectorAll('#lc-tr-row .lc-btn').forEach(function(b){
-    b.classList.toggle('active', (b.dataset.tr==='on')===on);
-  });
-}
 
 function populateListenLessonSelect(){
   var sel = document.getElementById('lc-lesson-select');
-  if(sel.dataset.filled) { updateListenCountPreview(); return; }
   sel.innerHTML = '';
-  // Sadece ezberlenmiş cümlesi olan dersleri listele
+  sel.dataset.filled = '';
   var lessonIds = {};
-  learned.forEach(function(key){
-    var info = SMAP[key];
-    if(info) lessonIds[info.lesson.id] = info.lesson;
-  });
+  if(listenContext === 'study'){
+    // Çalışma listesinde: aktif (silinmemiş) cümlesi olan tüm dersler
+    lessons.forEach(function(l){ lessonIds[l.id] = l; });
+  } else {
+    // Ezberlenenler: sadece ezberlenmiş cümlesi olan dersler
+    learned.forEach(function(key){
+      var info = SMAP[key];
+      if(info) lessonIds[info.lesson.id] = info.lesson;
+    });
+  }
   Object.keys(lessonIds).map(Number).sort(function(a,b){return a-b;}).forEach(function(id){
     var l = lessonIds[id];
     var o = document.createElement('option');
@@ -5257,28 +5292,44 @@ function populateListenLessonSelect(){
     sel.appendChild(o);
   });
   sel.dataset.filled = '1';
-  sel.addEventListener('change', function(){
+  sel.onchange = function(){
     listenSettings.lessonId = parseInt(sel.value);
     updateListenCountPreview();
-  });
+  };
   if(sel.options.length) listenSettings.lessonId = parseInt(sel.options[0].value);
 }
 
 function getListenKeysScoped(){
   var keys = [];
-  if(listenSettings.scope === 'today'){
-    var todayStr = dateKey();
-    learned.forEach(function(key){
-      var rd = repData[key];
-      if(rd && rd.at && dateKey(new Date(rd.at)) === todayStr) keys.push(key);
-    });
-  } else if(listenSettings.scope === 'lesson'){
-    learned.forEach(function(key){
-      var info = SMAP[key];
-      if(info && info.lesson.id === listenSettings.lessonId) keys.push(key);
-    });
-  } else { // 'all'
-    keys = [...learned];
+  if(listenContext === 'study'){
+    if(listenSettings.scope === 'lesson'){
+      var lesson = lessons.find(function(l){ return l.id===listenSettings.lessonId; });
+      if(lesson){
+        lesson.sentences.forEach(function(s, idx){
+          var key = lesson.id+'-'+idx;
+          if(!permDel.has(key) && !trulyDeleted.has(key)) keys.push(key);
+        });
+      }
+    } else { // 'all' — tüm aktif cümleler (dikkat: çok uzun sürebilir)
+      Object.keys(SMAP).forEach(function(key){
+        if(!permDel.has(key) && !trulyDeleted.has(key)) keys.push(key);
+      });
+    }
+  } else {
+    if(listenSettings.scope === 'today'){
+      var todayStr = dateKey();
+      learned.forEach(function(key){
+        var rd = repData[key];
+        if(rd && rd.at && dateKey(new Date(rd.at)) === todayStr) keys.push(key);
+      });
+    } else if(listenSettings.scope === 'lesson'){
+      learned.forEach(function(key){
+        var info = SMAP[key];
+        if(info && info.lesson.id === listenSettings.lessonId) keys.push(key);
+      });
+    } else { // 'all'
+      keys = [...learned];
+    }
   }
   // Ders no + cümle sırasına göre diz
   keys.sort(function(a,b){
@@ -5308,10 +5359,10 @@ function playAudioBlobUrl(url){
   });
 }
 
-function fetchEdgeTTSBlobUrl(text, voice){
+function fetchEdgeTTSBlobUrl(text, voice, rate){
   return fetch(EDGE_TTS_URL, {
     method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({text:text, voice:voice})
+    body: JSON.stringify({text:text, voice:voice, rate:rate})
   }).then(function(res){
     if(!res.ok) throw new Error('edge tts '+res.status);
     return res.arrayBuffer();
@@ -5320,11 +5371,11 @@ function fetchEdgeTTSBlobUrl(text, voice){
   });
 }
 
-function fetchElevenLabsBlobUrl(text){
+function fetchElevenLabsBlobUrl(text, speedMultiplier){
   return fetch('https://api.elevenlabs.io/v1/text-to-speech/' + EL_VOICE_ID, {
     method:'POST',
     headers:{'xi-api-key':EL_KEY,'Content-Type':'application/json','Accept':'audio/mpeg'},
-    body: JSON.stringify({text:text, model_id:'eleven_multilingual_v2', voice_settings:{stability:0.5, similarity_boost:0.75, speed:0.9}})
+    body: JSON.stringify({text:text, model_id:'eleven_multilingual_v2', voice_settings:{stability:0.5, similarity_boost:0.75, speed: speedMultiplier||0.9}})
   }).then(function(res){
     if(!res.ok) throw new Error('elevenlabs '+res.status);
     return res.arrayBuffer();
@@ -5333,12 +5384,12 @@ function fetchElevenLabsBlobUrl(text){
   });
 }
 
-function speakWebSpeechPromise(text, lang){
+function speakWebSpeechPromise(text, lang, speedMultiplier){
   return new Promise(function(resolve, reject){
     if(!('speechSynthesis' in window)){ reject(new Error('no speech synthesis')); return; }
     var utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang;
-    utter.rate = 0.9;
+    utter.rate = speedMultiplier || 0.9;
     var voices = speechSynthesis.getVoices();
     var short = lang.split('-')[0];
     var v = voices.find(function(v){ return v.lang && v.lang.startsWith(short); });
@@ -5349,15 +5400,23 @@ function speakWebSpeechPromise(text, lang){
   });
 }
 
+// Hız çarpanını (0.75, 1, 1.25...) Edge TTS'in beklediği yüzde formatına çevirir
+function speedToEdgeRate(speedMultiplier){
+  if(!speedMultiplier || speedMultiplier===1) return '+0%';
+  var pct = Math.round((speedMultiplier - 1) * 100);
+  return (pct>=0?'+':'') + pct + '%';
+}
+
 // Sırayla Edge TTS → ElevenLabs → Web Speech dener
-function speakQueued(text, lang, edgeVoice){
-  return fetchEdgeTTSBlobUrl(text, edgeVoice)
+function speakQueued(text, lang, edgeVoice, speedMultiplier){
+  var edgeRate = speedToEdgeRate(speedMultiplier);
+  return fetchEdgeTTSBlobUrl(text, edgeVoice, edgeRate)
     .then(playAudioBlobUrl)
     .catch(function(){
-      return fetchElevenLabsBlobUrl(text).then(playAudioBlobUrl);
+      return fetchElevenLabsBlobUrl(text, speedMultiplier).then(playAudioBlobUrl);
     })
     .catch(function(){
-      return speakWebSpeechPromise(text, lang);
+      return speakWebSpeechPromise(text, lang, speedMultiplier);
     });
 }
 
@@ -5420,7 +5479,6 @@ function updateListenPlayerUI(key, repeatDone){
   document.getElementById('lp-progress').textContent = (listenIndex+1) + ' / ' + listenQueue.length;
   document.getElementById('lp-lesson').textContent = info.lesson.section + ' · ' + info.lesson.title;
   document.getElementById('lp-nl').textContent = info.nl;
-  document.getElementById('lp-tr').textContent = (listenSettings.turkish && info.tr) ? info.tr : '';
 
   var dotsEl = document.getElementById('lp-repeat-dots');
   dotsEl.innerHTML = '';
@@ -5442,17 +5500,11 @@ async function runListenLoop(token){
       if(token !== listenRunToken) return;
       while(listenPaused){ await sleep(200); if(token!==listenRunToken) return; }
       updateListenPlayerUI(key, r);
-      try{ await speakQueued(info.nl, 'nl-NL', EDGE_TTS_VOICE); }catch(e){}
+      try{ await speakQueued(info.nl, 'nl-NL', EDGE_TTS_VOICE, listenSettings.speed); }catch(e){}
       if(token !== listenRunToken) return;
       if(r < listenSettings.repeat-1 && listenSettings.pauseMs>0) await sleep(listenSettings.pauseMs);
     }
     updateListenPlayerUI(key, listenSettings.repeat);
-
-    if(listenSettings.turkish && info.tr && token===listenRunToken){
-      while(listenPaused){ await sleep(200); if(token!==listenRunToken) return; }
-      await sleep(300);
-      try{ await speakQueued(info.tr, 'tr-TR', 'tr-TR-EmelNeural'); }catch(e){}
-    }
 
     if(token !== listenRunToken) return;
     listenIndex++;
