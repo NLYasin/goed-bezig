@@ -5787,45 +5787,63 @@ function showProfilePicker(){
 
 function selectProfile(name){
   activeProfile = name;
-  localStorage.setItem('gb3-active-profile', name);
+  try{ localStorage.setItem('gb3-active-profile', name); }catch(e){}
+
+  // Ekranı HEMEN kapat — sonraki adımlardan biri hata verse bile
+  // kullanıcı profil seçim ekranında takılı kalmasın
+  try{ document.getElementById('profile-picker').classList.add('hide'); }catch(e){}
+  try{
+    document.getElementById('active-profile-name').textContent =
+      activeProfile==='Tugba' ? 'Tuğba' : activeProfile;
+  }catch(e){}
+
+  try{ load(); }catch(e){ console.error('load() hata:', e); }
+  try{ loadActivityData(); }catch(e){ console.error('loadActivityData() hata:', e); }
+  try{ startSession(); }catch(e){ console.error('startSession() hata:', e); }
+  try{ populateSel(); }catch(e){ console.error('populateSel() hata:', e); }
+  try{ renderStudy(); }catch(e){ console.error('renderStudy() hata:', e); }
 
   var statusEl = document.getElementById('profile-status');
-  statusEl.textContent = '☁️ Bulut verisi kontrol ediliyor...';
-
-  // Önce yerel veriyi göster (hızlı açılış), sonra buluttan güncelle
-  load();
-  finishProfileSelection();
+  if(statusEl) statusEl.textContent = '☁️ Bulut verisi kontrol ediliyor...';
 
   if(fbReady){
-    pullFromCloud(name, function(success, cloudData){
-      if(success && cloudData){
-        // Buluttaki veri varsa ve yerelden daha güncelse, onu kullan
-        learned = new Set(cloudData.learned || []);
-        permDel = new Set(cloudData.permDel || []);
-        trulyDeleted = new Set(cloudData.trulyDeleted || []);
-        prios = cloudData.prios || {};
-        repData = normalizeRepData(cloudData.repData);
-        dayLog = mergeDayLogs(dayLog, cloudData.dayLog || {});
-        activityLog = dayLog; timeLog = dayLog;
-        cloudSynced = true; // buluttan gerçek veri doğrulandı, artık push güvenli
-        saveLocal();
-        saveActivityData();
-        renderCurrentTab();
-        setSyncIndicator('online');
-        statusEl.textContent = '';
-      } else if(success && !cloudData){
-        // Bulutta hiç veri yok — bu gerçekten yeni bir profil, ilk senkron güvenli
-        cloudSynced = true;
-        pushToCloud();
-        statusEl.textContent = '';
-      } else {
-        statusEl.textContent = '⚠️ Bağlantı yok, yerel veriler kullanılıyor';
-        setSyncIndicator('offline');
-      }
-      listenToCloud(name); // canlı dinlemeyi başlat
-    });
+    try{
+      pullFromCloud(name, function(success, cloudData){
+        try{
+          if(success && cloudData){
+            // Buluttaki veri varsa ve yerelden daha güncelse, onu kullan
+            learned = new Set(cloudData.learned || []);
+            permDel = new Set(cloudData.permDel || []);
+            trulyDeleted = new Set(cloudData.trulyDeleted || []);
+            prios = cloudData.prios || {};
+            repData = normalizeRepData(cloudData.repData);
+            dayLog = mergeDayLogs(dayLog, cloudData.dayLog || {});
+            activityLog = dayLog; timeLog = dayLog;
+            cloudSynced = true; // buluttan gerçek veri doğrulandı, artık push güvenli
+            saveLocal();
+            saveActivityData();
+            renderCurrentTab();
+            setSyncIndicator('online');
+            if(statusEl) statusEl.textContent = '';
+          } else if(success && !cloudData){
+            // Bulutta hiç veri yok — bu gerçekten yeni bir profil, ilk senkron güvenli
+            cloudSynced = true;
+            pushToCloud();
+            if(statusEl) statusEl.textContent = '';
+          } else {
+            if(statusEl) statusEl.textContent = '⚠️ Bağlantı yok, yerel veriler kullanılıyor';
+            setSyncIndicator('offline');
+          }
+          listenToCloud(name); // canlı dinlemeyi başlat
+        }catch(e){
+          console.error('pullFromCloud callback hata:', e);
+        }
+      });
+    }catch(e){
+      console.error('pullFromCloud çağrısı hata:', e);
+    }
   } else {
-    statusEl.textContent = '⚠️ Bulut bağlantısı yok, yerel veriler kullanılıyor';
+    if(statusEl) statusEl.textContent = '⚠️ Bulut bağlantısı yok, yerel veriler kullanılıyor';
   }
 }
 
@@ -5857,59 +5875,52 @@ initFirebase();
 var savedProfile = localStorage.getItem('gb3-active-profile');
 if(savedProfile){
   activeProfile = savedProfile;
-  load();
-  finishProfileSelection();
+  try{ load(); }catch(e){ console.error('load() hata:', e); }
+  try{ finishProfileSelection(); }catch(e){ console.error('finishProfileSelection() hata:', e); }
   // Ayarlar sekmesi için veriyi hemen doldur
-  setTimeout(function(){ renderSettings(); }, 100);
+  setTimeout(function(){ try{ renderSettings(); }catch(e){} }, 100);
   if(fbReady){
-    pullFromCloud(savedProfile, function(success, cloudData){
-      if(success && cloudData){
-        learned = new Set(cloudData.learned || []);
-        permDel = new Set(cloudData.permDel || []);
-        trulyDeleted = new Set(cloudData.trulyDeleted || []);
-        prios = cloudData.prios || {};
-        repData = normalizeRepData(cloudData.repData);
-        dayLog = mergeDayLogs(dayLog, cloudData.dayLog || {});
-        activityLog = dayLog; timeLog = dayLog;
-        cloudSynced = true; // buluttan gerçek veri doğrulandı, artık push güvenli
-        saveLocal();
-        saveActivityData();
-        renderCurrentTab();
-        setSyncIndicator('online');
-      } else if(success && !cloudData){
-        cloudSynced = true; // gerçekten yeni profil, ilk senkron güvenli
-        pushToCloud();
-      } else {
-        setSyncIndicator('offline');
-      }
-      listenToCloud(savedProfile);
-    });
+    try{
+      pullFromCloud(savedProfile, function(success, cloudData){
+        try{
+          if(success && cloudData){
+            learned = new Set(cloudData.learned || []);
+            permDel = new Set(cloudData.permDel || []);
+            trulyDeleted = new Set(cloudData.trulyDeleted || []);
+            prios = cloudData.prios || {};
+            repData = normalizeRepData(cloudData.repData);
+            dayLog = mergeDayLogs(dayLog, cloudData.dayLog || {});
+            activityLog = dayLog; timeLog = dayLog;
+            cloudSynced = true; // buluttan gerçek veri doğrulandı, artık push güvenli
+            saveLocal();
+            saveActivityData();
+            renderCurrentTab();
+            setSyncIndicator('online');
+          } else if(success && !cloudData){
+            cloudSynced = true; // gerçekten yeni profil, ilk senkron güvenli
+            pushToCloud();
+          } else {
+            setSyncIndicator('offline');
+          }
+          listenToCloud(savedProfile);
+        }catch(e){
+          console.error('INIT cloud callback hata:', e);
+        }
+      });
+    }catch(e){
+      console.error('INIT pullFromCloud çağrısı hata:', e);
+    }
   }
 } else {
-  showProfilePicker();
+  try{ showProfilePicker(); }catch(e){ console.error('showProfilePicker() hata:', e); }
 }
 
-// ── PWA: Service Worker — temiz yükleme ─────────────────────────────────
+// ── PWA: Service Worker ───────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  // Tüm eski SW'leri ve cache'leri temizle, sonra yenisini kaydet
-  Promise.all([
-    navigator.serviceWorker.getRegistrations().then(function(regs){
-      return Promise.all(regs.map(function(r){ return r.unregister(); }));
-    }),
-    window.caches ? caches.keys().then(function(keys){
-      return Promise.all(keys.map(function(k){ return caches.delete(k); }));
-    }) : Promise.resolve()
-  ]).then(function(){
-    return navigator.serviceWorker.register('sw.js');
-  }).then(function(reg){
-    reg.addEventListener('updatefound', function(){
-      var nw = reg.installing;
-      nw.addEventListener('statechange', function(){
-        if(nw.state === 'installed') window.location.reload();
-      });
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(function(err) {
+      console.log('Service worker kaydı başarısız:', err);
     });
-  }).catch(function(err){
-    console.log('SW hata:', err);
   });
 }
 
