@@ -1359,10 +1359,14 @@ function endSession(){
 window.addEventListener('beforeunload', function(){ endSession(); });
 document.addEventListener('visibilitychange', function(){
   if(document.hidden){
-    // Dinleme modu aktifse (ses arka planda çalmaya devam edebilir), süre sayacını durdurma
+    // Dinleme modu aktifse (ses arka planda çalmaya devam edebilir), süre sayacını durdurma —
+    // sessionStart'ı sıfırlamadan devam etsin, süre birikmeye devam etsin
     if(!listenStopped) return;
     endSession();
   } else {
+    // Öne dönünce: arka planda (özellikle dinleme modunda) biriken süreyi ÖNCE kaydet,
+    // sonra yeni bir oturum başlat. Böylece arka planda geçen süre kaybolmaz.
+    endSession();
     startSession();
   }
 });
