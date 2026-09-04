@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -38,10 +38,10 @@
   --fs-scale:1;
 }
 :root[data-theme="light"] {
-  --bg:#F0FDF4;--surface2:#EFF6FF;--card:#FFFFFF;--surface:#FFFAF0;--border:#F5F3FF;--tag:#FFF5F3;
+  --bg:#F4F6FA;--surface2:#FFFFFF;--card:#F3F5F9;--surface:#FFFFFF;--border:#DFE3EC;--tag:#EEF1F7;
   /* [5] TEK KİMLİK RENGİ */
   --accent:#0E7FD4;--accent2:#2E9BE8;--green:#1f9d6f;--red:#d23f3f;
-  --yellow:#c98a0a;--text:#1a1d27;--muted:#646b85;
+  --yellow:#9C6B00;--text:#1a1d27;--muted:#5b6275;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:calc(16px * var(--fs-scale));}
@@ -50,10 +50,8 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,san
 header{background:var(--surface2);border-bottom:1px solid var(--border);padding:calc(14px + env(safe-area-inset-top)) 18px 0;position:sticky;top:0;z-index:100;}
 .htop{display:flex;align-items:flex-start;gap:8px;flex-wrap:nowrap;margin-bottom:8px;}
 .htop > div:first-child{flex:1;min-width:0;}
-.logo{font-size:calc(20px * var(--fs-scale));font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
+.logo{font-size:calc(20px * var(--fs-scale));font-weight:800;color:var(--accent);white-space:nowrap;}
 .sub{font-size:calc(11px * var(--fs-scale));color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.logo{font-size:calc(20px * var(--fs-scale));font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.sub{color:var(--muted);font-size:calc(12px * var(--fs-scale));margin-top:2px;}
 .stats{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0;max-width:52%;}
 .pill{background:var(--tag);border:1px solid var(--border);border-radius:20px;padding:3px 11px;font-size:calc(12px * var(--fs-scale));color:var(--muted);}
 .pill span{color:var(--text);font-weight:700;}
@@ -73,10 +71,10 @@ header{background:var(--surface2);border-bottom:1px solid var(--border);padding:
 .controls-row1 input[type=search]{flex:1;min-width:0;}
 .controls-row1 select{flex:2;min-width:0;}
 .controls-row2{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-input[type=search]{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 11px;font-size:calc(13px * var(--fs-scale));outline:none;width:190px;}
+input[type=search]{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 11px;font-size:calc(13px * var(--fs-scale));width:190px;}
 input[type=search]:focus{border-color:var(--accent);}
 input[type=search]::placeholder{color:var(--muted);}
-select{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 11px;font-size:calc(13px * var(--fs-scale));outline:none;cursor:pointer;}
+select{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 11px;font-size:calc(13px * var(--fs-scale));cursor:pointer;}
 .btn{border:none;border-radius:7px;padding:6px 13px;font-size:calc(12px * var(--fs-scale));font-weight:600;cursor:pointer;transition:opacity .15s;}
 .btn:hover{opacity:.8;}
 .btn-ghost{background:var(--tag);border:1px solid var(--border);color:var(--muted);}
@@ -91,9 +89,7 @@ select{background:var(--card);border:1px solid var(--border);color:var(--text);b
 .profile-box{
   max-width:380px;width:100%;text-align:center;
 }
-.profile-logo{font-size:calc(28px * var(--fs-scale));font-weight:800;margin-bottom:6px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.profile-logo{font-size:calc(28px * var(--fs-scale));font-weight:800;margin-bottom:6px;color:var(--accent);}
 .profile-sub{color:var(--muted);font-size:calc(15px * var(--fs-scale));margin-bottom:28px;}
 .profile-buttons{display:flex;flex-direction:column;gap:12px;}
 .profile-btn{
@@ -178,7 +174,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 .lb-partial .lnum{background:var(--yellow);color:#1a1500;}
 .lb-partial .lcnt{background:rgba(240,180,41,.18);color:var(--yellow);font-weight:700;}
 .lh{display:flex;align-items:center;gap:10px;padding:11px 15px;cursor:pointer;background:var(--card);border-bottom:1px solid var(--border);user-select:none;}
-.lh:hover{background:#272b40;}
+.lh:hover{background:var(--tag);}
 .lnum{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:calc(11px * var(--fs-scale));font-weight:800;color:#fff;flex-shrink:0;}
 .ltitle{flex:1;font-weight:700;font-size:calc(14px * var(--fs-scale));}
 .lsec{font-size:calc(10px * var(--fs-scale));color:var(--muted);display:block;margin-bottom:2px;}
@@ -198,6 +194,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 .sr.pg{border-left:3px solid var(--green);}
 .sn{font-size:calc(11px * var(--fs-scale));color:var(--muted);min-width:19px;padding-top:3px;font-weight:600;}
 .sc{flex:1;}
+.sc2{flex:1;min-width:0;}
 .snl{font-size:calc(14px * var(--fs-scale));font-weight:500;line-height:1.4;}
 .str{font-size:calc(12px * var(--fs-scale));color:var(--muted);font-style:italic;margin-top:2px;}
 .pw{display:flex;gap:3px;align-items:center;flex-shrink:0;}
@@ -314,11 +311,12 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   .lsec{font-size:calc(9px * var(--fs-scale));}
   .lcnt{font-size:calc(10px * var(--fs-scale));padding:1px 6px;}
 
-  .sr{padding:8px 12px;gap:7px;}
-  .sr-actions{width:100%;justify-content:flex-end;margin-left:0;margin-top:2px;}
+  .sr{padding:8px 12px 4px;gap:2px 7px;}
+  .sc2{flex:1 1 calc(100% - 34px);}
+  .pw{order:3;margin-left:26px;}
+  .sr-actions{order:4;width:auto;margin-left:auto;margin-top:0;}
   .snl{font-size:calc(13.5px * var(--fs-scale));}
   .str{font-size:calc(11.5px * var(--fs-scale));}
-  .pd{width:12px;height:12px;}
 
   /* CARDS */
   .cgrid,.pgrid{grid-template-columns:1fr;}
@@ -431,10 +429,10 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 .prog-card-desc{font-size:calc(13px * var(--fs-scale));color:var(--muted);line-height:1.5;margin-bottom:14px;}
 
 /* Streak kartı */
-.prog-streak-card{background:linear-gradient(135deg,rgba(62,166,255,.12),rgba(124,92,252,.12));border-color:rgba(62,166,255,.3);}
+.prog-streak-card{background:linear-gradient(135deg,rgba(62,166,255,.14),rgba(62,166,255,.03));border-color:rgba(62,166,255,.3);}
 .prog-streak-top{display:flex;align-items:center;gap:16px;margin-bottom:10px;}
 .prog-flame{font-size:calc(48px * var(--fs-scale));line-height:1;}
-.prog-streak-num{font-size:calc(52px * var(--fs-scale));font-weight:900;line-height:1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.prog-streak-num{font-size:calc(52px * var(--fs-scale));font-weight:900;line-height:1;color:var(--accent);}
 .prog-streak-label{font-size:calc(14px * var(--fs-scale));color:var(--muted);margin-top:4px;}
 .prog-badge{
   margin-left:auto;background:linear-gradient(135deg,var(--accent),var(--accent2));
@@ -445,12 +443,12 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 .prog-streak-sub{font-size:calc(13px * var(--fs-scale));padding:8px 12px;border-radius:8px;background:rgba(0,0,0,.15);}
 .freeze-box{
   margin-top:10px;padding:12px;border-radius:10px;
-  background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.3);
+  background:rgba(62,166,255,.1);border:1px solid rgba(62,166,255,.3);
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;
 }
-.freeze-text{flex:1;font-size:calc(12.5px * var(--fs-scale));color:#7dd3fc;min-width:160px;}
+.freeze-text{flex:1;font-size:calc(12.5px * var(--fs-scale));color:var(--text);min-width:160px;}
 .freeze-btn{
-  background:linear-gradient(135deg,#38bdf8,#6366f1);color:#fff;border:none;
+  background:var(--accent);color:#fff;border:none;
   border-radius:8px;padding:8px 16px;font-size:calc(12.5px * var(--fs-scale));
   font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s;
 }
@@ -536,8 +534,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 }
 .prog-time-total{
   font-size:calc(36px * var(--fs-scale));font-weight:900;
-  background:linear-gradient(135deg,var(--accent),var(--green));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  color:var(--text);
   line-height:1.1;
 }
 .prog-time-sub{font-size:calc(12px * var(--fs-scale));color:var(--muted);margin-top:2px;margin-bottom:10px;}
@@ -563,14 +560,14 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 
 /* ── IPA (FONETİK) GÖSTERGE ────────────────────────────────────────────── */
 .ipabtn{background:none;border:none;color:var(--muted);cursor:pointer;padding:3px 5px;border-radius:6px;font-size:calc(13px * var(--fs-scale));opacity:.3;flex-shrink:0;transition:opacity .15s,color .15s,background .15s;}
-.ipabtn:hover{opacity:1;color:var(--accent2);background:rgba(124,92,252,.1);}
-.ipabtn.active{opacity:1;color:var(--accent2);background:rgba(124,92,252,.15);}
+.ipabtn:hover{opacity:1;color:var(--accent);background:rgba(62,166,255,.1);}
+.ipabtn.active{opacity:1;color:var(--accent);background:rgba(62,166,255,.15);}
 .ipa-line{
   font-family:"Charis SIL","Doulos SIL","Gentium Plus","DejaVu Sans",serif;
   font-size:calc(12.5px * var(--fs-scale));
-  color:var(--accent2);
-  background:rgba(124,92,252,.07);
-  border-left:2px solid rgba(124,92,252,.35);
+  color:var(--text);
+  background:rgba(62,166,255,.07);
+  border-left:2px solid rgba(62,166,255,.4);
   padding:0 9px;margin-top:0;border-radius:0 6px 6px 0;
   line-height:1.5;letter-spacing:.2px;
   max-height:0;overflow:hidden;opacity:0;
@@ -771,6 +768,31 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   [12] ERİŞİLEBİLİRLİK & DOKUNMA HEDEFLERİ (DESIGN.md kurallarına göre)
+   ══════════════════════════════════════════════════════════════════════ */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px;}
+input[type=search]:focus-visible,select:focus-visible{outline-offset:1px;}
+
+/* Hollandaca cümleler: uzun bileşik kelimeler satırı taşırmasın */
+[lang="nl"]{hyphens:auto;overflow-wrap:anywhere;}
+
+/* Satır ikonları: min 40px dokunma alanı, görünür başlangıç opaklığı */
+.cbtn,.tbtn2,.spkbtn,.trbtn,.ipabtn{
+  min-width:40px;min-height:40px;padding:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  opacity:.6;
+}
+.trbtn{font-size:calc(11px * var(--fs-scale));font-weight:800;letter-spacing:.4px;color:var(--muted);}
+.trbtn:hover{color:var(--text);}
+
+/* Öncelik noktaları: 14px görsel nokta, 28px dokunma alanı; seçiliyken büyür */
+.pw{gap:0;}
+.pd{width:28px;height:28px;padding:7px;border:none;opacity:.35;}
+.pd.r,.pd.y,.pd.g{background-clip:content-box;}
+.pd:hover{opacity:.8;transform:none;}
+.pd.on{opacity:1;padding:5px;}
+
 </style>
 </head>
 <body>
@@ -931,7 +953,7 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
       <button class="lp-close" onclick="stopListenMode()">✕</button>
       <div class="lp-progress" id="lp-progress">1 / 20</div>
       <div class="lp-lesson" id="lp-lesson"></div>
-      <div class="lp-nl" id="lp-nl">…</div>
+      <div class="lp-nl" id="lp-nl" lang="nl">…</div>
       <div class="lp-tr" id="lp-tr"></div>
       <div class="lp-wave" id="lp-wave">
         <div class="lp-wave-bar"></div>
@@ -1838,12 +1860,13 @@ function renderStudy(){
       contD.className='sc2';  // renamed to avoid clash
       var nlD=document.createElement('div');
       nlD.className='snl';
+      nlD.lang='nl';
       nlD.textContent=r.s.nl;
       contD.appendChild(nlD);
       if(r.s.tr){
         var trD=document.createElement('div');
         trD.className='str';
-        trD.textContent='🇹🇷 '+r.s.tr;
+        trD.textContent=r.s.tr;
         contD.appendChild(trD);
       }
 
@@ -1879,7 +1902,7 @@ function renderStudy(){
       var trbtn=document.createElement('button');
       trbtn.className='trbtn'; trbtn.type='button';
       trbtn.title='Türkçeye çevir';
-      trbtn.textContent='🇹🇷';
+      trbtn.textContent='TR';
       (function(nlText, trText, btn){
         btn.addEventListener('click',function(e){
           e.stopPropagation();
@@ -2063,8 +2086,8 @@ function renderLearned(){
     var inner=document.createElement('div');
     inner.innerHTML=
       '<div class="lc-les">'+info.lesson.section+' · '+info.lesson.title+'</div>'+
-      '<div class="lc-nl">'+info.nl+'</div>'+
-      (info.tr?'<div class="lc-tr">🇹🇷 '+info.tr+'</div>':'')+
+      '<div class="lc-nl" lang="nl">'+info.nl+'</div>'+
+      (info.tr?'<div class="lc-tr">'+info.tr+'</div>':'')+
       prioH+badgeH;
 
     // IPA satırı
@@ -2167,8 +2190,8 @@ function renderRepeat(){
     var bodyD=document.createElement('div');
     bodyD.className='rb';
     bodyD.innerHTML=
-      '<div class="rnl">'+info.nl+'</div>'+
-      (info.tr?'<div class="rtr">🇹🇷 '+info.tr+'</div>':'')+
+      '<div class="rnl" lang="nl">'+info.nl+'</div>'+
+      (info.tr?'<div class="rtr">'+info.tr+'</div>':'')+
       '<div class="rles">'+info.lesson.section+' · '+info.lesson.title+'</div>';
 
     // TTS butonu — body'nin altına
@@ -2185,7 +2208,7 @@ function renderRepeat(){
     rTrBtn.className='trbtn';
     rTrBtn.style.cssText='margin-top:4px;margin-left:4px;';
     rTrBtn.title='Türkçeye çevir';
-    rTrBtn.textContent='🇹🇷';
+    rTrBtn.textContent='TR';
     (function(nlText,trText,btn){ btn.addEventListener('click',function(e){ e.stopPropagation(); showTranslation(nlText,trText,btn); }); })(info.nl, info.tr||'', rTrBtn);
     bodyD.appendChild(rTrBtn);
 
@@ -2272,8 +2295,8 @@ function renderPerm(){
     card.className='pc';
     card.innerHTML=
       '<div class="pc-les">'+info.lesson.section+' · '+info.lesson.title+'</div>'+
-      '<div class="pc-nl">'+info.nl+'</div>'+
-      (info.tr?'<div class="pc-tr">🇹🇷 '+info.tr+'</div>':'');
+      '<div class="pc-nl" lang="nl">'+info.nl+'</div>'+
+      (info.tr?'<div class="pc-tr">'+info.tr+'</div>':'');
 
     var rb=document.createElement('button');
     rb.className='icnbtn back';
@@ -2446,8 +2469,14 @@ function setTheme(theme){
   updateThemeButtons();
 }
 
+function currentTheme(){
+  var saved = localStorage.getItem('gb3-theme');
+  if(saved) return saved;
+  return (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+}
+
 function updateThemeButtons(){
-  var theme = localStorage.getItem('gb3-theme') || 'dark';
+  var theme = currentTheme();
   var darkBtn = document.getElementById('theme-dark-btn');
   var lightBtn = document.getElementById('theme-light-btn');
   if(darkBtn) darkBtn.classList.toggle('active', theme==='dark');
@@ -2468,8 +2497,7 @@ function updateFontSizeButtons(){
 }
 
 function loadAppearancePrefs(){
-  var theme = localStorage.getItem('gb3-theme') || 'dark';
-  if(theme==='light') document.documentElement.setAttribute('data-theme','light');
+  if(currentTheme()==='light') document.documentElement.setAttribute('data-theme','light');
   var scale = localStorage.getItem('gb3-fontscale');
   if(scale) document.documentElement.style.setProperty('--fs-scale', scale);
 }
@@ -2588,8 +2616,7 @@ var currentSpkBtn = null;
 var currentAudio = null;
 var ttsSupported = 'speechSynthesis' in window;
 
-// ── ÇEVİRİ (DeepL) ────────────────────────────────────────────────────────
-var DEEPL_KEY = 'd5c71335-02bb-4284-8c0d-7aa1aea0dc57:fx';
+// ── ÇEVİRİ (Google Translate) ─────────────────────────────────────────────
 var trPopup = null;
 var trCache = {}; // tekrar çeviri yapmamak için önbellek
 
@@ -2610,17 +2637,16 @@ function showTranslation(nlText, existingTr, btn){
 
   // Önbellekte varsa göster
   if(trCache[nlText]){
-    showTrPopup(nlText, trCache[nlText], 'DeepL çevirisi');
+    showTrPopup(nlText, trCache[nlText], 'Google çevirisi');
     return;
   }
 
-  // Google Translate — direkt çağır
   btn.classList.add('loading');
   btn.textContent = '⏳';
-  fetchMyMemory(nlText, btn);
+  fetchGoogleTranslate(nlText, btn);
 }
 
-function fetchMyMemory(nlText, btn){
+function fetchGoogleTranslate(nlText, btn){
   btn.classList.add('loading');
   // Google Translate informal endpoint — CORS'suz çalışır
   var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=nl&tl=tr&dt=t&q=' + encodeURIComponent(nlText);
@@ -2628,7 +2654,7 @@ function fetchMyMemory(nlText, btn){
   .then(function(res){ return res.json(); })
   .then(function(data){
     btn.classList.remove('loading');
-    btn.textContent = '🇹🇷';
+    btn.textContent = 'TR';
     // Google'ın yanıtı: [[["çeviri","original",null,null,10],...],...]
     var tr = null;
     if(data && data[0]){
@@ -2643,7 +2669,7 @@ function fetchMyMemory(nlText, btn){
   })
   .catch(function(){
     btn.classList.remove('loading');
-    btn.textContent = '🇹🇷';
+    btn.textContent = 'TR';
     showTrPopup(nlText, '⚠️ İnternet bağlantısı gerekiyor', '');
   });
 }
@@ -2654,8 +2680,8 @@ function showTrPopup(nlText, trText, source){
   popup.className = 'tr-popup';
   popup.innerHTML =
     '<button class="tr-popup-close" onclick="this.parentElement.remove()">✕</button>' +
-    '<div class="tr-popup-nl">🇳🇱 ' + nlText + '</div>' +
-    '<div class="tr-popup-tr">🇹🇷 ' + trText + '</div>' +
+    '<div class="tr-popup-nl" lang="nl">' + nlText + '</div>' +
+    '<div class="tr-popup-tr">' + trText + '</div>' +
     '';
   document.body.appendChild(popup);
   trPopup = popup;
@@ -2667,9 +2693,6 @@ function showTrPopup(nlText, trText, source){
 // ── EDGE TTS (birincil ses kaynağı — Cloudflare Worker üzerinden) ─────────
 var EDGE_TTS_URL = 'https://goed-bezig-tts.nlyasineroglu.workers.dev/tts';
 var EDGE_TTS_VOICE = 'nl-NL-ColetteNeural';
-
-var EL_KEY = 'sk_626b03141704c82026b0d05e1d8419eb91b6080c4412f91f';
-var EL_VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb'; // George — ElevenLabs varsayılan, ücretsiz hesapta çalışır (2. yedek)
 
 function speakNL(text, btn){
   if(currentSpkBtn === btn){
@@ -2705,58 +2728,12 @@ function speakNL(text, btn){
       btn.classList.remove('playing');
       if(currentSpkBtn===btn) currentSpkBtn=null;
       currentAudio = null;
-      speakNLElevenLabs(text, btn);
-    };
-    audio.play();
-  })
-  .catch(function(err){
-    console.warn('Edge TTS başarısız, ElevenLabs deneniyor:', err);
-    speakNLElevenLabs(text, btn);
-  });
-}
-
-// 2. yedek — ElevenLabs
-function speakNLElevenLabs(text, btn){
-  fetch('https://api.elevenlabs.io/v1/text-to-speech/' + EL_VOICE_ID, {
-    method: 'POST',
-    headers: {
-      'xi-api-key': EL_KEY,
-      'Content-Type': 'application/json',
-      'Accept': 'audio/mpeg'
-    },
-    body: JSON.stringify({
-      text: text,
-      model_id: 'eleven_multilingual_v2',
-      voice_settings: { stability: 0.5, similarity_boost: 0.75, speed: 0.9 }
-    })
-  })
-  .then(function(res){
-    if(!res.ok) throw new Error('ElevenLabs ' + res.status);
-    return res.arrayBuffer();
-  })
-  .then(function(buffer){
-    var blob = new Blob([buffer], {type:'audio/mpeg'});
-    var url = URL.createObjectURL(blob);
-    var audio = new Audio(url);
-    currentAudio = audio;
-    btn.classList.add('playing');
-    currentSpkBtn = btn;
-    audio.onended = function(){
-      btn.classList.remove('playing');
-      if(currentSpkBtn===btn) currentSpkBtn=null;
-      URL.revokeObjectURL(url);
-      currentAudio = null;
-    };
-    audio.onerror = function(){
-      btn.classList.remove('playing');
-      if(currentSpkBtn===btn) currentSpkBtn=null;
-      currentAudio = null;
       speakNLFallback(text, btn);
     };
     audio.play();
   })
   .catch(function(err){
-    console.warn('ElevenLabs de başarısız, Web Speech kullanılıyor:', err);
+    console.warn('Edge TTS başarısız, tarayıcı sesi kullanılıyor:', err);
     btn.classList.remove('playing');
     if(currentSpkBtn===btn) currentSpkBtn=null;
     speakNLFallback(text, btn);
@@ -3031,19 +3008,6 @@ function fetchEdgeTTSBlobUrl(text, voice, rate){
   });
 }
 
-function fetchElevenLabsBlobUrl(text, speedMultiplier){
-  return fetchWithTimeout('https://api.elevenlabs.io/v1/text-to-speech/' + EL_VOICE_ID, {
-    method:'POST',
-    headers:{'xi-api-key':EL_KEY,'Content-Type':'application/json','Accept':'audio/mpeg'},
-    body: JSON.stringify({text:text, model_id:'eleven_multilingual_v2', voice_settings:{stability:0.5, similarity_boost:0.75, speed: speedMultiplier||0.9}})
-  }, 12000).then(function(res){
-    if(!res.ok) throw new Error('elevenlabs '+res.status);
-    return res.arrayBuffer();
-  }).then(function(buf){
-    return URL.createObjectURL(new Blob([buf], {type:'audio/mpeg'}));
-  });
-}
-
 function speakWebSpeechPromise(text, lang, speedMultiplier){
   return new Promise(function(resolve, reject){
     if(!('speechSynthesis' in window)){ reject(new Error('no speech synthesis')); return; }
@@ -3067,14 +3031,11 @@ function speedToEdgeRate(speedMultiplier){
   return (pct>=0?'+':'') + pct + '%';
 }
 
-// Sırayla Edge TTS → ElevenLabs → Web Speech dener
+// Sırayla Edge TTS → Web Speech dener
 function speakQueued(text, lang, edgeVoice, speedMultiplier){
   var edgeRate = speedToEdgeRate(speedMultiplier);
   return fetchEdgeTTSBlobUrl(text, edgeVoice, edgeRate)
     .then(playAudioBlobUrl)
-    .catch(function(){
-      return fetchElevenLabsBlobUrl(text, speedMultiplier).then(playAudioBlobUrl);
-    })
     .catch(function(){
       return speakWebSpeechPromise(text, lang, speedMultiplier);
     });
