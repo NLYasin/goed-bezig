@@ -66,7 +66,12 @@ Her ekran dört durumu tasarlar: yükleniyor, boş, hata, dolu.
 
 ## 7. İkon ve görsel
 
-- Emoji, kavramı tek bakışta anlatıyorsa kabul (🔊, 🗑, 🔥). Platforma göre bozulan emojiler (bayraklar, bazı renkli semboller) kullanılmaz.
+- Arayüz ikonları Tabler set'inden (MIT), `currentColor` ile temaya uyar. İki kullanım biçimi var, ikisi de `index.html` içinde, harici dosya yok:
+  - **Inline SVG sprite** (`<svg class="ic"><use href="#i-book"/></svg>`, JS'te `ic('book')`): sekmeler, başlıklar, rozetler gibi sayfada az sayıda görünen yerler.
+  - **CSS mask** (`class="ib ib-volume"`): 2400+ cümle satırında tekrar eden düğmeler (ses, IPA, ✓, çöp, geri al, kapat). Satır başına DOM düğümü eklemez; 10 bin inline SVG sayfayı yavaşlatır, bu yüzden liste içinde inline SVG kullanılmaz.
+- Yeni ikon eklerken: sprite'a `<symbol id="i-ad">` ekle; liste satırında kullanılacaksa `.ib-ad{--ib:url("data:image/svg+xml;utf8,…")}` kuralı ekle.
+- Emoji yalnızca duygu/kutlama anlarında kalır: 🔥 seri alevi, 🎉 kutlama, 🚶🏃🏁 hedef yolculuğu, rozet adları. Platforma göre bozulan emojiler (bayraklar) hiç kullanılmaz.
+- Uygulama ikonu: düz `#0E7FD4` zemin, beyaz kart, mavi tik, altta Hollanda bayrağı bantları. Gradyan yok. `icon-*.png` (any), `icon-maskable-*.png` (%80 güvenli alan), `favicon-16/32.png` (tiksiz sade sürüm). Üretici betik: PowerShell + System.Drawing; yeniden üretmek için tek renk/şekil değişikliği yeterli.
 - Egzersiz ekranlarında fotoğraf/illüstrasyon yok; dikkat cümlede kalır.
 - Süs çizgiler, dekoratif noktalar, numaralı "01/02" başlıklar yok. Numara yalnızca gerçek ders/cümle sırasını gösterir.
 

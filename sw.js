@@ -3,10 +3,14 @@
 // başarısız olursa (çevrimdışıysa) cache'den verir. Böylece ders/cümle
 // güncellemeleri her zaman en güncel haliyle gelir, eski cache asılı kalmaz.
 
-const CACHE_NAME = 'goed-bezig-v13'; // her güncellemede bu numarayı artır
+const CACHE_NAME = 'goed-bezig-v14'; // her güncellemede bu numarayı artır
 const ASSETS = [
   './index.html',
   './manifest.json',
+  './favicon-16.png',
+  './favicon-32.png',
+  './icon-maskable-192.png',
+  './icon-maskable-512.png',
   './icon-72.png',
   './icon-96.png',
   './icon-128.png',
