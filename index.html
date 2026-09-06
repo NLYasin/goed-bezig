@@ -587,16 +587,18 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   from{opacity:0;transform:translateY(10px) scale(.985);}
   to{opacity:1;transform:translateY(0) scale(1);}
 }
-.lc, .pc, .rc{animation:card-in .28s cubic-bezier(.22,.9,.3,1) both;}
-/* Sırayla süzülerek gelsin (ilk 12 kart) */
-.cgrid > *:nth-child(1),.pgrid > *:nth-child(1){animation-delay:.00s}
-.cgrid > *:nth-child(2),.pgrid > *:nth-child(2){animation-delay:.03s}
-.cgrid > *:nth-child(3),.pgrid > *:nth-child(3){animation-delay:.06s}
-.cgrid > *:nth-child(4),.pgrid > *:nth-child(4){animation-delay:.09s}
-.cgrid > *:nth-child(5),.pgrid > *:nth-child(5){animation-delay:.12s}
-.cgrid > *:nth-child(6),.pgrid > *:nth-child(6){animation-delay:.15s}
-.cgrid > *:nth-child(7),.pgrid > *:nth-child(7){animation-delay:.18s}
-.cgrid > *:nth-child(8),.pgrid > *:nth-child(8){animation-delay:.21s}
+/* Giriş animasyonu YALNIZCA sekmeye ilk girişte; veri güncellemesinde değil
+   (her ✓ sonrası tüm listenin yeniden süzülmesi "sayfa yenilendi" hissi veriyordu) */
+.anim .lc, .anim .pc, .anim .rc{animation:card-in .28s cubic-bezier(.22,.9,.3,1) both;}
+/* Sırayla süzülerek gelsin (ilk 8 kart) */
+.anim .cgrid > *:nth-child(1),.anim .pgrid > *:nth-child(1){animation-delay:.00s}
+.anim .cgrid > *:nth-child(2),.anim .pgrid > *:nth-child(2){animation-delay:.03s}
+.anim .cgrid > *:nth-child(3),.anim .pgrid > *:nth-child(3){animation-delay:.06s}
+.anim .cgrid > *:nth-child(4),.anim .pgrid > *:nth-child(4){animation-delay:.09s}
+.anim .cgrid > *:nth-child(5),.anim .pgrid > *:nth-child(5){animation-delay:.12s}
+.anim .cgrid > *:nth-child(6),.anim .pgrid > *:nth-child(6){animation-delay:.15s}
+.anim .cgrid > *:nth-child(7),.anim .pgrid > *:nth-child(7){animation-delay:.18s}
+.anim .cgrid > *:nth-child(8),.anim .pgrid > *:nth-child(8){animation-delay:.21s}
 
 .sr{transition:background .15s, transform .12s;}
 .sr:active{transform:scale(.995);}
@@ -743,6 +745,13 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 }
 .sr.learned-out{animation:learned-flash .42s ease forwards;pointer-events:none;}
 
+/* Tekrar kartı "Tamamlandı" geri bildirimi — kart yeşil parlayıp kayarak çıkar */
+@keyframes rep-done-out{
+  0%{background:rgba(52,201,139,.30);transform:translateX(0);opacity:1;}
+  100%{background:rgba(52,201,139,0);transform:translateX(28px);opacity:0;}
+}
+.rc.rep-done{animation:rep-done-out .42s ease forwards;pointer-events:none;}
+
 /* [9] KONFETİ — kutlama anında ekrandan düşen parçacıklar */
 .confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden;}
 .confetti-piece{
@@ -817,6 +826,24 @@ input[type=search]:focus-visible,select:focus-visible{outline-offset:1px;}
 .ptitle .ic,.prog-card-title .ic,.setting-title .ic,.listen-config-title .ic,.lc-label .ic,.rsh .ic{margin-right:4px;}
 .lc-badge .ic,.rwhen .ic,.rdbtn .ic,.rstep .ic{width:13px;height:13px;}
 .c-red{color:var(--red);} .c-yellow{color:var(--yellow);} .c-green{color:var(--green);} .c-accent{color:var(--accent);}
+
+/* [14] GÜNLÜK HATIRLATMA PANELİ */
+.notif-field{display:flex;align-items:center;gap:12px;margin-top:14px;}
+.notif-label{font-size:calc(12px * var(--fs-scale));color:var(--muted);font-weight:600;}
+#notif-time{
+  background:var(--card);border:1px solid var(--border);color:var(--text);
+  border-radius:9px;padding:9px 12px;font-size:calc(15px * var(--fs-scale));
+  font-family:inherit;min-height:44px;
+}
+#notif-time:focus-visible{border-color:var(--accent);}
+.notif-status{
+  margin-top:12px;font-size:calc(12.5px * var(--fs-scale));line-height:1.5;
+  padding:10px 12px;border-radius:9px;
+  background:var(--tag);border:1px solid var(--border);color:var(--muted);
+}
+.notif-status.ok{background:rgba(52,201,139,.1);border-color:rgba(52,201,139,.3);color:var(--green);}
+.notif-status.warn{background:rgba(240,180,41,.1);border-color:rgba(240,180,41,.3);color:var(--yellow);}
+.notif-status.err{background:rgba(224,92,92,.1);border-color:rgba(224,92,92,.3);color:var(--red);}
 
 /* Günlük hedef düğmeleri (İlerleme + Ayarlar) */
 .goal-toggle{display:flex;gap:8px;flex-wrap:wrap;}
@@ -1205,6 +1232,32 @@ input[type=search]:focus-visible,select:focus-visible{outline-offset:1px;}
     </div>
 
     <div class="setting-card">
+      <div class="setting-title"><svg class="ic"><use href="#i-bell"/></svg>Günlük Hatırlatma</div>
+      <div class="setting-desc">Belirlediğin saatte "çalışma vakti" bildirimi gönderir.</div>
+
+      <div class="theme-toggle" id="notif-toggle">
+        <button class="theme-btn" id="notif-off-btn" onclick="setReminderEnabled(false)">Kapalı</button>
+        <button class="theme-btn" id="notif-on-btn" onclick="setReminderEnabled(true)">Açık</button>
+      </div>
+
+      <div id="notif-body" style="display:none">
+        <div class="notif-field">
+          <label class="notif-label" for="notif-time">Saat</label>
+          <input type="time" id="notif-time" value="19:00" onchange="setReminderTime(this.value)">
+        </div>
+
+        <div class="notif-label" style="margin-top:14px">Ne zaman hatırlatılsın?</div>
+        <div class="theme-toggle" style="margin-top:6px">
+          <button class="theme-btn" id="notif-mode-idle" onclick="setReminderMode('idle')">Çalışmadıysam</button>
+          <button class="theme-btn" id="notif-mode-always" onclick="setReminderMode('always')">Her gün</button>
+        </div>
+
+        <button class="btn btn-ghost" style="margin-top:14px" onclick="testReminder()"><svg class="ic"><use href="#i-bell"/></svg>Test bildirimi gönder</button>
+        <div class="notif-status" id="notif-status"></div>
+      </div>
+    </div>
+
+    <div class="setting-card">
       <div class="setting-title"><svg class="ic"><use href="#i-upload"/></svg>Dışa Aktar (Yedek Al)</div>
       <div class="setting-desc">Tüm ezber, tekrar, öncelik ve silinen verilerini bir dosyaya kaydeder. Bu dosyayı kendine mail atabilir, Drive'a yükleyebilir veya başka bir cihazda içe aktarabilirsin.</div>
       <button class="btn btn-primary" onclick="exportData()"><svg class="ic"><use href="#i-download"/></svg>Yedek Dosyası İndir</button>
@@ -1508,6 +1561,7 @@ function dueCount(){
 
 // ── TABS ──────────────────────────────────────────────────────────────────
 function switchTab(tab){
+  var changed = (curTab !== tab);
   curTab=tab;
   ['study','learned','repeat','perm','settings','progress'].forEach(function(t){
     var btn=document.getElementById('tb-'+t);
@@ -1515,6 +1569,8 @@ function switchTab(tab){
     if(btn) btn.classList.toggle('active',t===tab);
     if(pan) pan.classList.toggle('show',t===tab);
   });
+  // Kart giriş animasyonu yalnızca sekme değişiminde oynasın
+  document.body.classList.toggle('anim', changed);
   if(tab==='study')    renderStudy();
   if(tab==='learned')  renderLearned();
   if(tab==='repeat')   renderRepeat();
@@ -1646,6 +1702,8 @@ function logActivity(){
   activityLog = dayLog;
   todayLearned = getMergedCount(key);
   saveActivityData();
+  // Service Worker "bugün çalışıldı" bilgisini buradan öğreniyor
+  try{ syncReminderToSW(); }catch(e){}
 }
 
 // ── OTURUM SÜRESİ TAKİBİ ─────────────────────────────────────────────────
@@ -2046,7 +2104,26 @@ function renderStudy(){
     cont.appendChild(block);
   });
 
-  // Stats — global olarak sakla, renderStatsCard ve renderSettings de kullansın
+  updateHeaderStats();
+}
+
+// Üst sayaçlar + rozet + banner. Liste DOM'unu kurmadan çalışır, böylece
+// ezber listesi görünür değilken 2400+ satırı yeniden kurmaya gerek kalmaz.
+function updateHeaderStats(){
+  var fLesson = document.getElementById('lsel').value;
+  var total=0, remain=0;
+
+  lessons.forEach(function(lesson){
+    if(fLesson!=='all' && lesson.id.toString()!==fLesson) return;
+    lesson.sentences.forEach(function(s, idx){
+      var key = lesson.id+'-'+idx;
+      if(permDel.has(key) || trulyDeleted.has(key)) return;
+      total++;
+      if(!learned.has(key)) remain++;
+    });
+  });
+
+  // renderStatsCard ve renderSettings de bu değerleri kullanıyor
   window._statsTotal = total;
   window._statsRemain = remain;
   window._statsLearned = learned.size;
@@ -2069,6 +2146,20 @@ function renderStudy(){
     banner.classList.remove('show');
     document.getElementById('tbg-repeat').textContent=learned.size;
   }
+}
+
+// Ezber listesi görünürse tam render, değilse sadece sayaçlar.
+// Görünmeyen sekmeyi yeniden kurmak hem yavaş hem de kaydırma konumunu bozuyordu.
+function refreshStudyIfVisible(){
+  if(curTab==='study') renderStudy();
+  else updateHeaderStats();
+}
+
+// Yeniden render sırasında sayfanın zıplamasını engeller
+function keepScroll(fn){
+  var y = window.scrollY;
+  fn();
+  if(window.scrollY !== y) window.scrollTo(0, y);
 }
 
 // ── RENDER LEARNED ────────────────────────────────────────────────────────
@@ -2313,7 +2404,7 @@ function renderRepeat(){
       var doneBtn=document.createElement('button');
       doneBtn.className='rdbtn';
       doneBtn.innerHTML=ic('check')+' Tamamlandı';
-      doneBtn.addEventListener('click',function(){ markRepDone(key); });
+      doneBtn.addEventListener('click',function(){ markRepDone(key, doneBtn); });
       metaD.appendChild(doneBtn);
     } else if(rs.status==='cm'){
       var fullD=document.createElement('div');
@@ -2409,9 +2500,9 @@ function markLearned(key, nlText){
 
   if(row){
     row.classList.add('learned-out');
-    setTimeout(renderStudy, 400);
+    setTimeout(function(){ keepScroll(renderStudy); }, 400);
   } else {
-    renderStudy();
+    keepScroll(renderStudy);
   }
 }
 
@@ -2431,9 +2522,11 @@ function doPerm(key){
   delete prios[key];
   delete repData[key];
   save();
-  renderStudy();
-  if(curTab==='learned') renderLearned();
-  if(curTab==='perm') renderPerm();
+  keepScroll(function(){
+    refreshStudyIfVisible();
+    if(curTab==='learned') renderLearned();
+    if(curTab==='perm') renderPerm();
+  });
 }
 
 function restorePerm(key){
@@ -2476,6 +2569,7 @@ function renderSettings(){
   try{ updateGoalButtons(); }catch(e){}
   try{ updateThemeButtons(); }catch(e){}
   try{ updateFontSizeButtons(); }catch(e){}
+  try{ renderReminderUI(); }catch(e){}
   try{ renderStatsCard(); }catch(e){}
 
   try{
@@ -2662,19 +2756,35 @@ function resetAllData(){
   alert('Tüm veriler sıfırlandı.');
 }
 
-function markRepDone(key){
+function markRepDone(key, btnEl){
   initRep(key);
   repData[key].steps.push(new Date().toISOString());
   save();
-  renderRepeat();
-  if(curTab==='learned') renderLearned();
-  renderStudy();
+  if(navigator.vibrate){ try{ navigator.vibrate(18); }catch(e){} }
+
+  // Kart yerinde yeşil parlayıp kayarak çıksın; liste ancak ondan sonra
+  // ve kaydırma konumu korunarak yenilensin
+  var card = btnEl ? btnEl.closest('.rc') : null;
+  if(card){
+    card.classList.add('rep-done');
+    setTimeout(function(){ refreshAfterRepeat(); }, 420);
+  } else {
+    refreshAfterRepeat();
+  }
+}
+
+function refreshAfterRepeat(){
+  keepScroll(function(){
+    renderRepeat();
+    if(curTab==='learned') renderLearned();
+    refreshStudyIfVisible();
+  });
 }
 
 function setPrio(key,color){
   if(prios[key]===color) delete prios[key]; else prios[key]=color;
   save();
-  renderStudy();
+  keepScroll(renderStudy);
 }
 
 // ── LESSON TOGGLE ─────────────────────────────────────────────────────────
@@ -3025,34 +3135,118 @@ function updateListenCountPreview(){
 }
 
 // ── SES ÇALMA (Promise tabanlı, buton bağımsız) ──────────────────────────
+// Arka planda ses için kritik: HER cümlede yeni Audio yaratılmaz. Tarayıcılar
+// sayfa arka plandayken YENİ bir media elemanının play() çağrısını sessizce
+// reddediyor; bu yüzden kuyruk ilerliyor ama ses gelmiyordu. Kullanıcının
+// "Başlat" dokunuşuyla bir kez oluşturulan tek eleman yeniden kullanılır.
+var listenAudioEl = null;
+var SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAiBUAAIgVAAABAAgAZGF0YQAAAAA=';
+
+function ensureListenAudio(){
+  if(listenAudioEl) return listenAudioEl;
+  var a = new Audio();
+  a.playsInline = true;
+  a.setAttribute('playsinline','');
+  a.preload = 'auto';
+  listenAudioEl = a;
+  listenCurAudio = a;
+  return a;
+}
+
+// Kullanıcı hareketi içinde çağrılır: sessiz bir ses çalarak elemanın
+// oynatma kilidini açar (iOS/Android bunu şart koşuyor)
+function unlockListenAudio(){
+  var a = ensureListenAudio();
+  try{
+    a.src = SILENT_WAV;
+    a.load();
+    var p = a.play();
+    if(p && p.catch) p.catch(function(){});
+  }catch(e){}
+}
+
 function playAudioBlobUrl(url){
   return new Promise(function(resolve, reject){
-    var a = new Audio(url);
-    a.playsInline = true; // iOS'ta arka planda/sessiz modda takılmayı azaltır
+    var a = ensureListenAudio();
     listenCurAudio = a;
     var settled = false;
 
-    // Güvenlik: ses bir şekilde bitmez/hata vermezse (iOS'ta ara sıra oluyor)
-    // 20 saniye sonra zorla ilerlet, kuyruk sonsuza kadar donmasın
-    var timeoutId = setTimeout(function(){
-      if(settled) return;
-      settled = true;
-      try{ a.pause(); }catch(e){}
-      URL.revokeObjectURL(url);
-      reject(new Error('audio timeout — muhtemelen iOS oynatma sorunu'));
-    }, 20000);
+    // Güvenlik: ses bir şekilde bitmez/hata vermezse 20 sn sonra bırak
+    var timeoutId = setTimeout(function(){ finish(reject, new Error('audio timeout')); }, 20000);
 
+    function cleanup(){
+      a.onended = null; a.onerror = null;
+      clearTimeout(timeoutId);
+      URL.revokeObjectURL(url);
+    }
     function finish(fn, arg){
       if(settled) return;
       settled = true;
-      clearTimeout(timeoutId);
-      URL.revokeObjectURL(url);
+      cleanup();
       fn(arg);
     }
 
     a.onended = function(){ finish(resolve); };
     a.onerror = function(){ finish(reject, new Error('audio play error')); };
-    a.play().catch(function(err){ finish(reject, err); });
+
+    try{
+      a.src = url;
+      a.load();
+    }catch(e){ finish(reject, e); return; }
+
+    var p = a.play();
+    if(p && p.catch) p.catch(function(err){ finish(reject, err); });
+  });
+}
+
+// ── MEDIA SESSION — kilit ekranı kontrolü + arka planda oynatmayı canlı tutar
+function updateMediaSession(info){
+  if(!('mediaSession' in navigator)) return;
+  try{
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: info.nl,
+      artist: info.tr || 'Goed Bezig',
+      album: info.lesson.section + ' · ' + info.lesson.title,
+      artwork: [
+        { src:'icon-192.png', sizes:'192x192', type:'image/png' },
+        { src:'icon-512.png', sizes:'512x512', type:'image/png' }
+      ]
+    });
+    navigator.mediaSession.playbackState = listenPaused ? 'paused' : 'playing';
+  }catch(e){}
+}
+
+function initMediaSessionHandlers(){
+  if(!('mediaSession' in navigator)) return;
+  var set = function(action, fn){
+    try{ navigator.mediaSession.setActionHandler(action, fn); }catch(e){}
+  };
+  set('play',          function(){ if(listenPaused) listenTogglePause(); });
+  set('pause',         function(){ if(!listenPaused) listenTogglePause(); });
+  set('nexttrack',     function(){ listenNext(); });
+  set('previoustrack', function(){ listenPrev(); });
+  set('stop',          function(){ stopListenMode(); });
+}
+
+function clearMediaSession(){
+  if(!('mediaSession' in navigator)) return;
+  try{
+    navigator.mediaSession.playbackState = 'none';
+    navigator.mediaSession.metadata = null;
+  }catch(e){}
+}
+
+// Sayfa arka plandayken tarayıcı sesi (speechSynthesis) çalışmaz. Sessizce
+// ilerleyip cümleleri "dinlenmiş" saymak yerine, öne dönene kadar bekle.
+function waitUntilVisible(token){
+  return new Promise(function(resolve){
+    if(!document.hidden) return resolve();
+    var iv = setInterval(function(){
+      if(!document.hidden || token !== listenRunToken){
+        clearInterval(iv);
+        resolve();
+      }
+    }, 400);
   });
 }
 
@@ -3098,13 +3292,18 @@ function speedToEdgeRate(speedMultiplier){
   return (pct>=0?'+':'') + pct + '%';
 }
 
-// Sırayla Edge TTS → Web Speech dener
+// Sırayla Edge TTS → Web Speech dener. Ses gerçekten çaldıysa true döner.
 function speakQueued(text, lang, edgeVoice, speedMultiplier){
   var edgeRate = speedToEdgeRate(speedMultiplier);
   return fetchEdgeTTSBlobUrl(text, edgeVoice, edgeRate)
     .then(playAudioBlobUrl)
+    .then(function(){ return true; })
     .catch(function(){
-      return speakWebSpeechPromise(text, lang, speedMultiplier);
+      // Web Speech arka planda sessizdir — oraya düşmek yerine başarısız say
+      if(document.hidden) return false;
+      return speakWebSpeechPromise(text, lang, speedMultiplier)
+        .then(function(){ return true; })
+        .catch(function(){ return false; });
     });
 }
 
@@ -3121,6 +3320,10 @@ function startListenMode(){
   listenPaused = false;
   listenStopped = false;
   listenRunToken++;
+  // Kullanıcı dokunuşu HÂLÂ geçerliyken ses elemanının kilidini aç —
+  // arka planda oynatmanın devam edebilmesi buna bağlı
+  unlockListenAudio();
+  initMediaSessionHandlers();
   closeListenConfig();
   document.getElementById('listen-player-overlay').classList.add('show');
   document.getElementById('lp-playpause').innerHTML = ic('pause');
@@ -3130,8 +3333,9 @@ function startListenMode(){
 function stopListenMode(){
   listenStopped = true;
   listenRunToken++; // aktif döngüyü geçersiz kıl
-  if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} listenCurAudio=null; }
+  if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
   if('speechSynthesis' in window) speechSynthesis.cancel();
+  clearMediaSession();
   document.getElementById('listen-player-overlay').classList.remove('show');
 }
 
@@ -3140,12 +3344,15 @@ function listenTogglePause(){
   document.getElementById('lp-playpause').innerHTML = listenPaused ? ic('play') : ic('pause');
   if(listenPaused && listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
   else if(!listenPaused && listenCurAudio){ try{ listenCurAudio.play(); }catch(e){} }
+  if('mediaSession' in navigator){
+    try{ navigator.mediaSession.playbackState = listenPaused ? 'paused' : 'playing'; }catch(e){}
+  }
 }
 
 function listenNext(){
   if(listenIndex < listenQueue.length - 1){
     listenIndex++;
-    if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} listenCurAudio=null; }
+    if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
     if('speechSynthesis' in window) speechSynthesis.cancel();
     listenRunToken++;
     runListenLoop(listenRunToken);
@@ -3154,7 +3361,7 @@ function listenNext(){
 function listenPrev(){
   if(listenIndex > 0){
     listenIndex--;
-    if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} listenCurAudio=null; }
+    if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
     if('speechSynthesis' in window) speechSynthesis.cancel();
     listenRunToken++;
     runListenLoop(listenRunToken);
@@ -3204,10 +3411,20 @@ async function runListenLoop(token){
       if(token !== listenRunToken) return;
       while(listenPaused){ await sleep(200); if(token!==listenRunToken) return; }
       updateListenPlayerUI(key, r);
+      updateMediaSession(info);
       setWaveActive(true);
-      try{ await speakQueued(info.nl, 'nl-NL', EDGE_TTS_VOICE, listenSettings.speed); }catch(e){}
+      var played = false;
+      try{ played = await speakQueued(info.nl, 'nl-NL', EDGE_TTS_VOICE, listenSettings.speed); }catch(e){}
       setWaveActive(false);
       if(token !== listenRunToken) return;
+      // Arka planda ses çıkmadıysa kuyruğu sessizce tüketme — öne dönünce
+      // aynı cümleden devam et (yoksa "girince ilerlemiş oluyor" hissi doğuyor)
+      if(!played && document.hidden){
+        await waitUntilVisible(token);
+        if(token !== listenRunToken) return;
+        r--; // aynı tekrarı yeniden dene
+        continue;
+      }
       if(r < listenSettings.repeat-1 && listenSettings.pauseMs>0) await sleep(listenSettings.pauseMs);
     }
     updateListenPlayerUI(key, listenSettings.repeat);
@@ -3620,13 +3837,13 @@ function selectProfile(name){
 }
 
 function renderCurrentTab(){
-  // Her zaman üst sayaçları güncelle (renderStudy bunu içinde yapıyor)
-  renderStudy();
-  // Ayrıca o an açık olan başka bir sekme varsa onu da tazele
-  if(curTab==='learned') renderLearned();
-  else if(curTab==='repeat') renderRepeat();
-  else if(curTab==='perm') renderPerm();
-  else if(curTab==='settings') renderSettings();
+  keepScroll(function(){
+    refreshStudyIfVisible();
+    if(curTab==='learned') renderLearned();
+    else if(curTab==='repeat') renderRepeat();
+    else if(curTab==='perm') renderPerm();
+    else if(curTab==='settings') renderSettings();
+  });
 }
 
 function finishProfileSelection(){
@@ -3639,8 +3856,236 @@ function finishProfileSelection(){
   renderStudy();
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// [14] GÜNLÜK HATIRLATMA BİLDİRİMİ
+// Cihaz ayarıdır (profile bağlı değil). Uygulama kapalıyken bildirim
+// gönderebilmek Periodic Background Sync'e bağlı: yalıtılmış PWA olarak
+// kurulmuş Android/Chrome'da çalışır, iOS Safari'de desteklenmez.
+// ══════════════════════════════════════════════════════════════════════════
+var reminder = { enabled:false, time:'19:00', mode:'idle' };
+var reminderTimer = null;
+
+function loadReminderPrefs(){
+  try{
+    var raw = localStorage.getItem('gb3-reminder');
+    if(raw){
+      var p = JSON.parse(raw);
+      if(p && typeof p === 'object'){
+        if(typeof p.enabled === 'boolean') reminder.enabled = p.enabled;
+        if(typeof p.time === 'string') reminder.time = p.time;
+        if(p.mode === 'idle' || p.mode === 'always') reminder.mode = p.mode;
+      }
+    }
+  }catch(e){}
+}
+
+function saveReminderPrefs(){
+  try{ localStorage.setItem('gb3-reminder', JSON.stringify(reminder)); }catch(e){}
+  syncReminderToSW();
+  scheduleReminderTimer();
+  renderReminderUI();
+}
+
+// Son 10 günün "çalışıldı" tarihleri — Service Worker uyandığında
+// o gün çalışılıp çalışılmadığını buradan anlar
+function recentActiveDates(){
+  var out = [];
+  for(var i=0; i<10; i++){
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    var k = dateKey(d);
+    if(getMergedCount(k) > 0) out.push(k);
+  }
+  return out;
+}
+
+// Service Worker localStorage'a erişemez; ayarları Cache API üzerinden aktarıyoruz
+function syncReminderToSW(){
+  if(!('caches' in window)) return;
+  var payload = {
+    enabled: reminder.enabled,
+    time: reminder.time,
+    mode: reminder.mode,
+    activeDates: reminder.enabled ? recentActiveDates() : [],
+    updatedAt: new Date().toISOString()
+  };
+  caches.open('gb-reminder').then(function(cache){
+    return cache.put('reminder-prefs', new Response(JSON.stringify(payload), {
+      headers: { 'Content-Type': 'application/json' }
+    }));
+  }).catch(function(){});
+}
+
+// serviceWorker.ready, kayıt başarısızsa hiç çözülmez — arayüz sonsuza kadar
+// beklemesin diye zaman aşımıyla sarmalıyoruz
+function swReadyOrNull(ms){
+  if(!('serviceWorker' in navigator)) return Promise.resolve(null);
+  return Promise.race([
+    navigator.serviceWorker.ready.catch(function(){ return null; }),
+    new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, ms || 3000); })
+  ]);
+}
+
+function registerPeriodicSync(){
+  if(!('serviceWorker' in navigator)) return Promise.resolve(false);
+  return swReadyOrNull(3000).then(function(reg){
+    if(!reg) return false;
+    if(!('periodicSync' in reg)) return false;
+    if(!navigator.permissions) return false;
+    return navigator.permissions.query({ name:'periodic-background-sync' })
+      .then(function(status){
+        if(status.state !== 'granted') return false;
+        return reg.periodicSync.register('gb-daily-reminder', {
+          minInterval: 12 * 60 * 60 * 1000
+        }).then(function(){ return true; });
+      });
+  }).catch(function(){ return false; });
+}
+
+function hasPeriodicSync(){
+  return swReadyOrNull(3000).then(function(reg){
+    return !!(reg && 'periodicSync' in reg);
+  });
+}
+
+function fireReminderNotification(body){
+  var opts = {
+    body: body,
+    icon: 'icon-192.png',
+    badge: 'icon-96.png',
+    tag: 'gb-daily-reminder',
+    renotify: true,
+    lang: 'tr',
+    data: { url: './index.html' }
+  };
+  return swReadyOrNull(3000).then(function(reg){
+    if(reg) return reg.showNotification('Goed Bezig', opts);
+    // SW yoksa doğrudan Notification (masaüstü tarayıcılarda çalışır)
+    try{ new Notification('Goed Bezig', opts); }catch(e){}
+  }).catch(function(){
+    try{ new Notification('Goed Bezig', opts); }catch(e){}
+  });
+}
+
+function reminderBodyText(){
+  var due = dueCount();
+  if(due > 0) return due + ' tekrar seni bekliyor. Birkaç dakika ayır!';
+  var done = getMergedCount(dateKey());
+  if(done > 0) return 'Bugün ' + done + ' cümle yaptın. Seriyi uzatmaya devam?';
+  return 'Bugün henüz çalışmadın. Hadi birkaç cümle!';
+}
+
+// Uygulama açıkken çalışan yedek zamanlayıcı: hatırlatma saati bugün
+// henüz gelmediyse o saate kurulur
+function scheduleReminderTimer(){
+  clearTimeout(reminderTimer);
+  reminderTimer = null;
+  if(!reminder.enabled) return;
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+
+  var parts = String(reminder.time).split(':');
+  var target = new Date();
+  target.setHours(parseInt(parts[0],10) || 0, parseInt(parts[1],10) || 0, 0, 0);
+  var delay = target.getTime() - Date.now();
+  if(delay <= 0) return; // saat geçmiş — yarını Service Worker devralır
+
+  reminderTimer = setTimeout(function(){
+    if(!reminder.enabled) return;
+    if(reminder.mode === 'idle' && getMergedCount(dateKey()) > 0) return;
+    fireReminderNotification(reminderBodyText());
+    syncReminderToSW();
+  }, delay);
+}
+
+function setReminderEnabled(on){
+  if(!on){
+    reminder.enabled = false;
+    saveReminderPrefs();
+    showReminderStatus('Hatırlatma kapalı.', '');
+    return;
+  }
+  if(!('Notification' in window)){
+    showReminderStatus('Bu tarayıcı bildirimleri desteklemiyor.', 'err');
+    return;
+  }
+  var proceed = function(perm){
+    if(perm !== 'granted'){
+      reminder.enabled = false;
+      saveReminderPrefs();
+      showReminderStatus('Bildirim izni verilmedi. Tarayıcı ayarlarından bu siteye bildirim izni vermen gerekiyor.', 'err');
+      return;
+    }
+    reminder.enabled = true;
+    saveReminderPrefs();
+    registerPeriodicSync().then(function(){ renderReminderUI(); });
+  };
+  if(Notification.permission === 'granted') proceed('granted');
+  else Notification.requestPermission().then(proceed);
+}
+
+function setReminderTime(value){
+  if(!value) return;
+  reminder.time = value;
+  saveReminderPrefs();
+}
+
+function setReminderMode(mode){
+  reminder.mode = mode;
+  saveReminderPrefs();
+}
+
+function testReminder(){
+  if(!('Notification' in window) || Notification.permission !== 'granted'){
+    showReminderStatus('Önce hatırlatmayı açıp bildirim izni vermelisin.', 'err');
+    return;
+  }
+  fireReminderNotification(reminderBodyText());
+  showReminderStatus('Test bildirimi gönderildi. Görmediysen telefon ayarlarından bildirimlerin kapalı olup olmadığına bak.', 'ok');
+}
+
+function showReminderStatus(text, cls){
+  var el = document.getElementById('notif-status');
+  if(!el) return;
+  el.textContent = text;
+  el.className = 'notif-status' + (cls ? ' ' + cls : '');
+}
+
+function renderReminderUI(){
+  var onBtn = document.getElementById('notif-on-btn');
+  var offBtn = document.getElementById('notif-off-btn');
+  var body = document.getElementById('notif-body');
+  if(!onBtn || !offBtn || !body) return;
+
+  onBtn.classList.toggle('active', reminder.enabled);
+  offBtn.classList.toggle('active', !reminder.enabled);
+  body.style.display = reminder.enabled ? 'block' : 'none';
+
+  var timeEl = document.getElementById('notif-time');
+  if(timeEl) timeEl.value = reminder.time;
+
+  var idleBtn = document.getElementById('notif-mode-idle');
+  var alwaysBtn = document.getElementById('notif-mode-always');
+  if(idleBtn) idleBtn.classList.toggle('active', reminder.mode === 'idle');
+  if(alwaysBtn) alwaysBtn.classList.toggle('active', reminder.mode === 'always');
+
+  if(!reminder.enabled) return;
+
+  // Bu cihazda gerçekte ne kadarı çalışıyor, dürüstçe söyle
+  hasPeriodicSync().then(function(periodic){
+    var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+    if(periodic){
+      showReminderStatus('Hatırlatma açık. Uygulama kapalıyken de bildirim gelebilir; kesin saat tarayıcının insafına kalır, birkaç saat sapabilir.', 'ok');
+    } else if(!standalone){
+      showReminderStatus('Hatırlatma açık, ama bu tarayıcı arka planda bildirim gönderemiyor. Şu an yalnızca uygulama açıkken çalışır. "Ana ekrana ekle" ile kurarsan Android\'de arka planda da çalışır.', 'warn');
+    } else {
+      showReminderStatus('Hatırlatma açık. Bu cihaz (iOS dahil) arka plan bildirimini desteklemiyor; hatırlatma yalnızca uygulama açıkken gelir.', 'warn');
+    }
+  });
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────
 loadAppearancePrefs();
+loadReminderPrefs();
 window.deviceId = getDeviceId();
 initFirebase();
 
@@ -3690,7 +4135,10 @@ if(savedProfile){
 // ── PWA: Service Worker ───────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').catch(function(err) {
+    navigator.serviceWorker.register('sw.js').then(function(){
+      // Hatırlatma ayarlarını ve "bugün çalışıldı mı" bilgisini SW'ye aktar
+      try{ syncReminderToSW(); scheduleReminderTimer(); }catch(e){}
+    }).catch(function(err) {
       console.log('Service worker kaydı başarısız:', err);
     });
   });

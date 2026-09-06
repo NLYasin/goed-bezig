@@ -3,7 +3,8 @@
 // başarısız olursa (çevrimdışıysa) cache'den verir. Böylece ders/cümle
 // güncellemeleri her zaman en güncel haliyle gelir, eski cache asılı kalmaz.
 
-const CACHE_NAME = 'goed-bezig-v14'; // her güncellemede bu numarayı artır
+const CACHE_NAME = 'goed-bezig-v15'; // her güncellemede bu numarayı artır
+const REMINDER_CACHE = 'gb-reminder';  // sayfa ile SW arasında hatırlatma ayarları
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -40,12 +41,94 @@ self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(keys) {
       return Promise.all(
-        keys.filter(function(key) { return key !== CACHE_NAME; })
+        keys.filter(function(key) { return key !== CACHE_NAME && key !== REMINDER_CACHE; })
             .map(function(key) { return caches.delete(key); })
       );
     })
   );
   self.clients.claim();
+});
+
+// ── GÜNLÜK HATIRLATMA ─────────────────────────────────────────────────────
+// Ayarlar localStorage'da tutulamaz (SW erişemez); sayfa bunları
+// REMINDER_CACHE içine yazıyor, SW buradan okuyor.
+function dayKey(d) {
+  d = d || new Date();
+  var m = String(d.getMonth() + 1).padStart(2, '0');
+  var day = String(d.getDate()).padStart(2, '0');
+  return d.getFullYear() + '-' + m + '-' + day;
+}
+
+function readReminderPrefs() {
+  return caches.open(REMINDER_CACHE)
+    .then(function(cache) { return cache.match('reminder-prefs'); })
+    .then(function(res) { return res ? res.json() : null; })
+    .catch(function() { return null; });
+}
+
+function writeReminderState(patch) {
+  return readReminderPrefs().then(function(prefs) {
+    var next = Object.assign({}, prefs || {}, patch);
+    return caches.open(REMINDER_CACHE).then(function(cache) {
+      return cache.put('reminder-prefs', new Response(JSON.stringify(next), {
+        headers: { 'Content-Type': 'application/json' }
+      }));
+    });
+  }).catch(function() {});
+}
+
+function maybeSendReminder() {
+  return readReminderPrefs().then(function(prefs) {
+    if (!prefs || !prefs.enabled) return;
+
+    var today = dayKey();
+    if (prefs.lastNotified === today) return; // bugün zaten gönderildi
+
+    // Hatırlatma saati henüz gelmediyse bekle
+    var parts = String(prefs.time || '19:00').split(':');
+    var target = new Date();
+    target.setHours(parseInt(parts[0], 10) || 0, parseInt(parts[1], 10) || 0, 0, 0);
+    if (Date.now() < target.getTime()) return;
+
+    // "Sadece çalışmadıysam" modunda, bugün çalışıldıysa sus
+    var studiedToday = Array.isArray(prefs.activeDates) && prefs.activeDates.indexOf(today) !== -1;
+    if (prefs.mode === 'idle' && studiedToday) return;
+
+    var body = studiedToday
+      ? 'Bugün çalıştın. Birkaç cümle daha ekleyip seriyi güçlendir?'
+      : 'Bugün henüz çalışmadın. Birkaç cümle için vakit var!';
+
+    return self.registration.showNotification('Goed Bezig', {
+      body: body,
+      icon: 'icon-192.png',
+      badge: 'icon-96.png',
+      tag: 'gb-daily-reminder',
+      renotify: true,
+      lang: 'tr',
+      data: { url: './index.html' }
+    }).then(function() {
+      return writeReminderState({ lastNotified: today });
+    });
+  });
+}
+
+self.addEventListener('periodicsync', function(event) {
+  if (event.tag === 'gb-daily-reminder') {
+    event.waitUntil(maybeSendReminder());
+  }
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  var url = (event.notification.data && event.notification.data.url) || './index.html';
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
+      for (var i = 0; i < list.length; i++) {
+        if ('focus' in list[i]) return list[i].focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(url);
+    })
+  );
 });
 
 self.addEventListener('fetch', function(event) {

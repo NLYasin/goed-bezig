@@ -52,8 +52,28 @@ Her animasyon şu dört gerekçeden birine sahiptir; yoksa eklenmez:
 
 - Sürekli (infinite) hareket yalnızca gerçek bir canlı duruma bağlıdır. Alev animasyonu tek istisna: "cesareti tek yerde harca" kuralı gereği streak kartına ayrılmıştır; ikinci bir sürekli süs eklenmez.
 - Yalnızca `transform` ve `opacity` animate edilir; `height`/`top`/`width` yok (IPA satırı `max-height` istisnası bilinçli, kısa ve küçük).
-- Liste kartlarının giriş animasyonu ilk 8 öğe ile sınırlı; her yeniden render'da tüm liste titremez.
+- **Giriş animasyonu yalnızca sekme değişiminde oynar.** `switchTab` gövdeye `anim` sınıfını koyar, CSS kuralları (`.anim .lc/.pc/.rc`) buna bağlıdır. Veri güncellemesinde (✓, Tamamlandı, öncelik) liste yeniden kurulsa da animasyon oynamaz — yoksa "sayfa yenilendi / kayboldum" hissi doğuyor.
+- **Yeniden render kaydırma konumunu bozmaz.** Veriyi değiştiren her işlem `keepScroll(fn)` içinden render eder. Görünmeyen sekme yeniden kurulmaz: `refreshStudyIfVisible()` ezber listesi kapalıyken yalnızca `updateHeaderStats()` çağırır (2400+ satırı boşuna kurmak hem yavaş hem sarsıntılı).
+- Yıkıcı/ilerletici işlemin kendi geri bildirimi kartın üstünde olur (`.sr.learned-out`, `.rc.rep-done`): önce kart yeşil parlayıp kayar, liste ancak ondan sonra yenilenir.
 - `window.addEventListener('scroll')` ile hareket bağlanmaz.
+
+## 5b. Dinleme modu: arka planda ses
+
+Telefon kilitliyken/uygulama arka plandayken ses devam etmeli. Bunu bozan üç şey var, üçü de kural:
+
+1. **Her cümle için yeni `Audio` yaratılmaz.** Tarayıcılar arka planda YENİ bir media elemanının `play()` çağrısını sessizce reddeder; kuyruk ilerler ama ses gelmez. Tek bir `listenAudioEl` kullanılır, yalnızca `src` değişir.
+2. **Kilit kullanıcı dokunuşuyla açılır.** `startListenMode()` içinde `unlockListenAudio()` sessiz bir WAV çalarak elemanı yetkilendirir. Bu çağrı dokunma olayının senkron akışından çıkarılmaz.
+3. **Media Session zorunludur.** Her cümlede `updateMediaSession(info)`; kilit ekranı kontrolleri (`play/pause/next/prev/stop`) bağlanır. Bu hem OS bildirimi verir hem de oynatmanın arka planda yaşamasını sağlar.
+
+Ayrıca: arka planda `speechSynthesis` sessizdir. Ses gerçekten çalmadıysa (`speakQueued` false döner) ve sayfa arka plandaysa kuyruk **ilerletilmez**; `waitUntilVisible()` ile öne dönülene kadar beklenir ve aynı cümle tekrar denenir.
+
+## 5c. Günlük hatırlatma
+
+- Ayar cihaza aittir (`gb3-reminder`), profile değil.
+- Service Worker `localStorage` okuyamaz; ayarlar ve "hangi günler çalışıldı" bilgisi `gb-reminder` cache'ine `reminder-prefs` olarak yazılır (`syncReminderToSW`). `logActivity` her ezberde bunu tazeler.
+- Uygulama kapalıyken bildirim **Periodic Background Sync**'e bağlıdır: yalnızca ana ekrana kurulmuş Android/Chrome'da, tarayıcının seçtiği saatte. iOS Safari desteklemez.
+- Bu yüzden panel ne vaat ettiğini dürüstçe yazar (`renderReminderUI` → `showReminderStatus`). Desteklenmeyen bir şey "çalışıyor" gibi gösterilmez.
+- `navigator.serviceWorker.ready` kayıt başarısızsa hiç çözülmez; her kullanımı `swReadyOrNull(ms)` ile zaman aşımına bağlanır, yoksa arayüz sessizce boş kalır.
 
 ## 6. Durum döngüleri
 
