@@ -590,15 +590,15 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 /* Giriş animasyonu YALNIZCA sekmeye ilk girişte; veri güncellemesinde değil
    (her ✓ sonrası tüm listenin yeniden süzülmesi "sayfa yenilendi" hissi veriyordu) */
 .anim .lc, .anim .pc, .anim .rc{animation:card-in .28s cubic-bezier(.22,.9,.3,1) both;}
-/* Sırayla süzülerek gelsin (ilk 8 kart) */
-.anim .cgrid > *:nth-child(1),.anim .pgrid > *:nth-child(1){animation-delay:.00s}
-.anim .cgrid > *:nth-child(2),.anim .pgrid > *:nth-child(2){animation-delay:.03s}
-.anim .cgrid > *:nth-child(3),.anim .pgrid > *:nth-child(3){animation-delay:.06s}
-.anim .cgrid > *:nth-child(4),.anim .pgrid > *:nth-child(4){animation-delay:.09s}
-.anim .cgrid > *:nth-child(5),.anim .pgrid > *:nth-child(5){animation-delay:.12s}
-.anim .cgrid > *:nth-child(6),.anim .pgrid > *:nth-child(6){animation-delay:.15s}
-.anim .cgrid > *:nth-child(7),.anim .pgrid > *:nth-child(7){animation-delay:.18s}
-.anim .cgrid > *:nth-child(8),.anim .pgrid > *:nth-child(8){animation-delay:.21s}
+/* Sırayla süzülerek gelsin (ilk 8 kart) — .anim sınıfı kabın ÜZERİNDEDİR */
+.anim.cgrid > *:nth-child(1),.anim.pgrid > *:nth-child(1){animation-delay:.00s}
+.anim.cgrid > *:nth-child(2),.anim.pgrid > *:nth-child(2){animation-delay:.03s}
+.anim.cgrid > *:nth-child(3),.anim.pgrid > *:nth-child(3){animation-delay:.06s}
+.anim.cgrid > *:nth-child(4),.anim.pgrid > *:nth-child(4){animation-delay:.09s}
+.anim.cgrid > *:nth-child(5),.anim.pgrid > *:nth-child(5){animation-delay:.12s}
+.anim.cgrid > *:nth-child(6),.anim.pgrid > *:nth-child(6){animation-delay:.15s}
+.anim.cgrid > *:nth-child(7),.anim.pgrid > *:nth-child(7){animation-delay:.18s}
+.anim.cgrid > *:nth-child(8),.anim.pgrid > *:nth-child(8){animation-delay:.21s}
 
 .sr{transition:background .15s, transform .12s;}
 .sr:active{transform:scale(.995);}
@@ -1422,6 +1422,7 @@ function scheduleCloudSync(){
 }
 
 var cloudSynced = false; // true olana kadar hiçbir veri buluta gönderilmez — boş/yerel veri gerçek buluttaki veriyi ASLA ezemesin
+var lastPushAt = 0;      // kendi yazımımızın yankısını dinleyicide ayıklamak için
 
 function pushToCloud(){
   if(!fbReady || !activeProfile) return;
@@ -1440,6 +1441,7 @@ function pushToCloud(){
       updatedAt: firebase.database.ServerValue.TIMESTAMP,
       updatedBy: (window.deviceId || 'unknown')
     };
+    lastPushAt = Date.now();
     firebase.database().ref('profiles/' + activeProfile).set(payload)
       .then(function(){ setSyncIndicator('online'); })
       .catch(function(err){ console.log('Cloud kaydetme hatası:', err); setSyncIndicator('offline'); });
@@ -1473,14 +1475,21 @@ function listenToCloud(profileName){
   fbRef.on('value', function(snap){
     var data = snap.val();
     if(!data) return;
-    // Kendi yazdığımız güncellemeyi tekrar işlememek için basit kontrol
+    // Kendi yazdığımız güncelleme geri geliyorsa yeniden çizme. Veri zaten
+    // yerelde aynı; render etmek listeyi ikinci kez kurup "sayfa yenilendi"
+    // hissi veriyordu.
+    if(data.updatedBy === window.deviceId && (Date.now() - lastPushAt) < 10000){
+      setSyncIndicator('online');
+      return;
+    }
     if(syncing) return;
     syncing = true;
     learned = new Set(data.learned || []);
     permDel = new Set(data.permDel || []);
     trulyDeleted = new Set(data.trulyDeleted || []);
     prios = data.prios || {};
-    repData = data.repData || {};
+    // Firebase boş array'leri siliyor; selectProfile ile aynı onarımı uygula
+    repData = normalizeRepData(data.repData);
     dayLog = mergeDayLogs(dayLog, data.dayLog || {});
     activityLog = dayLog; timeLog = dayLog;
     saveLocal();
@@ -1560,6 +1569,11 @@ function dueCount(){
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────
+// Kart giriş animasyonu yalnızca sekmeye girerken oynar. Bayrak yalnızca o
+// tek render boyunca açık kalır; sekmede kalırken yapılan güncellemeler
+// (✓, Tamamlandı, buluttan gelen değişiklik) listeyi yeniden süzmez.
+var _animateCards = false;
+
 function switchTab(tab){
   var changed = (curTab !== tab);
   curTab=tab;
@@ -1569,14 +1583,14 @@ function switchTab(tab){
     if(btn) btn.classList.toggle('active',t===tab);
     if(pan) pan.classList.toggle('show',t===tab);
   });
-  // Kart giriş animasyonu yalnızca sekme değişiminde oynasın
-  document.body.classList.toggle('anim', changed);
+  _animateCards = changed;
   if(tab==='study')    renderStudy();
   if(tab==='learned')  renderLearned();
   if(tab==='repeat')   renderRepeat();
   if(tab==='perm')     renderPerm();
   if(tab==='settings') renderSettings();
   if(tab==='progress') renderProgress();
+  _animateCards = false;
 }
 
 // ── PRIORITY FILTER ───────────────────────────────────────────────────────
@@ -2204,6 +2218,7 @@ function renderCalendarSummary(){
 function renderLearned(){
   var grid=document.getElementById('lgrid');
   grid.innerHTML='';
+  grid.classList.toggle('anim', _animateCards);
   document.getElementById('tbg-learned').textContent=learned.size;
   renderCalendarSummary();
   if(learned.size===0){
@@ -2302,6 +2317,7 @@ function renderLearned(){
 function renderRepeat(){
   var cont=document.getElementById('rpcont');
   cont.innerHTML='';
+  cont.classList.toggle('anim', _animateCards);
   if(learned.size===0){
     cont.innerHTML='<div class="empty"><div class="ico">'+ic('target')+'</div><p>Henüz ezberlenen cümle yok.</p></div>';
     return;
@@ -2441,6 +2457,7 @@ function renderRepeat(){
 function renderPerm(){
   var grid=document.getElementById('pgrid');
   grid.innerHTML='';
+  grid.classList.toggle('anim', _animateCards);
   document.getElementById('tbg-perm').textContent=permDel.size;
   if(permDel.size===0){
     grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="ico">'+ic('trash')+'</div><p>Kalıcı silinen cümle yok.</p></div>';

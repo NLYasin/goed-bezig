@@ -52,7 +52,8 @@ Her animasyon şu dört gerekçeden birine sahiptir; yoksa eklenmez:
 
 - Sürekli (infinite) hareket yalnızca gerçek bir canlı duruma bağlıdır. Alev animasyonu tek istisna: "cesareti tek yerde harca" kuralı gereği streak kartına ayrılmıştır; ikinci bir sürekli süs eklenmez.
 - Yalnızca `transform` ve `opacity` animate edilir; `height`/`top`/`width` yok (IPA satırı `max-height` istisnası bilinçli, kısa ve küçük).
-- **Giriş animasyonu yalnızca sekme değişiminde oynar.** `switchTab` gövdeye `anim` sınıfını koyar, CSS kuralları (`.anim .lc/.pc/.rc`) buna bağlıdır. Veri güncellemesinde (✓, Tamamlandı, öncelik) liste yeniden kurulsa da animasyon oynamaz — yoksa "sayfa yenilendi / kayboldum" hissi doğuyor.
+- **Giriş animasyonu yalnızca sekmeye girerken, tek bir render boyunca oynar.** `switchTab` `_animateCards` bayrağını açar, render fonksiyonları bu bayrağı kendi kabına (`#lgrid`, `#pgrid`, `#rpcont`) `anim` sınıfı olarak yazar, sonra bayrak kapanır. Sınıf gövdede **kalıcı bırakılmaz**: bırakılırsa sekmede kalırken yapılan her güncelleme animasyonu yeniden oynatır ve "sayfa yenilendi" hissi geri gelir.
+- **Aynı işlem iki kez render etmez.** Bulut dinleyicisi kendi yazdığımızın yankısını (`updatedBy === deviceId` ve son push'tan 10 sn içinde) atlar; yoksa yerel render'dan ~1 sn sonra ikinci bir tam render geliyordu. `lastPushAt` sekme başınadır, bu yüzden ikinci bir sekme gerçek güncellemeyi almaya devam eder.
 - **Yeniden render kaydırma konumunu bozmaz.** Veriyi değiştiren her işlem `keepScroll(fn)` içinden render eder. Görünmeyen sekme yeniden kurulmaz: `refreshStudyIfVisible()` ezber listesi kapalıyken yalnızca `updateHeaderStats()` çağırır (2400+ satırı boşuna kurmak hem yavaş hem sarsıntılı).
 - Yıkıcı/ilerletici işlemin kendi geri bildirimi kartın üstünde olur (`.sr.learned-out`, `.rc.rep-done`): önce kart yeşil parlayıp kayar, liste ancak ondan sonra yenilenir.
 - `window.addEventListener('scroll')` ile hareket bağlanmaz.
