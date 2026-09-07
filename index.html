@@ -1317,7 +1317,9 @@ var curTab   = 'study';
 var prioFilt = null;
 var pendingUndo = null;
 var undoTimer   = null;
-var collapsedLessons = new Set(); // hangi dersler kapalı (kalıcı, render'lar arası)
+// Başlangıçta tüm dersler kapalı — 2000+ cümle tek seferde açık gelmesin.
+// "Aç" düğmesiyle tümü açılabilir.
+var collapsedLessons = new Set(lessons.map(function(l){ return l.id; }));
 var trulyDeleted = new Set();     // tamamen silinmiş — hiçbir yerde görünmez
 
 // ── PROFİL & FIREBASE SENKRON ──────────────────────────────────────────────
@@ -1968,8 +1970,10 @@ function renderStudy(){
 
     var lessonStatus = remInLesson===0 ? 'lb-done' : (remInLesson<activeInLesson ? 'lb-partial' : '');
 
+    // Arama/filtre aktifken eşleşen ders otomatik açılsın — kapalıysa sonuç görünmez
+    var isCollapsed = (search||prioFilt) ? false : collapsedLessons.has(lesson.id);
     var block=document.createElement('div');
-    block.className='lb'+(collapsedLessons.has(lesson.id)?' col':'')+(lessonStatus?' '+lessonStatus:'');
+    block.className='lb'+(isCollapsed?' col':'')+(lessonStatus?' '+lessonStatus:'');
     block.dataset.lid=lesson.id;
 
     var tagH=lesson.tag?'<span class="stag">'+lesson.tag+'</span>':'';
@@ -2766,7 +2770,7 @@ function resetAllData(){
   trulyDeleted.clear();
   prios = {};
   repData = {};
-  collapsedLessons.clear();
+  collapsedLessons = new Set(lessons.map(function(l){ return l.id; })); // varsayılan: hepsi kapalı
   save();
   renderStudy();
   renderSettings();

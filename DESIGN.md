@@ -22,6 +22,10 @@ Bu dosya, Goed Bezig (Hollandaca cümle ezber PWA'sı) arayüzünde yapılan her
 - Bayrak emojileri arayüz elemanı olarak kullanılmaz (Windows'ta bayraklar "NL"/"TR" harfine döner). Çeviri düğmesi metin rozeti `TR`; çeviri satırı ön eksiz, italik ve `--muted`.
 - Büyük harf + geniş harf aralığı (`uppercase; letter-spacing`) sadece kart başlıklarında; satır içinde kullanılmaz.
 
+## 2b. Ders listesi: varsayılan kapalı
+
+Ezber Listesi'nde 101 ders, 2400+ cümle var. Sayfa ilk açıldığında hepsi kapalı gelir (`collapsedLessons` başlangıçta tüm ders id'leriyle doldurulur); "Aç" düğmesi hepsini açar. Arama veya öncelik filtresi aktifken eşleşen ders otomatik açılır — kapalı kalsaydı sonuç görünmezdi. `resetAllData()` da bu varsayılana döner (boş Set değil, dolu Set).
+
 ## 3. Yoğunluk ve düzen
 
 - Yoğunluk kadranı 5–6 ("günlük uygulama"): egzersiz satırları sıkı, ilerleme kartları nefes alır.
