@@ -1,73 +1,116 @@
-# Kantoor Woordenschat — Tasarım Kuralları
+# Goed Bezig — Tasarım Kuralları
 
-Bu dosya, Woordenschat (sociaal raadsman ofisi için Hollandaca kelime kartları PWA'sı) arayüzünde yapılan her değişikliğin uyması gereken kuralları tanımlar. Goed Bezig ile aynı aileden; kaynaklar Anthropic `frontend-design`, `taste-skill` ve `design-dna` incelemesi. Yalnızca bir **ürün arayüzüne** uyan kurallar alındı.
+Bu dosya, Goed Bezig (Hollandaca cümle ezber PWA'sı) arayüzünde yapılan her değişikliğin uyması gereken kuralları tanımlar. Kaynaklar: Anthropic `frontend-design` skill'i, `taste-skill`, `design-dna` ve `scrollcraft` incelemesi; yalnızca bir **ürün arayüzüne** (landing page değil) uyan kurallar alındı, Hollandaca'ya özgü kurallar eklendi.
 
 ## 1. Kimlik ve renk
 
-- Kimlik: "orman" ailesi. Koyu temada yeşile çalan koyu zemin (`--bg #0B1A13`), açık temada hafif yeşil-gri (`#F3F8F5`). Tek marka/aksiyon rengi: `--accent` (mavi). İkinci bir aksan (mor, indigo) ve gradyan düğme yok.
-- Semantik renkler yalnızca durum bildirir: `--green` öğrenildi/tamam, `--orange` bugün/yaklaşan, `--red` gecikmiş/tehlike. Hepsinin `-bg` ve `-border` tonu token'dır; hex gömülmez.
-- **Bilinçli istisna:** kart türü rozetleri (kelime = yeşil, cümle = mavi, hukuki = turuncu, deyim = mor) kategorik palettir; mor yalnızca burada yaşar.
-- Durum asla yalnızca renkle anlatılmaz: nokta/rozet yanında metin veya ikon olur.
-- Parlama (`box-shadow` glow) yok. Dekoratif nokta yok; nokta yalnızca gerçek durum taşır (`.sr-dot`, `.ts-dot`, `.sync-dot`).
-- Kontrast: gövde 4,5:1, büyük metin 3:1. `--text3` küçük metinde bu sınırın altına inmez.
+- Tek marka rengi: `--accent` (mavi). `--accent2` yalnızca aynı ailenin açık tonu; başka hiçbir mavi/mor/indigo hex kullanılmaz.
+- Semantik renkler sadece durum bildirir: `--green` doğru/tamamlandı, `--red` gecikmiş/silme, `--yellow` bugün/uyarı. Süs amaçlı kullanılmaz.
+- Durum asla yalnızca renkle anlatılmaz: yanına ikon veya metin eşlik eder (renk körlüğü).
+- Gradyan metin yok. Gradyan yalnızca ilerleme dolgularında (`.prog-fill`, `.journey-fill`) kalır.
+- Saf `#000`/`#fff` yok; iki tema da token'lardan beslenir. Sabit hex bir bileşene gömülmez.
+- Açık tema tek nötr aile kullanır (mavi-gri): `--bg #F4F6FA`, `--surface #FFF`, `--border #DFE3EC`. Yeşil/krem/lavanta karışımı yok.
+- Kontrast: gövde metni 4,5:1, büyük metin 3:1 (WCAG AA). `--muted` bu sınırın altına inemez.
 
 ## 2. Tipografi ve Hollandaca
 
-- Tek font ailesi (`Segoe UI`, system-ui). Monospace yalnızca gerçek kod alanlarında (`--code`: JSON textarea). Etiket, tarih ve sayılarda mono kullanılmaz; sayılar `font-variant-numeric: tabular-nums` ile hizalanır.
-- Büyük harf etiketler (`.sec-title`, bölüm başlıkları) 11 px / 600 / `letter-spacing 0.04em`; geniş harf aralığı ve 9–10 px yok.
-- `<html lang="tr">`; her Hollandaca öğe `lang="nl"` taşır: `.card-dutch`, `.tekrar-card-dutch`, `.ex-nl`, `.listen-word`, `#gp-word`, `#gazete-reader`.
-- `[lang="nl"]{hyphens:auto;overflow-wrap:anywhere}`: `arbeidsongeschiktheidsverzekering` gibi bileşik kelimeler kartı taşıramaz.
-- Bayrak emojileri kullanılmaz (Windows'ta harfe döner).
+- Tek font ailesi: `"Segoe UI", system-ui, sans-serif`. IPA satırı için `Charis SIL` istisnası.
+- Hiyerarşi ağırlık ve renkle kurulur, boyutla bağırılmaz. Kart başlığı 13–14 px/700, cümle 14 px/500–600, yardımcı metin 11–12 px/`--muted`.
+- `<html lang="tr">`; her Hollandaca cümle öğesi `lang="nl"` taşır (`.snl`, `.rnl`, `.lc-nl`, `.pc-nl`, `.lp-nl`, `.tr-popup-nl`). Bu, ekran okuyucu ve tirelemeyi doğru dile bağlar.
+- `[lang="nl"]{hyphens:auto;overflow-wrap:anywhere}` sabittir: `arbeidsongeschiktheidsverzekering` gibi bileşik kelimeler satırı taşıramaz.
+- Cümle satır uzunluğu 65ch'i geçmez (`main max-width` bunu sağlar).
+- Bayrak emojileri arayüz elemanı olarak kullanılmaz (Windows'ta bayraklar "NL"/"TR" harfine döner). Çeviri düğmesi metin rozeti `TR`; çeviri satırı ön eksiz, italik ve `--muted`.
+- Büyük harf + geniş harf aralığı (`uppercase; letter-spacing`) sadece kart başlıklarında; satır içinde kullanılmaz.
+
+## 2b. Ders listesi: varsayılan kapalı
+
+Ezber Listesi'nde 101 ders, 2400+ cümle var. Sayfa ilk açıldığında hepsi kapalı gelir (`collapsedLessons` başlangıçta tüm ders id'leriyle doldurulur); "Aç" düğmesi hepsini açar. Arama veya öncelik filtresi aktifken eşleşen ders otomatik açılır — kapalı kalsaydı sonuç görünmezdi. `resetAllData()` da bu varsayılana döner (boş Set değil, dolu Set).
 
 ## 3. Yoğunluk ve düzen
 
-- Yoğunluk kadranı 5–6. Kart listesi sıkı, ilerleme kartları nefes alır.
-- Alt navigasyon 6 öğe, tek satır, etiketli. Aktif öğe `--accent`.
-- Tarih grupları akordeon; ilk render'da en yeni grup açık, diğerleri kapalı.
-- Kart düzeni: rozet + Hollandaca + Türkçe üstte, eylemler tek satır altta.
+- Yoğunluk kadranı 5–6 ("günlük uygulama"): egzersiz satırları sıkı, ilerleme kartları nefes alır.
+- Kart yalnızca gruplama için; tek bir sayıyı veya etiketi kart içine sarma.
+- Mobilde satır düzeni: `[no][cümle + çeviri]` üstte, `[öncelik noktaları] … [eylemler]` altta tek satır. Boş alan bırakılmaz.
+- Masaüstünde nav tek satır; sekmeler sığmıyorsa yatay kaydırma, iki satır değil.
+- İçerik `main max-width: 940px`; mobil `padding: 0 10px`.
 
 ## 4. Dokunma ve erişilebilirlik
 
-- Her tıklanabilir öğe en az 36 px yüksek; yalnız ikonlu düğmeler (`.icon-only`) 40 px geniş.
-- `:focus-visible` her öğede görünür; `outline:none` yasak.
-- `prefers-reduced-motion` ve `prefers-color-scheme` desteklenir (kayıtlı tercih yoksa sistem teması).
-- Yıkıcı işlemler (`confirmDelete`, `resetProgress`) onay ister; çöp kutusu kayıt tutar.
+- Her tıklanabilir öğe en az 40×40 px (mobilde hedef 44). Görsel küçük olabilir (14 px nokta), dokunma alanı küçük olamaz (`padding + background-clip:content-box`).
+- Başlangıç opaklığı 0,6'nın altında ikon yok. "Gizli ve hover'da görünen" eylem mobilde yoktur.
+- `:focus-visible` her etkileşimli öğede görünür (2 px `--accent` halka). `outline:none` yasak.
+- `prefers-reduced-motion` bloğu korunur; yeni animasyon eklerken bu bloğun kapsadığından emin ol.
+- `prefers-color-scheme` kullanıcı seçim yapmamışsa temayı belirler.
+- Form kuralı: etiket üstte, hata altta, placeholder etiket yerine geçmez.
 
 ## 5. Hareket: motive olmayan animasyon yok
 
+Her animasyon şu dört gerekçeden birine sahiptir; yoksa eklenmez:
+
 | Gerekçe | Örnek | Bütçe |
 |---|---|---|
-| Geri bildirim | `:active` opaklık, "Öğrendim" durum değişimi | ≤ 200 ms |
-| Durum değişimi | kart gövdesi açılması, hedef çubuğu dolması | ≤ 400 ms |
-| Kutlama | günlük hedef / seri kilometre taşı (`showCelebration`) | 2,5 s, tek sefer |
+| Geri bildirim | cümle ezberlenince yeşil parlayıp kayması, buton `:active` çökmesi | ≤ 420 ms |
+| Durum değişimi | sekme paneli, IPA satırı açılması, oynatıcıda cümle değişimi | ≤ 300 ms |
+| Kutlama (tek cesur an) | günlük hedef/rozet: konfeti + mesaj | tek seferlik, 2 s |
+| Canlı durum | ses dalgası (yalnızca çalarken), senkron noktası (yalnızca senkronlarken) | döngü, sadece aktifken |
 
-- Sürekli animasyon yok. Scroll'a bağlı hareket yok.
-- Yalnızca `transform` ve `opacity` animate edilir.
+- Sürekli (infinite) hareket yalnızca gerçek bir canlı duruma bağlıdır. Alev animasyonu tek istisna: "cesareti tek yerde harca" kuralı gereği streak kartına ayrılmıştır; ikinci bir sürekli süs eklenmez.
+- Yalnızca `transform` ve `opacity` animate edilir; `height`/`top`/`width` yok (IPA satırı `max-height` istisnası bilinçli, kısa ve küçük).
+- **Giriş animasyonu yalnızca sekmeye girerken, tek bir render boyunca oynar.** `switchTab` `_animateCards` bayrağını açar, render fonksiyonları bu bayrağı kendi kabına (`#lgrid`, `#pgrid`, `#rpcont`) `anim` sınıfı olarak yazar, sonra bayrak kapanır. Sınıf gövdede **kalıcı bırakılmaz**: bırakılırsa sekmede kalırken yapılan her güncelleme animasyonu yeniden oynatır ve "sayfa yenilendi" hissi geri gelir.
+- **Aynı işlem iki kez render etmez.** Bulut dinleyicisi kendi yazdığımızın yankısını (`updatedBy === deviceId` ve son push'tan 10 sn içinde) atlar; yoksa yerel render'dan ~1 sn sonra ikinci bir tam render geliyordu. `lastPushAt` sekme başınadır, bu yüzden ikinci bir sekme gerçek güncellemeyi almaya devam eder.
+- **Yeniden render kaydırma konumunu bozmaz.** Veriyi değiştiren her işlem `keepScroll(fn)` içinden render eder. Görünmeyen sekme yeniden kurulmaz: `refreshStudyIfVisible()` ezber listesi kapalıyken yalnızca `updateHeaderStats()` çağırır (2400+ satırı boşuna kurmak hem yavaş hem sarsıntılı).
+- Yıkıcı/ilerletici işlemin kendi geri bildirimi kartın üstünde olur (`.sr.learned-out`, `.rc.rep-done`): önce kart yeşil parlayıp kayar, liste ancak ondan sonra yenilenir.
+- `window.addEventListener('scroll')` ile hareket bağlanmaz.
+
+## 5b. Dinleme modu: arka planda ses
+
+Telefon kilitliyken/uygulama arka plandayken ses devam etmeli. Bunu bozan üç şey var, üçü de kural:
+
+1. **Her cümle için yeni `Audio` yaratılmaz.** Tarayıcılar arka planda YENİ bir media elemanının `play()` çağrısını sessizce reddeder; kuyruk ilerler ama ses gelmez. Tek bir `listenAudioEl` kullanılır, yalnızca `src` değişir.
+2. **Kilit kullanıcı dokunuşuyla açılır.** `startListenMode()` içinde `unlockListenAudio()` sessiz bir WAV çalarak elemanı yetkilendirir. Bu çağrı dokunma olayının senkron akışından çıkarılmaz.
+3. **Media Session zorunludur.** Her cümlede `updateMediaSession(info)`; kilit ekranı kontrolleri (`play/pause/next/prev/stop`) bağlanır. Bu hem OS bildirimi verir hem de oynatmanın arka planda yaşamasını sağlar.
+
+Ayrıca: arka planda `speechSynthesis` sessizdir. Ses gerçekten çalmadıysa (`speakQueued` false döner) ve sayfa arka plandaysa kuyruk **ilerletilmez**; `waitUntilVisible()` ile öne dönülene kadar beklenir ve aynı cümle tekrar denenir.
+
+## 5c. Günlük hatırlatma
+
+- Ayar cihaza aittir (`gb3-reminder`), profile değil.
+- Service Worker `localStorage` okuyamaz; ayarlar ve "hangi günler çalışıldı" bilgisi `gb-reminder` cache'ine `reminder-prefs` olarak yazılır (`syncReminderToSW`). `logActivity` her ezberde bunu tazeler.
+- Uygulama kapalıyken bildirim **Periodic Background Sync**'e bağlıdır: yalnızca ana ekrana kurulmuş Android/Chrome'da, tarayıcının seçtiği saatte. iOS Safari desteklemez.
+- Bu yüzden panel ne vaat ettiğini dürüstçe yazar (`renderReminderUI` → `showReminderStatus`). Desteklenmeyen bir şey "çalışıyor" gibi gösterilmez.
+- `navigator.serviceWorker.ready` kayıt başarısızsa hiç çözülmez; her kullanımı `swReadyOrNull(ms)` ile zaman aşımına bağlanır, yoksa arayüz sessizce boş kalır.
 
 ## 6. Durum döngüleri
 
-- Boş: `.empty` / `.tekrar-empty` / `.listen-empty`: ikon + tek cümle + ne yapılacağı.
-- Yükleniyor: metin ("Analiz ediliyor…"), tam ekran spinner yok.
-- Hata/çevrimdışı: `.settings-status.err`, bağlantı noktası; dil sade, çözüm öneren.
+Her ekran dört durumu tasarlar: yükleniyor, boş, hata, dolu.
+
+- Boş: `.empty` bloğu; bir ikon + tek cümle + ne yapılacağı ("Bugün tekrar yok").
+- Hata/çevrimdışı: `banner` veya `profile-status`; dil sade, çözüm öneren.
+- Yükleniyor: iskelet veya sessiz gösterge; tam ekran spinner yok.
+- Geri alma: yıkıcı işlemler (`doPerm`, `eraseAll`) her zaman `#ubar` ile geri alınabilir.
 
 ## 7. İkon ve görsel
 
-- Arayüz ikonları Tabler set'inden (MIT), `currentColor`. Tek biçim: `index.html` içindeki inline SVG sprite (`<svg class="ic"><use href="#i-book"/></svg>`, JS'te `ic('book')`). Liste 250 kart civarı olduğu için kart içinde inline SVG kabul edilebilir; liste 1000+ karta çıkarsa Goed Bezig'deki CSS-mask yöntemine geç.
-- Yeni ikon eklerken sprite'a `<symbol id="i-ad">` ekle.
-- Emoji yalnızca duygu/kutlama anlarında: seri rozeti ikonları (🔥 💎 🥇 …), `showCelebration`, boş tekrar listesindeki 🎉.
-- Uygulama ikonu: yeşil zemin (`#1F9D6F`), üst üste iki beyaz kart, öndekinde Hollanda bayrağı bantları ve iki yeşil metin çizgisi. Goed Bezig ile aynı aile (bayrak bantlı kart), farklı renk ve şekil. `icon-192/512.png` (any), `icon-maskable-192/512.png` (%80 güvenli alan), `apple-touch-icon.png`, `favicon-16/32.png`. Üretici: `make-icons.ps1`.
+- Arayüz ikonları Tabler set'inden (MIT), `currentColor` ile temaya uyar. İki kullanım biçimi var, ikisi de `index.html` içinde, harici dosya yok:
+  - **Inline SVG sprite** (`<svg class="ic"><use href="#i-book"/></svg>`, JS'te `ic('book')`): sekmeler, başlıklar, rozetler gibi sayfada az sayıda görünen yerler.
+  - **CSS mask** (`class="ib ib-volume"`): 2400+ cümle satırında tekrar eden düğmeler (ses, IPA, ✓, çöp, geri al, kapat). Satır başına DOM düğümü eklemez; 10 bin inline SVG sayfayı yavaşlatır, bu yüzden liste içinde inline SVG kullanılmaz.
+- Yeni ikon eklerken: sprite'a `<symbol id="i-ad">` ekle; liste satırında kullanılacaksa `.ib-ad{--ib:url("data:image/svg+xml;utf8,…")}` kuralı ekle.
+- Emoji yalnızca duygu/kutlama anlarında kalır: 🔥 seri alevi, 🎉 kutlama, 🚶🏃🏁 hedef yolculuğu, rozet adları. Platforma göre bozulan emojiler (bayraklar) hiç kullanılmaz.
+- Uygulama ikonu: düz `#0E7FD4` zemin, beyaz kart, mavi tik, altta Hollanda bayrağı bantları. Gradyan yok. `icon-*.png` (any), `icon-maskable-*.png` (%80 güvenli alan), `favicon-16/32.png` (tiksiz sade sürüm). Üretici betik: PowerShell + System.Drawing; yeniden üretmek için tek renk/şekil değişikliği yeterli.
+- Egzersiz ekranlarında fotoğraf/illüstrasyon yok; dikkat cümlede kalır.
+- Süs çizgiler, dekoratif noktalar, numaralı "01/02" başlıklar yok. Numara yalnızca gerçek ders/cümle sırasını gösterir.
 
 ## 8. Metin (Türkçe arayüz)
 
-- Kısa, eylem odaklı etiketler: "Öğrendim", "Tekrar ettim", "Dinle". Aynı niyet için tek etiket.
-- Geçici durum mesajlarında (✅ ❌ ⏳) emoji kalabilir; kalıcı arayüz öğelerinde kalamaz.
-- Marka/ürün adı `Kantoor Woordenschat`; alt başlıkta "Hollandaca" (Hollandıca değil).
+- Kısa, eylem odaklı düğme etiketleri (1–3 kelime): "Dinle", "Geri Al", "Zinciri Kurtar".
+- Aynı niyet için tek etiket: sitede "Ezberlendi" varsa "Öğrenildi" de kullanılmaz.
+- İngilizce "AI tell" listeleri (em-dash yasağı vb.) bu ürüne uygulanmaz; Türkçe noktalama kuralları geçerlidir.
 
 ## 9. Değişiklik öncesi kontrol listesi
 
-1. Yeni renk → token'a bağla.
-2. Yeni düğme ≥ 36 px mi? `:focus-visible` çalışıyor mu?
-3. Yeni animasyonun gerekçesi var mı?
+1. Yeni renk eklendi mi? → Token'a bağla, hex gömme.
+2. Yeni tıklanabilir öğe ≥ 40 px mi? Opaklık ≥ 0,6 mı? `:focus-visible` çalışıyor mu?
+3. Yeni animasyonun tek cümlelik gerekçesi var mı? `transform/opacity` dışına çıkıyor mu?
 4. Hollandaca metin öğesi `lang="nl"` taşıyor mu?
-5. İki temada, 375 px genişlikte bakıldı mı?
-6. `sw.js` içindeki `CACHE_NAME` artırıldı mı?
+5. İki temada da bakıldı mı? 375 px genişlikte bakıldı mı?
+6. Boş ve hata durumu var mı?
