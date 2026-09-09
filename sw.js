@@ -3,7 +3,7 @@
 // başarısız olursa (çevrimdışıysa) cache'den verir. Böylece ders/cümle
 // güncellemeleri her zaman en güncel haliyle gelir, eski cache asılı kalmaz.
 
-const CACHE_NAME = 'goed-bezig-v17'; // her güncellemede bu numarayı artır
+const CACHE_NAME = 'goed-bezig-v18'; // her güncellemede bu numarayı artır
 const REMINDER_CACHE = 'gb-reminder';  // sayfa ile SW arasında hatırlatma ayarları
 const ASSETS = [
   './index.html',
@@ -132,9 +132,19 @@ self.addEventListener('notificationclick', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
+  var url = event.request.url;
+
+  // Dış API çağrıları (çeviri, TTS) — service worker hiç karışmasın, direkt ağa git
+  var isExternalApi = url.indexOf('translate.googleapis.com') !== -1 ||
+                       url.indexOf('mymemory.translated.net') !== -1 ||
+                       url.indexOf('elevenlabs.io') !== -1 ||
+                       url.indexOf('workers.dev') !== -1;
+  if (isExternalApi) {
+    return; // event.respondWith çağrılmazsa tarayıcı isteği normal şekilde kendi yönetir
+  }
+
   // HTML ve JSON dosyaları için: önce ağdan dene (güncel veri için),
   // başarısız olursa cache'e düş. Resimler için cache-first kalır (değişmiyor).
-  var url = event.request.url;
   var isAppShell = url.indexOf('.html') !== -1 || url.indexOf('.json') !== -1 || event.request.mode === 'navigate';
 
   if (isAppShell) {
