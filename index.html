@@ -1079,7 +1079,7 @@ input[type=search]:focus-visible,select:focus-visible{outline-offset:1px;}
       <div class="lp-repeat-dots" id="lp-repeat-dots"></div>
       <button class="lp-mark-btn" id="lp-mark-btn" onclick="markCurrentListenRep()" style="display:none">
         <svg class="ic"><use href="#i-circle-check"/></svg>
-        <span>Bugünkü tekrar sayıldı</span>
+        <span>Tekrar Say</span>
       </button>
       <div class="lp-controls">
         <button class="lp-btn" onclick="listenPrev()" title="Önceki"><svg class="ic"><use href="#i-prev"/></svg></button>
@@ -3434,6 +3434,16 @@ function listenPrev(){
 
 var _lastShownKey = null;
 var _currentListenKey = null;
+// Bugün bu cümlenin tekrarı zaten yapılmış mı — repData'nın kendisinden bakar,
+// oturuma özel geçici bir bayrağa değil; böylece hem çoklu tekrar sırasında
+// sıfırlanmaz hem de uygulamayı kapatıp açsan bile doğru kalır.
+function hasReviewedToday(key){
+  var rd = repData[key];
+  if(!rd || !Array.isArray(rd.steps) || rd.steps.length===0) return false;
+  var last = rd.steps[rd.steps.length-1];
+  return dateKey(new Date(last)) === dateKey();
+}
+
 function updateListenPlayerUI(key, repeatDone){
   var info = SMAP[key];
   if(!info) return;
@@ -3459,13 +3469,22 @@ function updateListenPlayerUI(key, repeatDone){
     dotsEl.appendChild(d);
   }
 
-  // [ek] Tekrar sayma butonu — sadece zaten ezberlenmiş (repData'sı olan) cümlelerde göster
+  // Tekrar sayma butonu — sadece zaten ezberlenmiş cümlelerde göster.
+  // Durumunu her seferinde repData'dan oku, böylece çoklu tekrar sırasında
+  // (2×, 3×...) buton yanlışlıkla "basılmamış" görünmez.
   var markBtn = document.getElementById('lp-mark-btn');
   if(markBtn){
     if(learned.has(key)){
       markBtn.style.display = '';
-      markBtn.classList.remove('done');
       markBtn.dataset.key = key;
+      var span = markBtn.querySelector('span');
+      if(hasReviewedToday(key)){
+        markBtn.classList.add('done');
+        if(span) span.textContent = 'Sayıldı ✓';
+      } else {
+        markBtn.classList.remove('done');
+        if(span) span.textContent = 'Tekrar Say';
+      }
     } else {
       markBtn.style.display = 'none';
     }
@@ -3476,16 +3495,13 @@ function updateListenPlayerUI(key, repeatDone){
 function markCurrentListenRep(){
   var key = _currentListenKey;
   if(!key || !learned.has(key)) return;
+  if(hasReviewedToday(key)) return; // aynı gün için ikinci kez sayılmasın
   markRepDone(key, null);
   var btn = document.getElementById('lp-mark-btn');
   if(btn){
     btn.classList.add('done');
     var span = btn.querySelector('span');
     if(span) span.textContent = 'Sayıldı ✓';
-    setTimeout(function(){
-      if(span) span.textContent = 'Bugünkü tekrar sayıldı';
-      btn.classList.remove('done');
-    }, 1400);
   }
 }
 
