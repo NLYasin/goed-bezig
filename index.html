@@ -404,6 +404,18 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
 .lp-dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
 .lp-dot.filled{background:var(--accent);}
 .lp-controls{display:flex;align-items:center;justify-content:center;gap:18px;}
+.lp-listen-repeat-btn{
+  background:rgba(240,180,41,.12);border:1.5px solid var(--yellow);
+  color:var(--yellow);font-weight:700;
+}
+.lp-listen-repeat-btn:hover{background:rgba(240,180,41,.2);}
+.lp-listen-repeat-btn .ic{color:var(--yellow);}
+.lp-listen-repeat-hint{
+  display:inline-block;margin-left:10px;
+  font-size:calc(12px * var(--fs-scale));color:var(--muted);
+  vertical-align:middle;
+}
+
 .lp-mark-btn{
   display:flex;align-items:center;justify-content:center;gap:8px;
   width:100%;margin:0 0 16px;padding:11px;
@@ -1092,7 +1104,8 @@ input[type=search]:focus-visible,select:focus-visible{outline-offset:1px;}
 
   <div class="panel" id="pn-repeat">
     <div class="ph" style="padding:14px 18px 6px">
-      <button class="btn btn-primary" onclick="openListenConfig('learned')"><svg class="ic"><use href="#i-headphones"/></svg> Dinle</button>
+      <button class="btn lp-listen-repeat-btn" onclick="openListenConfig('learned')"><svg class="ic"><use href="#i-headphones"/></svg> Tekrarları Dinle</button>
+      <span class="lp-listen-repeat-hint">Gecikmiş + bugünkü tekrarlar</span>
     </div>
     <div id="rpcont" style="padding-bottom:60px"></div>
   </div>
