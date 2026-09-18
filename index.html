@@ -424,6 +424,25 @@ main{max-width:940px;margin:0 auto;padding:0 16px;}
   font-size:calc(13.5px * var(--fs-scale));cursor:pointer;
   transition:background .15s,transform .1s;
 }
+.lp-finish{margin-top:4px;}
+.lp-finish-sub{
+  font-size:calc(13px * var(--fs-scale));color:var(--muted);
+  margin-bottom:14px;line-height:1.5;
+}
+.lp-markall-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;margin:0 0 14px;padding:14px;
+  background:rgba(52,201,139,.16);border:1.5px solid rgba(52,201,139,.5);
+  color:var(--green);border-radius:14px;font-weight:800;
+  font-size:calc(15px * var(--fs-scale));cursor:pointer;
+  transition:background .15s,transform .1s;
+}
+.lp-markall-btn:active{transform:scale(.97);}
+.lp-markall-btn.done{background:rgba(52,201,139,.3);}
+.lp-markall-btn:disabled{opacity:.55;cursor:default;}
+.lp-markall-btn .ic{width:20px;height:20px;}
+.lp-finish-actions{display:flex;gap:10px;justify-content:center;}
+.lp-finish-actions .btn{flex:1;justify-content:center;}
 .lp-mark-btn:active{transform:scale(.97);}
 .lp-mark-btn.done{background:rgba(52,201,139,.28);}
 .lp-mark-btn .ic{width:18px;height:18px;}
@@ -1093,10 +1112,23 @@ input[type=search]:focus-visible,select:focus-visible{outline-offset:1px;}
         <svg class="ic"><use href="#i-circle-check"/></svg>
         <span>Tekrar Say</span>
       </button>
-      <div class="lp-controls">
+      <div class="lp-controls" id="lp-controls">
         <button class="lp-btn" onclick="listenPrev()" title="Önceki"><svg class="ic"><use href="#i-prev"/></svg></button>
         <button class="lp-btn lp-btn-main" id="lp-playpause" onclick="listenTogglePause()" title="Duraklat"><svg class="ic"><use href="#i-pause"/></svg></button>
         <button class="lp-btn" onclick="listenNext()" title="Sonraki"><svg class="ic"><use href="#i-next"/></svg></button>
+      </div>
+
+      <!-- Dinleme bitince: tek dokunuşla tüm kuyruğun tekrarını say -->
+      <div class="lp-finish" id="lp-finish" style="display:none">
+        <div class="lp-finish-sub" id="lp-finish-sub"></div>
+        <button class="lp-markall-btn" id="lp-markall-btn" onclick="markAllListenReps()">
+          <svg class="ic"><use href="#i-circle-check"/></svg>
+          <span id="lp-markall-text">Hepsini Tekrar Say</span>
+        </button>
+        <div class="lp-finish-actions">
+          <button class="btn btn-ghost" onclick="restartListenMode()"><svg class="ic"><use href="#i-headphones"/></svg> Baştan Dinle</button>
+          <button class="btn btn-primary" onclick="stopListenMode()">Kapat</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3044,6 +3076,40 @@ var listenPaused = false;
 var listenStopped = true;
 var listenRunToken = 0; // her "start" çağrısında artar, eski döngüler kendini iptal eder
 var listenCurAudio = null;
+// Her kesintide (sonraki/önceki/durdur/bitiş) artar. Çalmakta olan ya da çalmak
+// üzere olan HER ses bu numarayı yanında taşır; numara değişince kendini iptal eder.
+// Ses çakışmasının ("arkadan eski cümle duyuluyor") kök çözümü budur.
+var listenSpeechSeq = 0;
+
+// Bu ses hâlâ geçerli mi? Değilse çalınmamalı / anında kesilmeli.
+function listenCancelled(token, seq){
+  if(listenStopped) return true;
+  if(token !== undefined && token !== listenRunToken) return true;
+  if(seq !== undefined && seq !== listenSpeechSeq) return true;
+  return false;
+}
+
+// Tarayıcı sesini (Web Speech) kesin olarak sustur.
+// Chrome'da tek cancel() bazen kuyrukta bekleyen cümleyi öldürmüyor —
+// önce resume(), sonra cancel(), bir tur sonra bir kez daha cancel().
+function cancelWebSpeech(){
+  if(!('speechSynthesis' in window)) return;
+  try{ speechSynthesis.resume(); }catch(e){}
+  try{ speechSynthesis.cancel(); }catch(e){}
+  setTimeout(function(){ try{ speechSynthesis.cancel(); }catch(e){} }, 60);
+  setTimeout(function(){ try{ speechSynthesis.cancel(); }catch(e){} }, 250);
+}
+
+// Çalan + sırada bekleyen tüm sesleri anında kes (Edge sesi ve tarayıcı sesi)
+function hardStopListenAudio(){
+  listenSpeechSeq++;
+  if(listenCurAudio){
+    try{ listenCurAudio.pause(); }catch(e){}
+    try{ listenCurAudio.currentTime = 0; }catch(e){}
+  }
+  cancelWebSpeech();
+  setWaveActive(false);
+}
 
 function openListenConfig(context){
   listenContext = context || 'learned';
@@ -3245,18 +3311,39 @@ function unlockListenAudio(){
   }catch(e){}
 }
 
-function playAudioBlobUrl(url){
+function playAudioBlobUrl(url, token){
   return new Promise(function(resolve, reject){
+    var seq = listenSpeechSeq;
+    // Ses hazır olana kadar cümle değişmişse hiç çalma
+    if(token !== undefined && listenCancelled(token, seq)){
+      URL.revokeObjectURL(url);
+      resolve();
+      return;
+    }
     var a = ensureListenAudio();
     listenCurAudio = a;
     var settled = false;
 
-    // Güvenlik: ses bir şekilde bitmez/hata vermezse 20 sn sonra bırak
-    var timeoutId = setTimeout(function(){ finish(reject, new Error('audio timeout')); }, 20000);
+    // Güvenlik: ses bir şekilde bitmez/hata vermezse ~20 sn sonra bırak.
+    // Duraklatılmış süre sayılmaz — yoksa uzun duraklatmadan sonra zaman aşımı
+    // yedek sese düşüp aynı cümleyi bir daha okutuyordu.
+    var idleMs = 0;
+    var guardId = setInterval(function(){
+      // İptal gözcüsü: çalarken cümle değişirse/durdurulursa sesi anında kes
+      if(token !== undefined && listenCancelled(token, seq)){
+        try{ a.pause(); }catch(e){}
+        finish(resolve);
+        return;
+      }
+      if(!listenPaused){
+        idleMs += 120;
+        if(idleMs >= 20000) finish(reject, new Error('audio timeout'));
+      }
+    }, 120);
 
     function cleanup(){
       a.onended = null; a.onerror = null;
-      clearTimeout(timeoutId);
+      clearInterval(guardId);
       URL.revokeObjectURL(url);
     }
     function finish(fn, arg){
@@ -3349,9 +3436,16 @@ function fetchEdgeTTSBlobUrl(text, voice, rate){
   });
 }
 
-function speakWebSpeechPromise(text, lang, speedMultiplier){
+function speakWebSpeechPromise(text, lang, speedMultiplier, token){
   return new Promise(function(resolve, reject){
     if(!('speechSynthesis' in window)){ reject(new Error('no speech synthesis')); return; }
+    var seq = listenSpeechSeq;
+    // Bu cümle artık güncel değilse tarayıcı sesini hiç başlatma
+    // (eski cümlenin "arkadan" duyulmasının ana sebebi buydu)
+    if(token !== undefined && listenCancelled(token, seq)){ resolve(); return; }
+    // Kuyrukta bekleyen eski konuşma kalmışsa önce temizle
+    try{ speechSynthesis.cancel(); }catch(e){}
+
     var utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang;
     utter.rate = speedMultiplier || 0.9;
@@ -3359,8 +3453,23 @@ function speakWebSpeechPromise(text, lang, speedMultiplier){
     var short = lang.split('-')[0];
     var v = voices.find(function(v){ return v.lang && v.lang.startsWith(short); });
     if(v) utter.voice = v;
-    utter.onend = resolve;
-    utter.onerror = function(){ reject(new Error('webspeech error')); };
+
+    var settled = false;
+    var guardId = setInterval(function(){
+      if(token !== undefined && listenCancelled(token, seq)){
+        cancelWebSpeech();
+        done(resolve);
+      }
+    }, 120);
+    function done(fn, arg){
+      if(settled) return;
+      settled = true;
+      clearInterval(guardId);
+      fn(arg);
+    }
+
+    utter.onend = function(){ done(resolve); };
+    utter.onerror = function(){ done(reject, new Error('webspeech error')); };
     speechSynthesis.speak(utter);
   });
 }
@@ -3373,16 +3482,30 @@ function speedToEdgeRate(speedMultiplier){
 }
 
 // Sırayla Edge TTS → Web Speech dener. Ses gerçekten çaldıysa true döner.
-function speakQueued(text, lang, edgeVoice, speedMultiplier){
+function speakQueued(text, lang, edgeVoice, speedMultiplier, token){
   var edgeRate = speedToEdgeRate(speedMultiplier);
+  var seq = listenSpeechSeq;
   return fetchEdgeTTSBlobUrl(text, edgeVoice, edgeRate)
-    .then(playAudioBlobUrl)
-    .then(function(){ return true; })
+    .then(function(url){
+      // Ses indirilirken cümle değiştiyse çalma — yoksa yeni cümlenin üstüne biniyor
+      if(token !== undefined && listenCancelled(token, seq)){
+        URL.revokeObjectURL(url);
+        return false;
+      }
+      return playAudioBlobUrl(url, token).then(function(){
+        return !(token !== undefined && listenCancelled(token, seq));
+      });
+    })
     .catch(function(){
+      // Edge TTS başarısız/zaman aşımı — bu arada cümle değiştiyse tarayıcı
+      // sesiyle ESKİ cümleyi okumaya kalkma (ses çakışmasının kaynağı)
+      if(token !== undefined && listenCancelled(token, seq)) return false;
       // Web Speech arka planda sessizdir — oraya düşmek yerine başarısız say
       if(document.hidden) return false;
-      return speakWebSpeechPromise(text, lang, speedMultiplier)
-        .then(function(){ return true; })
+      return speakWebSpeechPromise(text, lang, speedMultiplier, token)
+        .then(function(){
+          return !(token !== undefined && listenCancelled(token, seq));
+        })
         .catch(function(){ return false; });
     });
 }
@@ -3400,6 +3523,10 @@ function startListenMode(){
   listenPaused = false;
   listenStopped = false;
   listenRunToken++;
+  // Tek cümlelik seslendirme ya da önceki oturumdan kalan ses varsa sustur
+  stopCurrentAudio();
+  hardStopListenAudio();
+  hideListenFinish();
   // Kullanıcı dokunuşu HÂLÂ geçerliyken ses elemanının kilidini aç —
   // arka planda oynatmanın devam edebilmesi buna bağlı
   unlockListenAudio();
@@ -3413,17 +3540,23 @@ function startListenMode(){
 function stopListenMode(){
   listenStopped = true;
   listenRunToken++; // aktif döngüyü geçersiz kıl
-  if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
-  if('speechSynthesis' in window) speechSynthesis.cancel();
+  hardStopListenAudio();
   clearMediaSession();
+  hideListenFinish();
   document.getElementById('listen-player-overlay').classList.remove('show');
 }
 
 function listenTogglePause(){
   listenPaused = !listenPaused;
   document.getElementById('lp-playpause').innerHTML = listenPaused ? ic('play') : ic('pause');
-  if(listenPaused && listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
-  else if(!listenPaused && listenCurAudio){ try{ listenCurAudio.play(); }catch(e){} }
+  if(listenPaused){
+    if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
+    // Tarayıcı sesi de duraksın, yoksa duraklatınca arkadan okumaya devam ediyor
+    if('speechSynthesis' in window){ try{ speechSynthesis.pause(); }catch(e){} }
+  } else {
+    if(listenCurAudio){ try{ listenCurAudio.play(); }catch(e){} }
+    if('speechSynthesis' in window){ try{ speechSynthesis.resume(); }catch(e){} }
+  }
   if('mediaSession' in navigator){
     try{ navigator.mediaSession.playbackState = listenPaused ? 'paused' : 'playing'; }catch(e){}
   }
@@ -3432,18 +3565,20 @@ function listenTogglePause(){
 function listenNext(){
   if(listenIndex < listenQueue.length - 1){
     listenIndex++;
-    if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
-    if('speechSynthesis' in window) speechSynthesis.cancel();
+    // Önce token'ı değiştir, sonra sesi kes — böylece yolda olan istekler de
+    // "eskimiş" sayılıp asla çalınmaz
     listenRunToken++;
+    hardStopListenAudio();
+    hideListenFinish();
     runListenLoop(listenRunToken);
   }
 }
 function listenPrev(){
   if(listenIndex > 0){
     listenIndex--;
-    if(listenCurAudio){ try{ listenCurAudio.pause(); }catch(e){} }
-    if('speechSynthesis' in window) speechSynthesis.cancel();
     listenRunToken++;
+    hardStopListenAudio();
+    hideListenFinish();
     runListenLoop(listenRunToken);
   }
 }
@@ -3521,6 +3656,97 @@ function markCurrentListenRep(){
   }
 }
 
+// ── DİNLEME BİTİŞ EKRANI + TOPLU TEKRAR SAYMA ────────────────────────────
+// Kuyruktaki, bugün henüz tekrarı sayılmamış ezberlenmiş cümleler
+function getUnmarkedListenKeys(){
+  var seen = {}, out = [];
+  listenQueue.forEach(function(k){
+    if(seen[k]) return;
+    seen[k] = true;
+    if(!learned.has(k)) return;
+    if(hasReviewedToday(k)) return;
+    out.push(k);
+  });
+  return out;
+}
+
+// Tek dokunuşla kuyruktaki tüm cümlelerin bugünkü tekrarını işaretle.
+// markRepDone'ı tek tek çağırmak yerine hepsini yazıp TEK save + TEK yenileme
+// yapar (yüzlerce cümlede kilitlenmesin diye).
+function markAllListenReps(){
+  var keys = getUnmarkedListenKeys();
+  var btn = document.getElementById('lp-markall-btn');
+  var txt = document.getElementById('lp-markall-text');
+  if(!keys.length){
+    if(txt) txt.textContent = 'Hepsi zaten sayıldı ✓';
+    if(btn){ btn.classList.add('done'); btn.disabled = true; }
+    return;
+  }
+  var now = new Date().toISOString();
+  keys.forEach(function(k){
+    initRep(k);
+    repData[k].steps.push(now);
+  });
+  save();
+  refreshAfterRepeat();
+  if(navigator.vibrate){ try{ navigator.vibrate([18,60,18]); }catch(e){} }
+  if(btn){ btn.classList.add('done'); btn.disabled = true; }
+  if(txt) txt.textContent = keys.length + ' cümle sayıldı ✓';
+  var sub = document.getElementById('lp-finish-sub');
+  if(sub) sub.textContent = 'Tekrarlar işlendi, bir sonraki tekrar tarihleri güncellendi.';
+}
+
+function showListenFinish(){
+  var box = document.getElementById('lp-finish');
+  if(!box) return;
+  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  document.getElementById('lp-nl').textContent = '🎉 Dinleme bitti!';
+  document.getElementById('lp-tr').textContent = '';
+  document.getElementById('lp-lesson').textContent = '';
+
+  var keys = getUnmarkedListenKeys();
+  var sub = document.getElementById('lp-finish-sub');
+  var btn = document.getElementById('lp-markall-btn');
+  var txt = document.getElementById('lp-markall-text');
+  if(btn){ btn.classList.remove('done'); btn.disabled = false; }
+  if(keys.length){
+    if(sub) sub.textContent = listenQueue.length + ' cümle dinlendi. ' + keys.length + ' cümlenin bugünkü tekrarı henüz sayılmadı.';
+    if(txt) txt.textContent = 'Hepsini Tekrar Say (' + keys.length + ')';
+    if(btn) btn.style.display = '';
+  } else {
+    if(sub) sub.textContent = listenQueue.length + ' cümle dinlendi. Sayılacak tekrar kalmadı.';
+    if(btn) btn.style.display = 'none';
+  }
+  box.style.display = '';
+}
+
+function hideListenFinish(){
+  var box = document.getElementById('lp-finish');
+  if(box) box.style.display = 'none';
+  var ctrl = document.getElementById('lp-controls');
+  if(ctrl) ctrl.style.display = '';
+  ['lp-wave','lp-repeat-dots'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.style.display = '';
+  });
+}
+
+// Bitiş ekranından baştan dinlemeye dön
+function restartListenMode(){
+  if(!listenQueue.length) return;
+  hideListenFinish();
+  listenIndex = 0;
+  listenPaused = false;
+  listenStopped = false;
+  listenRunToken++;
+  hardStopListenAudio();
+  document.getElementById('lp-playpause').innerHTML = ic('pause');
+  runListenLoop(listenRunToken);
+}
+
 // [4] Ses dalgası animasyonunu aç/kapa
 function setWaveActive(on){
   var w = document.getElementById('lp-wave');
@@ -3541,7 +3767,7 @@ async function runListenLoop(token){
       updateMediaSession(info);
       setWaveActive(true);
       var played = false;
-      try{ played = await speakQueued(info.nl, 'nl-NL', EDGE_TTS_VOICE, listenSettings.speed); }catch(e){}
+      try{ played = await speakQueued(info.nl, 'nl-NL', EDGE_TTS_VOICE, listenSettings.speed, token); }catch(e){}
       setWaveActive(false);
       if(token !== listenRunToken) return;
       // Arka planda ses çıkmadıysa kuyruğu sessizce tüketme — öne dönünce
@@ -3574,9 +3800,10 @@ async function runListenLoop(token){
   }
   // Kuyruk bitti (sonraki ders yok veya otomatik geçiş kapalı)
   if(token === listenRunToken){
-    document.getElementById('lp-nl').textContent = '🎉 Bitti!';
-    document.getElementById('lp-tr').textContent = '';
-    setTimeout(function(){ if(token===listenRunToken) stopListenMode(); }, 1500);
+    // Kuyruğun kuyruğunda kalmış ses varsa sustur, sonra bitiş ekranını göster
+    hardStopListenAudio();
+    setWaveActive(false);
+    showListenFinish();
   }
 }
 
