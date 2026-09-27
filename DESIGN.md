@@ -72,6 +72,19 @@ Telefon kilitliyken/uygulama arka plandayken ses devam etmeli. Bunu bozan üç �
 
 Ayrıca: arka planda `speechSynthesis` sessizdir. Ses gerçekten çalmadıysa (`speakQueued` false döner) ve sayfa arka plandaysa kuyruk **ilerletilmez**; `waitUntilVisible()` ile öne dönülene kadar beklenir ve aynı cümle tekrar denenir.
 
+## 5d. Konuşma modu (v23)
+
+Tanıma değil üretim çalıştırır: Türkçe ipucu gösterilir, kullanıcı Hollandacasını sesli söyler, sonra kontrol eder. Kurallar:
+
+- **Ayrı tekrar kaydı.** `prodData` tanıma kaydından (`repData`) tamamen ayrıdır. Bir cümleyi tanımak onu üretebilmek demek değildir; iki sayaç birleştirilmez.
+- **Doğruluk değil akıcılık notu.** Üç düğme: Takıldım / Yavaş / Akıcı. Altlarında sonraki tekrarın zamanı yazar ("yarın", "3 gün"). Takıldım kartı aynı turda 3 kart sonra bir kez daha gelir.
+- **Düğmeler renksiz ve eşit.** Takıldım kırmızı değildir: konuşma kaygısını artıran bir ceza görüntüsü verilmez. Tek dolu (accent) düğme ekranda bir tane: soru halinde "Cevabı göster".
+- **Süre sessizce ölçülür.** İpucu ekrana geldiği andan "Cevabı göster"e kadar geçen süre. Soru ekranında sayaç yoktur (baskı yaratır); cevaptan sonra bilgi olarak görünür. 60 sn üstü ve ipucu kullanılan denemeler kayda geçmez.
+- **Tek görev, başparmak bölgesi.** Oturum tam ekrandır; kararlar ekranın alt kısmındadır, düğmeler en az 56 px (not düğmeleri 64 px).
+- **İpucu kaynağı dürüstçe yazılır.** Otomatik çeviriyse "Otomatik çeviri" notu görünür; kullanıcı "İpucunu düzenle" ile kendi ipucunu ve bir durum cümlesi (`prodCues`) yazabilir. Çeviri alınamazsa ilk harf ipucu otomatik açılır; ekran boş kalmaz.
+- **Bulut birleştirmesi damgalıdır.** `prodData`/`prodCues` anahtar bazında zaman damgasıyla (`t`/`u`), `prodLog` gün bazında en büyük değerle birleşir. v22'de kalmış bir cihaz bu alanları silse bile yerel kopya geri yazılır.
+- Hareket: kart değişiminde 180 ms kayma, cevap açılırken 250 ms belirme (durum değişimi). Başka animasyon yok.
+
 ## 5c. Günlük hatırlatma
 
 - Ayar cihaza aittir (`gb3-reminder`), profile değil.
