@@ -2,25 +2,33 @@
 
 Bu dosya, Goed Bezig (Hollandaca cümle ezber PWA'sı) arayüzünde yapılan her değişikliğin uyması gereken kuralları tanımlar. Kaynaklar: Anthropic `frontend-design` skill'i, `taste-skill`, `design-dna` ve `scrollcraft` incelemesi; yalnızca bir **ürün arayüzüne** (landing page değil) uyan kurallar alındı, Hollandaca'ya özgü kurallar eklendi.
 
-## 1. Kimlik ve renk
+## 1. Kimlik ve renk — "Delfts blauw & oranje" (v24)
 
-- Tek marka rengi: `--accent` (mavi). `--accent2` yalnızca aynı ailenin açık tonu; başka hiçbir mavi/mor/indigo hex kullanılmaz.
-- Semantik renkler sadece durum bildirir: `--green` doğru/tamamlandı, `--red` gecikmiş/silme, `--yellow` bugün/uyarı. Süs amaçlı kullanılmaz.
-- Durum asla yalnızca renkle anlatılmaz: yanına ikon veya metin eşlik eder (renk körlüğü).
-- Gradyan metin yok. Gradyan yalnızca ilerleme dolgularında (`.prog-fill`, `.journey-fill`) kalır.
-- Saf `#000`/`#fff` yok; iki tema da token'lardan beslenir. Sabit hex bir bileşene gömülmez.
-- Açık tema tek nötr aile kullanır (mavi-gri): `--bg #F4F6FA`, `--surface #FFF`, `--border #DFE3EC`. Yeşil/krem/lavanta karışımı yok.
+- **Kimlik rengi Delft mavisi:** `--accent` (açık tema `#1F3A6B`, koyu tema `#9DB0D6`), `--hero` seri kartı gibi tek "sahne" yüzeyi için. Seçili durumlar (etkin sekme yazısı, seçili ayar düğmesi, ders numarası) mavidir.
+- **Eylem rengi oranje:** `--cta` `#B8491A`. Birincil düğme, ilerleme dolguları, seri günleri, odak halkası. **Bir ekranda tek oranje birincil düğme** olur; yanındaki düğmeler beyaz yüzey + kenarlık.
+- **Zemin:** açık temada krem (`--bg #F5F1E8`, kartlar `#FFFFFF`, kenarlık `#E3DCCC`), koyu temada gece mavisi (`--bg #0F1930`, kart `#16233F`, kenarlık `#2C416D`).
+- **Dinleme oynatıcısı her iki temada da gece mavisidir** (token'lar `.listen-player-box` üzerinde yerel olarak ezilir); telefonda tam ekran.
+- Semantik renkler yalnızca durum bildirir: `--green` tamamlandı, `--red` gecikmiş/silme, `--yellow` bugün/uyarı. Oranje semantik renk değildir, eylemdir.
+- Yarı saydam tonlar sabit rgba ile değil `color-mix(in srgb, var(--token) N%, transparent)` ile yazılır; tema değişince kendiliğinden uyar.
+- Durum asla yalnızca renkle anlatılmaz: yanına ikon veya metin eşlik eder.
+- Gradyan yok (v24'te ilerleme dolguları da düz renge geçti).
+- Koyu temada oranje metin `#F0A27A` tonuna açılır (koyu zeminde `#B8491A` okunmaz).
 - Kontrast: gövde metni 4,5:1, büyük metin 3:1 (WCAG AA). `--muted` bu sınırın altına inemez.
 
 ## 2. Tipografi ve Hollandaca
 
-- Tek font ailesi: `"Segoe UI", system-ui, sans-serif`. IPA satırı için `Charis SIL` istisnası.
-- Hiyerarşi ağırlık ve renkle kurulur, boyutla bağırılmaz. Kart başlığı 13–14 px/700, cümle 14 px/500–600, yardımcı metin 11–12 px/`--muted`.
-- `<html lang="tr">`; her Hollandaca cümle öğesi `lang="nl"` taşır (`.snl`, `.rnl`, `.lc-nl`, `.pc-nl`, `.lp-nl`, `.tr-popup-nl`). Bu, ekran okuyucu ve tirelemeyi doğru dile bağlar.
-- `[lang="nl"]{hyphens:auto;overflow-wrap:anywhere}` sabittir: `arbeidsongeschiktheidsverzekering` gibi bileşik kelimeler satırı taşıramaz.
+- İki aile, net görev ayrımı: **Manrope** (`--font-ui`) arayüzün tamamı; **Fraunces** (`--font-display`) yalnızca logo, panel başlıkları, büyük sayılar (seri, hedef, istatistik) ve **odaktaki tek Hollandaca cümle** (dinleme oynatıcısı, konuşma kartı cevabı). Liste satırlarındaki cümleler Manrope kalır; yoğun listede serif yorar.
+- Fontlar Google Fonts'tan gelir; çevrimdışıyken sistem fontuna (Segoe UI / Georgia) düşer, düzen bozulmaz. IPA satırı için `Charis SIL` istisnası sürer.
+- Hiyerarşi ağırlık ve renkle kurulur. Kart başlığı 13 px/700 büyük harf + geniş aralık (yalnızca kart başlıklarında).
+- `<html lang="tr">`; her Hollandaca cümle öğesi `lang="nl"` taşır (`.snl`, `.rnl`, `.lc-nl`, `.pc-nl`, `.lp-nl`, `.sp-nl`, `.tr-popup-nl`).
+- `[lang="nl"]{hyphens:auto;overflow-wrap:anywhere}` sabittir.
 - Cümle satır uzunluğu 65ch'i geçmez (`main max-width` bunu sağlar).
-- Bayrak emojileri arayüz elemanı olarak kullanılmaz (Windows'ta bayraklar "NL"/"TR" harfine döner). Çeviri düğmesi metin rozeti `TR`; çeviri satırı ön eksiz, italik ve `--muted`.
-- Büyük harf + geniş harf aralığı (`uppercase; letter-spacing`) sadece kart başlıklarında; satır içinde kullanılmaz.
+- Bayrak emojileri yeni arayüz elemanında kullanılmaz (Windows'ta harfe döner). Çeviri düğmesi metin rozeti `TR`.
+
+## 1b. Biçim
+
+- Köşe yarıçapı hiyerarşiyi izler: büyük kartlar 20 px, ders blokları 18 px, liste kartları 16 px, düğmeler 12 px, çip ve rozetler tam yuvarlak.
+- Seri kartı tek "sahne" yüzeyidir: dolu Delft mavisi, beyaz yazı, son 7 günün Hollandaca baş harfli noktaları (çalışıldı oranje, dondurma açık mavi, bugün kesik çizgili).
 
 ## 2b. Ders listesi: varsayılan kapalı
 
@@ -109,7 +117,7 @@ Her ekran dört durumu tasarlar: yükleniyor, boş, hata, dolu.
   - **CSS mask** (`class="ib ib-volume"`): 2400+ cümle satırında tekrar eden düğmeler (ses, IPA, ✓, çöp, geri al, kapat). Satır başına DOM düğümü eklemez; 10 bin inline SVG sayfayı yavaşlatır, bu yüzden liste içinde inline SVG kullanılmaz.
 - Yeni ikon eklerken: sprite'a `<symbol id="i-ad">` ekle; liste satırında kullanılacaksa `.ib-ad{--ib:url("data:image/svg+xml;utf8,…")}` kuralı ekle.
 - Emoji yalnızca duygu/kutlama anlarında kalır: 🔥 seri alevi, 🎉 kutlama, 🚶🏃🏁 hedef yolculuğu, rozet adları. Platforma göre bozulan emojiler (bayraklar) hiç kullanılmaz.
-- Uygulama ikonu: düz `#0E7FD4` zemin, beyaz kart, mavi tik, altta Hollanda bayrağı bantları. Gradyan yok. `icon-*.png` (any), `icon-maskable-*.png` (%80 güvenli alan), `favicon-16/32.png` (tiksiz sade sürüm). Üretici betik: PowerShell + System.Drawing; yeniden üretmek için tek renk/şekil değişikliği yeterli.
+- Uygulama ikonu (v24): düz Delft mavisi `#1F3A6B` zemin, krem kart, oranje tik, altta Hollanda bayrağı bantları. Gradyan yok. Üretici: Python + Pillow. `icon-*.png` (any), `icon-maskable-*.png` (%80 güvenli alan), `favicon-16/32.png` (tiksiz sade sürüm).
 - Egzersiz ekranlarında fotoğraf/illüstrasyon yok; dikkat cümlede kalır.
 - Süs çizgiler, dekoratif noktalar, numaralı "01/02" başlıklar yok. Numara yalnızca gerçek ders/cümle sırasını gösterir.
 
