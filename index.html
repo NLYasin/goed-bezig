@@ -1133,6 +1133,7 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 
 /* Odak halkası: oranje, iki zeminde de görünür */
 :focus-visible{outline-color:var(--cta);}
+.goal-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;}
 </style>
 </head>
 <body>
@@ -1664,7 +1665,8 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
       <div id="sp-fin-slow"></div>
       <div class="sp-actions">
         <button class="sp-btn" id="sp-fin-retry" onclick="spRetryStuck()"><svg class="ic" aria-hidden="true"><use href="#i-repeat"/></svg>Takıldıklarım</button>
-        <button class="sp-btn primary" onclick="closeSpeak()">Kapat</button>
+        <button class="sp-btn" id="sp-fin-more" onclick="spContinueLearned()" style="display:none"></button>
+        <button class="sp-btn primary" id="sp-fin-close" onclick="closeSpeak()">Kapat</button>
       </div>
     </div>
   </div>
@@ -5047,9 +5049,46 @@ function buildTodayQueue(){
   return q;
 }
 
+// ── Ezberlediklerimden çalış (v25) ───────────────────────────────────────
+// Ders seçmeden, ✓ ile ezberlenmiş cümlelerden karışık tur. Tur bitince
+// "Devam et" aynı ayarla, bu zincirde görülmemiş kartlardan yeni tur açar.
+var learnOpts = { src:'new', prio:'all', size:20 };
+try{ var _lo = JSON.parse(localStorage.getItem('gb3-learnopts') || 'null'); if(_lo) learnOpts = Object.assign(learnOpts, _lo); }catch(e){}
+function saveLearnOpts(){ try{ localStorage.setItem('gb3-learnopts', JSON.stringify(learnOpts)); }catch(e){} }
+function setLearnOpt(k, v){ learnOpts[k] = v; saveLearnOpts(); renderSpeak(); }
+
+function learnedPool(opts, src){
+  var out = [];
+  src = src || opts.src;
+  learned.forEach(function(k){
+    if(!prodEligible(k)) return;
+    if(opts.prio !== 'all' && prios[k] !== opts.prio) return;
+    var e = prodData[k];
+    if(src === 'new' && e) return;
+    if(src === 'hard' && !(e && (e.g === 't' || e.g === 'y'))) return;
+    out.push(k);
+  });
+  return out;
+}
+function shuffleArr(a){
+  for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function learnedRemaining(opts, seen){
+  return learnedPool(opts).filter(function(k){ return !(seen && seen[k]); });
+}
+function startSpeakLearned(){ startSpeak('learned', { seen:{} }); }
+
 function startSpeak(mode, arg){
   var keys = [];
+  var chainSeen = null;
   if(mode === 'today') keys = buildTodayQueue();
+  else if(mode === 'learned'){
+    chainSeen = (arg && arg.seen) || {};
+    // Farklı derslerden karışık gelir (araya serpiştirme hatırlamayı güçlendirir)
+    keys = shuffleArr(learnedRemaining(learnOpts, chainSeen)).slice(0, learnOpts.size);
+    keys.forEach(function(k){ chainSeen[k] = true; });
+  }
   else if(mode === 'lesson'){
     var lesson = lessons.find(function(l){ return String(l.id) === String(arg); });
     if(lesson) lesson.sentences.forEach(function(s, idx){ var k = lesson.id + '-' + idx; if(prodEligible(k)) keys.push(k); });
@@ -5068,7 +5107,8 @@ function startSpeak(mode, arg){
     lats: [],
     requeued: {},
     revealed: false, hintUsed: false, busy: false,
-    shownAt: null, latMs: null, renderToken: 0
+    shownAt: null, latMs: null, renderToken: 0,
+    chainSeen: chainSeen
   };
   document.getElementById('sp-session').style.display = '';
   document.getElementById('sp-finish').style.display = 'none';
@@ -5285,6 +5325,23 @@ function spFinish(){
     slowBox.innerHTML = h;
   }
   document.getElementById('sp-fin-retry').style.display = sp.stuck.length ? '' : 'none';
+  // Ezberlediklerimden turunda: kalan varsa "Devam et" birincil düğme olur
+  var moreBtn = document.getElementById('sp-fin-more'), closeBtn = document.getElementById('sp-fin-close');
+  var left = (sp.mode === 'learned' && sp.chainSeen) ? learnedRemaining(learnOpts, sp.chainSeen).length : 0;
+  if(left > 0){
+    moreBtn.style.display = '';
+    moreBtn.innerHTML = ic('play') + 'Devam et (' + Math.min(left, learnOpts.size) + ')';
+    moreBtn.className = 'sp-btn primary';
+    closeBtn.className = 'sp-btn';
+  } else {
+    moreBtn.style.display = 'none';
+    closeBtn.className = 'sp-btn primary';
+  }
+}
+
+function spContinueLearned(){
+  if(!sp || sp.mode !== 'learned') return;
+  startSpeak('learned', { seen: sp.chainSeen });
 }
 
 function spRetryStuck(){
@@ -5358,6 +5415,36 @@ function renderSpeak(){
     var nextDates = track.map(function(k){ return prodData[k].n; }).filter(function(d){ return d > dateKey(); }).sort();
     var nextTxt = nextDates.length ? ' Sıradaki tekrar: ' + relDate(new Date(nextDates[0] + 'T00:00:00')).toLowerCase() + '.' : '';
     h += '<div class="spk-empty">' + ic('circle-check', 'c-green') + '<span>Bugünkü konuşma kartların bitti.' + nextTxt + '</span></div>';
+  }
+  h += '</div>';
+
+  // Ezberlediklerimden çalış
+  var todayHasWork = (due + nw) > 0;
+  var cNew = learnedPool(learnOpts, 'new').length, cAll = learnedPool(learnOpts, 'all').length, cHard = learnedPool(learnOpts, 'hard').length;
+  var poolN = learnedPool(learnOpts).length;
+  var tgl = function(key, val, label){ return '<button class="goal-btn' + (learnOpts[key] === val ? ' active' : '') + '" onclick="setLearnOpt(\'' + key + '\',' + (typeof val === 'number' ? val : '\'' + val + '\'') + ')">' + label + '</button>'; };
+  var dot = function(c){ return '<span class="dotsm" style="background:var(--' + c + ')"></span>'; };
+  h += '<div class="prog-card"><div class="prog-card-title">' + ic('check') + 'Ezberlediklerimden çalış</div>' +
+       '<div class="prog-card-desc">Ders seçmeden, ✓ ile ezberlediğin cümlelerden farklı derslerden karışık bir tur. Tur bitince tek dokunuşla devam edersin.</div>' +
+       '<div class="spk-pref-lbl">Hangileri?</div><div class="goal-toggle" style="flex-wrap:wrap">' +
+         tgl('src', 'new', 'Henüz çalışmadıklarım (' + cNew + ')') +
+         tgl('src', 'hard', 'Zorlandıklarım (' + cHard + ')') +
+         tgl('src', 'all', 'Hepsi (' + cAll + ')') +
+       '</div>' +
+       '<div class="spk-pref-lbl" style="margin-top:14px">Öncelik</div><div class="goal-toggle" style="flex-wrap:wrap">' +
+         tgl('prio', 'all', 'Tümü') + tgl('prio', 'red', dot('red') + 'Zorunlu') + tgl('prio', 'yellow', dot('yellow') + 'Önemli') + tgl('prio', 'green', dot('green') + 'Ekstra') +
+       '</div>' +
+       '<div class="spk-pref-lbl" style="margin-top:14px">Bir turda kaç kart?</div><div class="goal-toggle">' +
+         tgl('size', 10, '10') + tgl('size', 20, '20') + tgl('size', 30, '30') +
+       '</div>';
+  if(poolN > 0){
+    var n2 = Math.min(poolN, learnOpts.size);
+    h += todayHasWork
+      ? '<button class="btn btn-ghost spk-sub-btn" style="width:100%;justify-content:center" onclick="startSpeakLearned()">' + ic('play') + 'Başla (' + n2 + ' kart)</button>'
+      : '<button class="prog-action-btn" style="margin-top:14px" onclick="startSpeakLearned()">' + ic('play') + ' Başla (' + n2 + ' kart)</button>';
+  } else {
+    var why = learnOpts.src === 'new' ? 'Bu seçimde henüz çalışmadığın cümle kalmadı.' : learnOpts.src === 'hard' ? 'Zorlandığın cümle yok. Güzel.' : 'Bu öncelikte ezberlediğin cümle yok.';
+    h += '<div class="spk-empty" style="margin-top:14px">' + ic('circle-check', 'c-green') + '<span>' + why + '</span></div>';
   }
   h += '</div>';
 

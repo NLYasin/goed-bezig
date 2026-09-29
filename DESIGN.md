@@ -91,6 +91,7 @@ Tanıma değil üretim çalıştırır: Türkçe ipucu gösterilir, kullanıcı 
 - **Tek görev, başparmak bölgesi.** Oturum tam ekrandır; kararlar ekranın alt kısmındadır, düğmeler en az 56 px (not düğmeleri 64 px).
 - **İpucu kaynağı dürüstçe yazılır.** Otomatik çeviriyse "Otomatik çeviri" notu görünür; kullanıcı "İpucunu düzenle" ile kendi ipucunu ve bir durum cümlesi (`prodCues`) yazabilir. Çeviri alınamazsa ilk harf ipucu otomatik açılır; ekran boş kalmaz.
 - **Bulut birleştirmesi damgalıdır.** `prodData`/`prodCues` anahtar bazında zaman damgasıyla (`t`/`u`), `prodLog` gün bazında en büyük değerle birleşir. v22'de kalmış bir cihaz bu alanları silse bile yerel kopya geri yazılır.
+- **Ezberlediklerimden çalış (v25):** ders seçimi gerektirmeyen ana giriş. Bugünkü kartlar bittiyse bu kartın "Başla" düğmesi oranje birincil olur; bugün iş varsa ikincil (ghost) kalır. Tur sonunda devam edilebiliyorsa "Devam et" birincil, "Kapat" ikincildir.
 - Hareket: kart değişiminde 180 ms kayma, cevap açılırken 250 ms belirme (durum değişimi). Başka animasyon yok.
 
 ## 5c. Günlük hatırlatma
