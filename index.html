@@ -1134,6 +1134,48 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 /* Odak halkası: oranje, iki zeminde de görünür */
 :focus-visible{outline-color:var(--cta);}
 .goal-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+
+/* ── v26: Konuş sekmesi düzeni, akıcılık önerisi, dinlerken çeviri ── */
+.spk-hero{background:var(--hero);border-color:var(--hero);color:var(--on-hero);}
+.spk-hero-top{font-family:var(--font-display);font-weight:700;font-size:calc(22px * var(--fs-scale));line-height:1.25;}
+.spk-hero-sub{font-size:calc(14px * var(--fs-scale));color:var(--hero-soft);line-height:1.5;margin-top:6px;}
+.spk-hero-sub b{color:var(--on-hero);}
+.spk-hero .prog-action-btn{margin-top:16px;}
+.spk-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:18px;}
+.spk-wd{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.spk-wd-bar{width:100%;max-width:28px;height:44px;border-radius:6px;background:rgba(255,255,255,.10);overflow:hidden;display:flex;align-items:flex-end;}
+.spk-wd-bar i{display:block;width:100%;height:100%;background:var(--cta);transform-origin:bottom;border-radius:6px;}
+.spk-wd-n{font-size:calc(11px * var(--fs-scale));font-weight:800;min-height:1.2em;font-variant-numeric:tabular-nums;}
+.spk-wd-l{font-size:calc(11px * var(--fs-scale));color:var(--hero-soft);font-weight:700;}
+.spk-wd.today .spk-wd-l{color:var(--on-hero);text-decoration:underline;text-underline-offset:3px;}
+.spk-prog-line{font-size:calc(14px * var(--fs-scale));line-height:1.5;margin-bottom:12px;}
+.spk-stack{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--tag);border:1px solid var(--border);}
+.spk-stack i{display:block;height:100%;}
+.spk-stack i.a,.spk-legend i.a{background:var(--green);}
+.spk-stack i.y,.spk-legend i.y{background:var(--yellow);}
+.spk-stack i.t,.spk-legend i.t{background:var(--red);}
+.spk-legend i.n{background:var(--tag);border:1px solid var(--border2, var(--border));}
+.spk-legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:10px;font-size:calc(13px * var(--fs-scale));color:var(--muted);}
+.spk-legend span{display:inline-flex;align-items:center;gap:6px;}
+.spk-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.spk-legend b{color:var(--text);font-variant-numeric:tabular-nums;}
+.spk-note{font-size:calc(12px * var(--fs-scale));color:var(--muted);margin-top:8px;}
+.prog-card-desc b{color:var(--text);}
+.spk-settings summary{cursor:pointer;list-style:none;display:flex;align-items:center;min-height:28px;margin-bottom:0;}
+.spk-settings summary::-webkit-details-marker{display:none;}
+.spk-settings summary::after{content:"";margin-left:auto;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;}
+.spk-settings[open] summary::after{transform:rotate(-135deg);}
+.spk-settings[open] summary{margin-bottom:14px;}
+.sp-fluency{font-size:calc(13.5px * var(--fs-scale));line-height:1.5;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;}
+.sp-fluency span{color:var(--muted);}
+.sp-grade{position:relative;}
+.sp-grade.suggest{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent);}
+.sp-grade.suggest::before{content:"önerilen";position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:calc(10px * var(--fs-scale));font-weight:800;letter-spacing:.04em;background:var(--accent);color:var(--on-accent);padding:1px 7px;border-radius:999px;}
+.lp-tr-row{display:flex;justify-content:center;margin:-4px 0 8px;}
+.lp-tr-btn{min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--border);background:var(--tag);color:var(--text);font-size:calc(13px * var(--fs-scale));font-weight:700;display:inline-flex;align-items:center;gap:8px;cursor:pointer;}
+.lp-tr-btn.on{border-color:var(--accent);color:var(--accent);}
+.lp-tr-badge{font-size:calc(10.5px * var(--fs-scale));font-weight:800;letter-spacing:.04em;border:1.5px solid currentColor;border-radius:5px;padding:0 4px;line-height:1.5;}
+.lp-tr.loading{opacity:.6;}
 </style>
 </head>
 <body>
@@ -1339,7 +1381,10 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
       <div class="lp-progress" id="lp-progress">1 / 20</div>
       <div class="lp-lesson" id="lp-lesson"></div>
       <div class="lp-nl" id="lp-nl" lang="nl">…</div>
-      <div class="lp-tr" id="lp-tr"></div>
+      <div class="lp-tr-row" id="lp-tr-row">
+        <button class="lp-tr-btn" id="lp-tr-btn" onclick="toggleListenTr()" aria-pressed="false"><span class="lp-tr-badge">TR</span><span id="lp-tr-btn-txt">Çeviriyi göster</span></button>
+      </div>
+      <div class="lp-tr" id="lp-tr" aria-live="polite"></div>
       <div class="lp-wave" id="lp-wave">
         <div class="lp-wave-bar"></div>
         <div class="lp-wave-bar"></div>
@@ -1646,6 +1691,7 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
         <button class="sp-btn" id="sp-hint-btn" onclick="spShowHint()"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>İpucu</button>
         <button class="sp-btn primary" id="sp-reveal-btn" onclick="spReveal()"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg>Cevabı göster</button>
       </div>
+      <div class="sp-fluency" id="sp-fluency" style="display:none"></div>
       <div class="sp-grades" id="sp-grades" style="display:none">
         <button class="sp-grade" onclick="spGrade('t')"><b>Takıldım</b><span id="sp-g-t"></span></button>
         <button class="sp-grade" onclick="spGrade('y')"><b>Yavaş</b><span id="sp-g-y"></span></button>
@@ -3955,6 +4001,7 @@ function updateListenPlayerUI(key, repeatDone){
     nlEl.classList.add('swapping');
   }
   nlEl.textContent = info.nl;
+  updateListenTr(key);
 
   var dotsEl = document.getElementById('lp-repeat-dots');
   dotsEl.innerHTML = '';
@@ -4040,10 +4087,35 @@ function markAllListenReps(){
   if(sub) sub.textContent = 'Tekrarlar işlendi, bir sonraki tekrar tarihleri güncellendi.';
 }
 
+// ── Dinlerken çeviri (v26) ───────────────────────────────────────────────
+// Açıkken her cümlenin Türkçesi gösterilir; tercih cihazda hatırlanır.
+// Kaynak sırası Konuş ile aynı: kendi ipucun → uygulama içi → önbellek → çeviri servisi.
+var listenShowTr = false;
+try{ listenShowTr = localStorage.getItem('gb3-listen-tr') === '1'; }catch(e){}
+function toggleListenTr(){
+  listenShowTr = !listenShowTr;
+  try{ localStorage.setItem('gb3-listen-tr', listenShowTr ? '1' : '0'); }catch(e){}
+  if(_currentListenKey) updateListenTr(_currentListenKey);
+}
+function updateListenTr(key){
+  var btn = document.getElementById('lp-tr-btn'), out = document.getElementById('lp-tr');
+  if(!btn || !out) return;
+  btn.classList.toggle('on', listenShowTr);
+  btn.setAttribute('aria-pressed', listenShowTr ? 'true' : 'false');
+  document.getElementById('lp-tr-btn-txt').textContent = listenShowTr ? 'Çeviriyi gizle' : 'Çeviriyi göster';
+  if(!listenShowTr){ out.textContent = ''; out.classList.remove('loading'); return; }
+  out.textContent = 'Çeviriliyor…'; out.classList.add('loading');
+  getPromptTr(key).then(function(r){
+    if(_currentListenKey !== key || !listenShowTr) return;
+    out.classList.remove('loading');
+    out.textContent = r.text || 'Çeviri alınamadı (bağlantı yok gibi görünüyor).';
+  });
+}
+
 function showListenFinish(){
   var box = document.getElementById('lp-finish');
   if(!box) return;
-  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls'].forEach(function(id){
+  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-tr-row'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = 'none';
   });
@@ -4072,6 +4144,8 @@ function hideListenFinish(){
   if(box) box.style.display = 'none';
   var ctrl = document.getElementById('lp-controls');
   if(ctrl) ctrl.style.display = '';
+  var trRow = document.getElementById('lp-tr-row');
+  if(trRow) trRow.style.display = '';
   ['lp-wave','lp-repeat-dots'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = '';
@@ -4976,7 +5050,7 @@ function prodSlowKeys(n){
 function updateSpeakBadge(){
   var el = document.getElementById('tbg-speak');
   if(!el) return;
-  try{ el.textContent = prodDueKeys().length + prodNewCandidates().length; }catch(e){}
+  try{ el.textContent = prodDueKeys().length; }catch(e){}
 }
 
 // ── Türkçe ipucu ─────────────────────────────────────────────────────────
@@ -5079,10 +5153,63 @@ function learnedRemaining(opts, seen){
 }
 function startSpeakLearned(){ startSpeak('learned', { seen:{} }); }
 
+// ── Akıcılık ölçüsü (v26) ────────────────────────────────────────────────
+// Süre = ipucu ekrana gelince başlar, "Cevabı göster"e basınca biter; yani
+// hatırlama + cümleyi sesli söyleme süresi. Hedef cümlenin uzunluğuna göre:
+//   Akıcı : ~1,5 sn içinde başla + saniyede ~3 hece (ileri düzey L2 konuşma hızı)
+//   Yavaş : ~3 sn içinde başla + saniyede ~2 hece
+// Hollandaca hece sayısı ünlü kümelerinden yaklaşık hesaplanır (ij, ui, oe… tek hece).
+function countSyllablesNL(nl){
+  var words = String(nl).toLowerCase().match(/[a-zà-ÿ]+/g) || [];
+  var n = 0;
+  words.forEach(function(w){ var m = w.match(/[aeiouyàáâäèéêëìíîïòóôöùúûü]+/g); n += m ? m.length : 1; });
+  return Math.max(1, n);
+}
+function fluencyTarget(nl){
+  var syl = countSyllablesNL(nl);
+  return { syl: syl, akici: Math.round(1500 + syl * 1000 / 3), yavas: Math.round(3000 + syl * 500) };
+}
+function suggestGrade(nl, ms, hintUsed){
+  if(ms == null) return null;
+  var t = fluencyTarget(nl);
+  if(ms <= t.akici && !hintUsed) return 'a';
+  if(ms <= t.yavas) return 'y';
+  return 't';
+}
+function prodRatio(k){                       // ortalama süre / akıcı hedefi
+  var avg = prodAvgLat(k);
+  return avg ? avg / fluencyTarget(SMAP[k].nl).akici : 0;
+}
+
+// ── Ana tur: önce zamanı gelen tekrarlar, sonra ezberlediklerinden yenileri ──
+function mainRemaining(seen){
+  seen = seen || {};
+  var due = prodDueKeys().filter(function(k){ return !seen[k]; });
+  var fill = learnedPool(learnOpts).filter(function(k){ return !seen[k] && due.indexOf(k) === -1; });
+  return { due: due, fill: fill };
+}
+function buildMainQueue(seen){
+  var r = mainRemaining(seen), size = learnOpts.size;
+  var due = r.due.slice(0, size);
+  var fill = shuffleArr(r.fill).slice(0, Math.max(0, size - due.length));
+  // Yeniler tekrarların arasına serpiştirilir (her 3 tekrardan sonra 1 yeni)
+  var q = [], di = 0, ni = 0;
+  while(di < due.length || ni < fill.length){
+    for(var j = 0; j < 3 && di < due.length; j++) q.push(due[di++]);
+    if(ni < fill.length) q.push(fill[ni++]);
+  }
+  return q;
+}
+
 function startSpeak(mode, arg){
   var keys = [];
   var chainSeen = null;
   if(mode === 'today') keys = buildTodayQueue();
+  else if(mode === 'main'){
+    chainSeen = (arg && arg.seen) || {};
+    keys = buildMainQueue(chainSeen);
+    keys.forEach(function(k){ chainSeen[k] = true; });
+  }
   else if(mode === 'learned'){
     chainSeen = (arg && arg.seen) || {};
     // Farklı derslerden karışık gelir (araya serpiştirme hatırlamayı güçlendirir)
@@ -5166,6 +5293,7 @@ function spRender(){
   document.getElementById('sp-edit').style.display = 'none';
   document.getElementById('sp-q-actions').style.display = '';
   document.getElementById('sp-grades').style.display = 'none';
+  document.getElementById('sp-fluency').style.display = 'none';
 
   var token = ++sp.renderToken;
   getPromptTr(key).then(function(r){
@@ -5205,7 +5333,17 @@ function spReveal(){
   }
   var item = sp.queue[sp.i], key = item.key, s = SMAP[key], e = prodData[key];
   document.getElementById('sp-nl').textContent = s.nl;
+  var tgt = fluencyTarget(s.nl);
+  sp.suggest = item.again ? null : suggestGrade(s.nl, sp.latMs, sp.hintUsed);
   document.getElementById('sp-lat').innerHTML = sp.latMs !== null ? ic('clock') + ' ' + fmtSec(sp.latMs) : '';
+  var fb = document.getElementById('sp-fluency');
+  if(sp.latMs !== null){
+    var verdict = sp.suggest === 'a' ? 'akıcı hedefinin altında' : sp.suggest === 'y' ? 'yavaş aralıkta' : 'hedefin çok üstünde';
+    if(sp.hintUsed && sp.latMs <= tgt.akici) verdict = 'ipucuyla, bu yüzden en fazla yavaş';
+    fb.innerHTML = '<b>' + fmtSec(sp.latMs) + '</b> sürdü, ' + verdict + '. <span>Akıcı hedefi bu cümle için ' + fmtSec(tgt.akici) + ' (' + tgt.syl + ' hece).</span>';
+    fb.style.display = '';
+  } else { fb.style.display = 'none'; }
+  ['t','y','a'].forEach(function(g){ document.getElementById('sp-g-' + g).parentNode.classList.toggle('suggest', sp.suggest === g); });
   ['t','y','a'].forEach(function(g){
     var txt = item.again ? 'bu turda' : (g === 't' ? 'birazdan' : fmtDays(prodNextStep(e, g).days));
     document.getElementById('sp-g-' + g).textContent = txt;
@@ -5313,7 +5451,9 @@ function spFinish(){
     sub += ' Ortanca yanıt süren ' + fmtSec(sorted[Math.floor(sorted.length / 2)]) + '.';
   }
   var due = prodDueKeys().length;
-  if(sp.mode === 'today' && due > 0) sub += ' Bugün için ' + due + ' kart daha var.';
+  if((sp.mode === 'today' || sp.mode === 'main') && due > 0) sub += ' Zamanı gelen ' + due + ' tekrar daha var.';
+  var fl = sp.lats.filter(function(x){ return x.ms <= fluencyTarget(SMAP[x.key].nl).akici; }).length;
+  if(sp.lats.length) sub += ' ' + sp.lats.length + ' kalıbın ' + fl + ' tanesini akıcılık hedefinin altında söyledin.';
   document.getElementById('sp-fin-sub').textContent = sub;
 
   var slowBox = document.getElementById('sp-fin-slow');
@@ -5321,13 +5461,15 @@ function spFinish(){
   var slow = sp.lats.slice().sort(function(a, b){ return b.ms - a.ms; }).slice(0, 3);
   if(slow.length >= 2){
     var h = '<div class="sp-lbl">Bu turda en yavaş gelenler</div>';
-    slow.forEach(function(x){ h += spkRowHtml(x.key, fmtSec(x.ms)); });
+    slow.forEach(function(x){ h += spkRowHtml(x.key, fmtSec(x.ms) + ' / ' + fmtSec(fluencyTarget(SMAP[x.key].nl).akici)); });
     slowBox.innerHTML = h;
   }
   document.getElementById('sp-fin-retry').style.display = sp.stuck.length ? '' : 'none';
   // Ezberlediklerimden turunda: kalan varsa "Devam et" birincil düğme olur
   var moreBtn = document.getElementById('sp-fin-more'), closeBtn = document.getElementById('sp-fin-close');
-  var left = (sp.mode === 'learned' && sp.chainSeen) ? learnedRemaining(learnOpts, sp.chainSeen).length : 0;
+  var left = 0;
+  if(sp.mode === 'learned' && sp.chainSeen) left = learnedRemaining(learnOpts, sp.chainSeen).length;
+  if(sp.mode === 'main' && sp.chainSeen){ var mr = mainRemaining(sp.chainSeen); left = mr.due.length + mr.fill.length; }
   if(left > 0){
     moreBtn.style.display = '';
     moreBtn.innerHTML = ic('play') + 'Devam et (' + Math.min(left, learnOpts.size) + ')';
@@ -5340,8 +5482,9 @@ function spFinish(){
 }
 
 function spContinueLearned(){
-  if(!sp || sp.mode !== 'learned') return;
-  startSpeak('learned', { seen: sp.chainSeen });
+  if(!sp) return;
+  if(sp.mode === 'main') startSpeak('main', { seen: sp.chainSeen });
+  else if(sp.mode === 'learned') startSpeak('learned', { seen: sp.chainSeen });
 }
 
 function spRetryStuck(){
@@ -5383,102 +5526,111 @@ function spkRowHtml(key, badge){
 }
 
 function setProdNewPerDay(n){ prodPrefs.newPerDay = n; saveProdLocal(); renderSpeak(); updateSpeakBadge(); }
+
 function setProdAutoAudio(on){ prodPrefs.autoAudio = on; saveProdLocal(); renderSpeak(); }
 function startSpeakLesson(){ var v = document.getElementById('spk-lesson').value; if(v) startSpeak('lesson', v); }
+function startSpeakMain(){ startSpeak('main', { seen:{} }); }
 
+// Konuş sekmesi (v26): tek ana eylem, görünür ilerleme, ayarlar katlanır kutuda.
 function renderSpeak(){
   var el = document.getElementById('spk-cont');
   if(!el) return;
-  var due = prodDueKeys().length, nw = prodNewCandidates().length;
-  var track = Object.keys(prodData).filter(prodEligible);
-  var fluent = track.filter(function(k){ return prodData[k].g === 'a'; }).length;
-  var h = '';
+  var dk = dateKey();
+  var r = mainRemaining({});
+  var due = r.due.length, fillN = r.fill.length;
+  var size = learnOpts.size;
+  var dueIn = Math.min(due, size), fillIn = Math.min(fillN, size - dueIn);
+  var todayN = (prodLog[dk] && prodLog[dk].n) || 0;
 
-  h += '<div class="spk-intro"><div class="ptitle">' + ic('microphone') + 'Konuşma</div>' +
-       '<div class="psub">Türkçeyi gör, Hollandacasını sesli söyle, sonra kontrol et. Ezberlediğin cümleler burada üretme kartına dönüşür.</div></div>';
+  // Ezberlenen (✓) cümlelerin konuşmadaki durumu
+  var base = []; learned.forEach(function(k){ if(prodEligible(k)) base.push(k); });
+  var cnt = { a:0, y:0, t:0, none:0 };
+  base.forEach(function(k){ var e = prodData[k]; if(!e || !e.g) cnt.none++; else cnt[e.g] = (cnt[e.g] || 0) + 1; });
+  var total = base.length || 1;
+  var fillLbl = learnOpts.src === 'hard' ? 'zorlandığın' : learnOpts.src === 'all' ? 'karışık' : 'yeni';
 
-  // Bugün
-  h += '<div class="prog-card"><div class="prog-card-title">' + ic('calendar') + 'Bugün</div>';
-  h += '<div class="sp-stats" style="margin-bottom:14px">' +
-       '<div class="sp-stat"><div class="sp-stat-num">' + due + '</div><div class="sp-stat-lbl">tekrar</div></div>' +
-       '<div class="sp-stat"><div class="sp-stat-num">' + nw + '</div><div class="sp-stat-lbl">yeni kalıp</div></div>' +
-       '<div class="sp-stat"><div class="sp-stat-num">' + fluent + '<span style="font-size:.5em;color:var(--muted);font-weight:700"> / ' + track.length + '</span></div><div class="sp-stat-lbl">akıcı</div></div>' +
-       '</div>';
-  if(due + nw > 0){
-    var n = Math.min(SP_MAX, due + nw);
-    h += '<button class="prog-action-btn" onclick="startSpeak(\'today\')">' + ic('microphone') + ' Konuşmaya başla (' + n + ' kart)</button>';
-  } else if(learned.size === 0){
-    h += '<div class="spk-empty">' + ic('book') + '<span>Önce Ezber Listesi\'nde birkaç cümleyi ✓ ile işaretle. Ezberlediğin cümleler her gün birkaçar birkaçar buraya gelir.</span></div>';
-  } else if(prodPrefs.newPerDay === 0 && track.length === 0){
-    h += '<div class="spk-empty">' + ic('alert') + '<span>Günlük yeni kalıp sayısı 0. Aşağıdan artırırsan ezberlediğin cümleler gelmeye başlar.</span></div>';
+  var h = '<div class="spk-intro"><div class="ptitle">' + ic('microphone') + 'Konuşma</div>' +
+          '<div class="psub">Türkçeyi gör, Hollandacasını sesli söyle, sonra kontrol et.</div></div>';
+
+  // 1) Ana kart
+  h += '<div class="prog-card spk-hero">';
+  if(learned.size === 0){
+    h += '<div class="spk-hero-top">Henüz konuşacak cümle yok</div>' +
+         '<div class="spk-hero-sub">Ezber Listesi\'nde cümleleri ✓ ile işaretledikçe burada konuşma kartına dönüşürler.</div>';
   } else {
-    var nextDates = track.map(function(k){ return prodData[k].n; }).filter(function(d){ return d > dateKey(); }).sort();
-    var nextTxt = nextDates.length ? ' Sıradaki tekrar: ' + relDate(new Date(nextDates[0] + 'T00:00:00')).toLowerCase() + '.' : '';
-    h += '<div class="spk-empty">' + ic('circle-check', 'c-green') + '<span>Bugünkü konuşma kartların bitti.' + nextTxt + '</span></div>';
+    h += '<div class="spk-hero-top">' + (todayN ? 'Bugün ' + todayN + ' kalıp söyledin' : 'Bugün henüz konuşmadın') + '</div>';
+    if(dueIn + fillIn > 0){
+      var parts = [];
+      if(dueIn) parts.push('<b>' + dueIn + '</b> tekrar');
+      if(fillIn) parts.push('<b>' + fillIn + '</b> ' + fillLbl + ' kalıp');
+      h += '<div class="spk-hero-sub">Sıradaki tur: ' + parts.join(' + ') + (due > size ? '. Zamanı gelen tekrar sayısı ' + due + '.' : '.') + '</div>' +
+           '<button class="prog-action-btn" onclick="startSpeakMain()">' + ic('microphone') + ' Başla (' + (dueIn + fillIn) + ' kart)</button>';
+    } else {
+      h += '<div class="spk-hero-sub">Zamanı gelen tekrar yok ve bu ayarda çalışılacak ' + fillLbl + ' kalıp kalmadı. Aşağıdaki tur ayarlarından "Hepsi"ni seçebilirsin.</div>';
+    }
+    // Son 7 gün
+    var days = ['Pz','Pt','Sa','Ça','Pe','Cu','Ct'], mx = 1, arr = [];
+    for(var i = 6; i >= 0; i--){ var d = addDays(today(), -i), k = dateKey(d), n = (prodLog[k] && prodLog[k].n) || 0; arr.push({ d:d, n:n, t: i === 0 }); if(n > mx) mx = n; }
+    h += '<div class="spk-week" aria-label="Son 7 günde söylenen kalıp sayısı">';
+    arr.forEach(function(x){
+      h += '<div class="spk-wd' + (x.t ? ' today' : '') + '"><div class="spk-wd-bar"><i style="transform:scaleY(' + (x.n / mx).toFixed(3) + ')"></i></div>' +
+           '<span class="spk-wd-n">' + (x.n || '') + '</span><span class="spk-wd-l">' + days[x.d.getDay()] + '</span></div>';
+    });
+    h += '</div>';
   }
   h += '</div>';
 
-  // Ezberlediklerimden çalış
-  var todayHasWork = (due + nw) > 0;
-  var cNew = learnedPool(learnOpts, 'new').length, cAll = learnedPool(learnOpts, 'all').length, cHard = learnedPool(learnOpts, 'hard').length;
-  var poolN = learnedPool(learnOpts).length;
+  // 2) İlerleme
+  if(base.length){
+    var started = base.length - cnt.none;
+    var seg = function(n, cls){ return n ? '<i class="' + cls + '" style="width:' + (n / total * 100).toFixed(2) + '%"></i>' : ''; };
+    h += '<div class="prog-card"><div class="prog-card-title">' + ic('chart') + 'İlerleme</div>' +
+         '<div class="spk-prog-line">Ezberlediğin <b>' + base.length + '</b> cümlenin <b>' + started + '</b> tanesini en az bir kez sesli söyledin.</div>' +
+         '<div class="spk-stack" role="img" aria-label="Akıcı ' + cnt.a + ', yavaş ' + cnt.y + ', takıldım ' + cnt.t + ', henüz söylenmedi ' + cnt.none + '">' +
+           seg(cnt.a, 'a') + seg(cnt.y, 'y') + seg(cnt.t, 't') + '</div>' +
+         '<div class="spk-legend">' +
+           '<span><i class="a"></i>Akıcı <b>' + cnt.a + '</b></span>' +
+           '<span><i class="y"></i>Yavaş <b>' + cnt.y + '</b></span>' +
+           '<span><i class="t"></i>Takıldım <b>' + cnt.t + '</b></span>' +
+           '<span><i class="n"></i>Henüz söylenmedi <b>' + cnt.none + '</b></span>' +
+         '</div><div class="spk-note">Her cümle en son verdiğin nota göre sayılır.</div></div>';
+  }
+
+  // 3) Akıcılık ölçüsü + en yavaşlar
+  var slow = Object.keys(prodData).filter(function(k){ return prodEligible(k) && prodData[k].lat && prodData[k].lat.length; })
+    .sort(function(a, b){ return prodRatio(b) - prodRatio(a); }).slice(0, 8)
+    .filter(function(k){ return prodRatio(k) > 1; });
+  h += '<div class="prog-card"><div class="prog-card-title">' + ic('clock') + 'Akıcılık ölçüsü</div>' +
+       '<div class="prog-card-desc">Süre, Türkçe ipucu ekrana geldiği andan "Cevabı göster"e bastığın ana kadar ölçülür; yani hatırlama artı cümleyi sesli söyleme. Bir cümle <b>akıcı</b> sayılır: yaklaşık 1,5 saniye içinde başlayıp saniyede 3 hece hızında söylersen. <b>Yavaş</b>: 3 saniye içinde başlayıp saniyede 2 hece. Örnek: "Ik leg het nog een keer uit" 7 hece; akıcı hedefi ' + fmtSec(fluencyTarget('Ik leg het nog een keer uit').akici) + ', yavaş sınırı ' + fmtSec(fluencyTarget('Ik leg het nog een keer uit').yavas) + '. Uygulama süreye göre bir not önerir; doğru söyleyip söylemediğine sen karar verirsin.</div>';
+  if(slow.length){
+    h += '<div class="sp-lbl" style="margin-top:14px">Hedefin en çok üstünde kalanlar</div>';
+    slow.forEach(function(k){ h += spkRowHtml(k, fmtSec(prodAvgLat(k)) + ' / ' + fmtSec(fluencyTarget(SMAP[k].nl).akici)); });
+    h += '<button class="btn btn-ghost spk-sub-btn" onclick="startSpeak(\'keys\', ' + JSON.stringify(slow).replace(/"/g, '&quot;') + ')">' + ic('repeat') + 'Bunları çalış</button>';
+  }
+  h += '</div>';
+
+  // 4) Tur ayarları (katlanır)
   var tgl = function(key, val, label){ return '<button class="goal-btn' + (learnOpts[key] === val ? ' active' : '') + '" onclick="setLearnOpt(\'' + key + '\',' + (typeof val === 'number' ? val : '\'' + val + '\'') + ')">' + label + '</button>'; };
   var dot = function(c){ return '<span class="dotsm" style="background:var(--' + c + ')"></span>'; };
-  h += '<div class="prog-card"><div class="prog-card-title">' + ic('check') + 'Ezberlediklerimden çalış</div>' +
-       '<div class="prog-card-desc">Ders seçmeden, ✓ ile ezberlediğin cümlelerden farklı derslerden karışık bir tur. Tur bitince tek dokunuşla devam edersin.</div>' +
-       '<div class="spk-pref-lbl">Hangileri?</div><div class="goal-toggle" style="flex-wrap:wrap">' +
-         tgl('src', 'new', 'Henüz çalışmadıklarım (' + cNew + ')') +
-         tgl('src', 'hard', 'Zorlandıklarım (' + cHard + ')') +
-         tgl('src', 'all', 'Hepsi (' + cAll + ')') +
+  var cNew = learnedPool(learnOpts, 'new').length, cAll = learnedPool(learnOpts, 'all').length, cHard = learnedPool(learnOpts, 'hard').length;
+  h += '<details class="prog-card spk-settings"' + (window._spkSettingsOpen ? ' open' : '') + ' ontoggle="window._spkSettingsOpen=this.open">' +
+       '<summary class="prog-card-title">' + ic('settings') + 'Tur ayarları</summary>' +
+       '<div class="spk-pref-lbl">Tekrarlardan sonra ne gelsin?</div><div class="goal-toggle" style="flex-wrap:wrap">' +
+         tgl('src', 'new', 'Yeni kalıplar (' + cNew + ')') + tgl('src', 'hard', 'Zorlandıklarım (' + cHard + ')') + tgl('src', 'all', 'Hepsi, karışık (' + cAll + ')') +
        '</div>' +
        '<div class="spk-pref-lbl" style="margin-top:14px">Öncelik</div><div class="goal-toggle" style="flex-wrap:wrap">' +
          tgl('prio', 'all', 'Tümü') + tgl('prio', 'red', dot('red') + 'Zorunlu') + tgl('prio', 'yellow', dot('yellow') + 'Önemli') + tgl('prio', 'green', dot('green') + 'Ekstra') +
        '</div>' +
        '<div class="spk-pref-lbl" style="margin-top:14px">Bir turda kaç kart?</div><div class="goal-toggle">' +
-         tgl('size', 10, '10') + tgl('size', 20, '20') + tgl('size', 30, '30') +
-       '</div>';
-  if(poolN > 0){
-    var n2 = Math.min(poolN, learnOpts.size);
-    h += todayHasWork
-      ? '<button class="btn btn-ghost spk-sub-btn" style="width:100%;justify-content:center" onclick="startSpeakLearned()">' + ic('play') + 'Başla (' + n2 + ' kart)</button>'
-      : '<button class="prog-action-btn" style="margin-top:14px" onclick="startSpeakLearned()">' + ic('play') + ' Başla (' + n2 + ' kart)</button>';
-  } else {
-    var why = learnOpts.src === 'new' ? 'Bu seçimde henüz çalışmadığın cümle kalmadı.' : learnOpts.src === 'hard' ? 'Zorlandığın cümle yok. Güzel.' : 'Bu öncelikte ezberlediğin cümle yok.';
-    h += '<div class="spk-empty" style="margin-top:14px">' + ic('circle-check', 'c-green') + '<span>' + why + '</span></div>';
-  }
-  h += '</div>';
-
-  // En yavaşlar
-  var slow = prodSlowKeys(10);
-  h += '<div class="prog-card"><div class="prog-card-title">' + ic('clock') + 'En yavaş gelen kalıplar</div>';
-  if(slow.length){
-    h += '<div class="prog-card-desc">Son üç denemedeki ortalama yanıt süresine göre. Otomatikleşmemiş kalıplar bunlar.</div>';
-    slow.forEach(function(k){ h += spkRowHtml(k, fmtSec(prodAvgLat(k))); });
-    h += '<button class="btn btn-ghost spk-sub-btn" onclick="startSpeak(\'slow\')">' + ic('repeat') + 'Bunları çalış</button>';
-  } else {
-    h += '<div class="spk-empty">' + ic('clock') + '<span>Henüz ölçüm yok. Birkaç turdan sonra en zor gelen kalıpların burada listelenir.</span></div>';
-  }
-  h += '</div>';
-
-  // Ders seçerek
-  h += '<div class="prog-card"><div class="prog-card-title">' + ic('book') + 'Ders seçerek çalış</div>' +
-       '<div class="prog-card-desc">Seçtiğin dersin bütün cümleleri gelir, ezberlemediklerin de. Ofis Hollandacası gibi bölümleri hedefli çalışmak için.</div>' +
-       '<div class="spk-lesson-row"><label for="spk-lesson" class="sr-only" style="position:absolute;left:-9999px">Ders</label><select id="spk-lesson">';
-  lessons.forEach(function(l){
-    h += '<option value="' + l.id + '">' + escHtml(l.title + (l.tag ? ' (' + l.tag + ')' : '')) + '</option>';
-  });
-  h += '</select><button class="btn btn-primary" onclick="startSpeakLesson()">Başla</button></div></div>';
-
-  // Ayarlar
-  h += '<div class="prog-card"><div class="prog-card-title">' + ic('settings') + 'Konuşma ayarları</div>';
-  h += '<div class="spk-pref-lbl">Günde kaç yeni kalıp gelsin?</div><div class="goal-toggle">';
-  [0, 3, 5, 10, 20].forEach(function(v){
-    h += '<button class="goal-btn' + (prodPrefs.newPerDay === v ? ' active' : '') + '" onclick="setProdNewPerDay(' + v + ')">' + v + '</button>';
-  });
-  h += '</div><div class="spk-pref-lbl" style="margin-top:16px">Cevabı gösterince sesi çal</div><div class="theme-toggle">' +
-       '<button class="theme-btn' + (prodPrefs.autoAudio ? ' active' : '') + '" onclick="setProdAutoAudio(true)">Açık</button>' +
-       '<button class="theme-btn' + (!prodPrefs.autoAudio ? ' active' : '') + '" onclick="setProdAutoAudio(false)">Kapalı</button>' +
-       '</div></div>';
+         tgl('size', 10, '10') + tgl('size', 20, '20') + tgl('size', 30, '30') + '</div>' +
+       '<div class="spk-pref-lbl" style="margin-top:14px">Cevabı gösterince sesi çal</div><div class="theme-toggle">' +
+         '<button class="theme-btn' + (prodPrefs.autoAudio ? ' active' : '') + '" onclick="setProdAutoAudio(true)">Açık</button>' +
+         '<button class="theme-btn' + (!prodPrefs.autoAudio ? ' active' : '') + '" onclick="setProdAutoAudio(false)">Kapalı</button></div>' +
+       '<div class="spk-pref-lbl" style="margin-top:16px">Belirli bir dersi çalış</div>' +
+       '<div class="prog-card-desc" style="margin-bottom:8px">Seçtiğin dersin bütün cümleleri gelir, ezberlemediklerin de.</div>' +
+       '<div class="spk-lesson-row"><label for="spk-lesson" style="position:absolute;left:-9999px">Ders</label><select id="spk-lesson">';
+  lessons.forEach(function(l){ h += '<option value="' + l.id + '">' + escHtml(l.title + (l.tag ? ' (' + l.tag + ')' : '')) + '</option>'; });
+  h += '</select><button class="btn btn-ghost" onclick="startSpeakLesson()">Başla</button></div></details>';
 
   el.innerHTML = h;
   var sel = document.getElementById('spk-lesson');
