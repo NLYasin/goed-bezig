@@ -93,6 +93,7 @@ Tanıma değil üretim çalıştırır: Türkçe ipucu gösterilir, kullanıcı 
 - **Bulut birleştirmesi damgalıdır.** `prodData`/`prodCues` anahtar bazında zaman damgasıyla (`t`/`u`), `prodLog` gün bazında en büyük değerle birleşir. v22'de kalmış bir cihaz bu alanları silse bile yerel kopya geri yazılır.
 - **Konuş sekmesi (v26):** ekranda tek oranje eylem ("Başla"); ilerleme her zaman görünür (bugün söylenen sayı, 7 günlük çubuklar, Akıcı/Yavaş/Takıldım dağılımı). Seçenekler katlanır "Tur ayarları" içinde; varsayılan görünümde ayar kalabalığı yok.
 - **Akıcılık önerisi (v26):** cevaptan sonra süre ve cümleye özel hedef yazılır; önerilen not düğmesi accent kenarlık + "önerilen" etiketiyle işaretlenir. Renkle değil etiketle anlatılır; karar kullanıcıda.
+- **Okuma payı (v27):** süre ölçümü Türkçe ipucunu okuma payından sonra başlar; pay, ipucunun altında ince, renksiz (muted) bir çizginin dolmasıyla gösterilir. Geri sayım rakamı yok.
 - **Dinlerken çeviri (v26):** oynatıcıda "TR" rozetli aç/kapa düğmesi (`aria-pressed`), açık durum accent kenarlık.
 - **Ezberlediklerimden çalış (v25):** ders seçimi gerektirmeyen ana giriş. Bugünkü kartlar bittiyse bu kartın "Başla" düğmesi oranje birincil olur; bugün iş varsa ikincil (ghost) kalır. Tur sonunda devam edilebiliyorsa "Devam et" birincil, "Kapat" ikincildir.
 - Hareket: kart değişiminde 180 ms kayma, cevap açılırken 250 ms belirme (durum değişimi). Başka animasyon yok.

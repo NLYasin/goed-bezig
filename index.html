@@ -1176,6 +1176,8 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 .lp-tr-btn.on{border-color:var(--accent);color:var(--accent);}
 .lp-tr-badge{font-size:calc(10.5px * var(--fs-scale));font-weight:800;letter-spacing:.04em;border:1.5px solid currentColor;border-radius:5px;padding:0 4px;line-height:1.5;}
 .lp-tr.loading{opacity:.6;}
+.sp-read{height:3px;border-radius:2px;background:var(--border);overflow:hidden;margin-top:10px;max-width:220px;}
+.sp-read i{display:block;height:100%;width:100%;background:var(--muted);transform:scaleX(0);transform-origin:left center;}
 </style>
 </head>
 <body>
@@ -1660,6 +1662,7 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
           <div class="sp-lbl">Türkçe</div>
           <div class="sp-tr" id="sp-tr"></div>
           <div class="sp-src" id="sp-src"></div>
+          <div class="sp-read" id="sp-read" aria-hidden="true"><i id="sp-read-fill"></i></div>
         </div>
         <div class="sp-sit" id="sp-sit" style="display:none"><svg class="ic" aria-hidden="true"><use href="#i-message"/></svg><span id="sp-sit-text"></span></div>
         <div class="sp-hint" id="sp-hint" lang="nl" style="display:none"></div>
@@ -5153,6 +5156,31 @@ function learnedRemaining(opts, seen){
 }
 function startSpeakLearned(){ startSpeak('learned', { seen:{} }); }
 
+// ── Okuma payı (v27) ─────────────────────────────────────────────────────
+// Türkçe ipucunu okumak için süre sayılmadan önce tanınan pay:
+// 0,6 sn + kelime başına 0,18 sn, en az 1 sn, en fazla 2,5 sn.
+function readingGrace(trText){
+  var w = (String(trText || '').match(/\S+/g) || []).length;
+  return Math.max(1000, Math.min(2500, 600 + w * 180));
+}
+function spStartReadBar(ms){
+  var bar = document.getElementById('sp-read'), fill = document.getElementById('sp-read-fill');
+  if(!bar || !fill) return;
+  bar.style.display = '';
+  fill.style.transition = 'none';
+  fill.style.transform = 'scaleX(0)';
+  void fill.offsetWidth;
+  fill.style.transition = 'transform ' + ms + 'ms linear';
+  fill.style.transform = 'scaleX(1)';
+  clearTimeout(window._spReadT);
+  window._spReadT = setTimeout(function(){ bar.style.display = 'none'; }, ms + 120);
+}
+function spStopReadBar(){
+  clearTimeout(window._spReadT);
+  var bar = document.getElementById('sp-read');
+  if(bar) bar.style.display = 'none';
+}
+
 // ── Akıcılık ölçüsü (v26) ────────────────────────────────────────────────
 // Süre = ipucu ekrana gelince başlar, "Cevabı göster"e basınca biter; yani
 // hatırlama + cümleyi sesli söyleme süresi. Hedef cümlenin uzunluğuna göre:
@@ -5294,6 +5322,7 @@ function spRender(){
   document.getElementById('sp-q-actions').style.display = '';
   document.getElementById('sp-grades').style.display = 'none';
   document.getElementById('sp-fluency').style.display = 'none';
+  spStopReadBar();
 
   var token = ++sp.renderToken;
   getPromptTr(key).then(function(r){
@@ -5307,7 +5336,13 @@ function spRender(){
       srcEl.textContent = 'Bağlantı yok gibi görünüyor, ilk harfler gösteriliyor. Cevaptan sonra kendi ipucunu yazabilirsin.';
       spShowHint(true);
     }
-    if(!sp.revealed) sp.shownAt = performance.now();   // süre ipucu ekrana gelince başlar
+    // Süre hemen başlamaz: önce Türkçeyi okuma payı (cümle uzunluğuna göre 1–2,5 sn).
+    // Bu sürede yazının altındaki ince çizgi dolar; dolunca saat başlar.
+    if(!sp.revealed){
+      sp.grace = readingGrace(r.text);
+      sp.shownAt = performance.now() + sp.grace;
+      spStartReadBar(sp.grace);
+    }
   });
 
   // Sonraki 3 kartın ipucunu şimdiden getir — geçişte bekleme olmasın
@@ -5329,10 +5364,12 @@ function spReveal(){
   sp.revealed = true;
   if(sp.shownAt !== null){
     var ms = Math.round(performance.now() - sp.shownAt);
-    sp.latMs = (ms > 0 && ms < 60000) ? ms : null;   // 1 dakikadan uzunsa dikkat dağılmıştır, sayılmaz
+    if(ms < 0) ms = 0;                                  // okuma payı içinde cevaplandı
+    sp.latMs = (ms < 60000) ? ms : null;                // 1 dakikadan uzunsa dikkat dağılmıştır, sayılmaz
   }
   var item = sp.queue[sp.i], key = item.key, s = SMAP[key], e = prodData[key];
   document.getElementById('sp-nl').textContent = s.nl;
+  spStopReadBar();
   var tgt = fluencyTarget(s.nl);
   sp.suggest = item.again ? null : suggestGrade(s.nl, sp.latMs, sp.hintUsed);
   document.getElementById('sp-lat').innerHTML = sp.latMs !== null ? ic('clock') + ' ' + fmtSec(sp.latMs) : '';
@@ -5340,7 +5377,7 @@ function spReveal(){
   if(sp.latMs !== null){
     var verdict = sp.suggest === 'a' ? 'akıcı hedefinin altında' : sp.suggest === 'y' ? 'yavaş aralıkta' : 'hedefin çok üstünde';
     if(sp.hintUsed && sp.latMs <= tgt.akici) verdict = 'ipucuyla, bu yüzden en fazla yavaş';
-    fb.innerHTML = '<b>' + fmtSec(sp.latMs) + '</b> sürdü, ' + verdict + '. <span>Akıcı hedefi bu cümle için ' + fmtSec(tgt.akici) + ' (' + tgt.syl + ' hece).</span>';
+    fb.innerHTML = '<b>' + fmtSec(sp.latMs) + '</b> sürdü, ' + verdict + '. <span>Akıcı hedefi bu cümle için ' + fmtSec(tgt.akici) + ' (' + tgt.syl + ' hece). Okuma payı (' + fmtSec(sp.grace || 0) + ') sayılmadı.</span>';
     fb.style.display = '';
   } else { fb.style.display = 'none'; }
   ['t','y','a'].forEach(function(g){ document.getElementById('sp-g-' + g).parentNode.classList.toggle('suggest', sp.suggest === g); });
@@ -5601,7 +5638,7 @@ function renderSpeak(){
     .sort(function(a, b){ return prodRatio(b) - prodRatio(a); }).slice(0, 8)
     .filter(function(k){ return prodRatio(k) > 1; });
   h += '<div class="prog-card"><div class="prog-card-title">' + ic('clock') + 'Akıcılık ölçüsü</div>' +
-       '<div class="prog-card-desc">Süre, Türkçe ipucu ekrana geldiği andan "Cevabı göster"e bastığın ana kadar ölçülür; yani hatırlama artı cümleyi sesli söyleme. Bir cümle <b>akıcı</b> sayılır: yaklaşık 1,5 saniye içinde başlayıp saniyede 3 hece hızında söylersen. <b>Yavaş</b>: 3 saniye içinde başlayıp saniyede 2 hece. Örnek: "Ik leg het nog een keer uit" 7 hece; akıcı hedefi ' + fmtSec(fluencyTarget('Ik leg het nog een keer uit').akici) + ', yavaş sınırı ' + fmtSec(fluencyTarget('Ik leg het nog een keer uit').yavas) + '. Uygulama süreye göre bir not önerir; doğru söyleyip söylemediğine sen karar verirsin.</div>';
+       '<div class="prog-card-desc">Türkçeyi okuman için önce kısa bir pay tanınır (cümle uzunluğuna göre 1–2,5 sn; yazının altındaki ince çizgi dolarken). Süre ondan sonra başlar ve "Cevabı göster"e bastığın ana kadar ölçülür; yani hatırlama artı cümleyi sesli söyleme. Bir cümle <b>akıcı</b> sayılır: yaklaşık 1,5 saniye içinde başlayıp saniyede 3 hece hızında söylersen. <b>Yavaş</b>: 3 saniye içinde başlayıp saniyede 2 hece. Örnek: "Ik leg het nog een keer uit" 7 hece; akıcı hedefi ' + fmtSec(fluencyTarget('Ik leg het nog een keer uit').akici) + ', yavaş sınırı ' + fmtSec(fluencyTarget('Ik leg het nog een keer uit').yavas) + '. Uygulama süreye göre bir not önerir; doğru söyleyip söylemediğine sen karar verirsin.</div>';
   if(slow.length){
     h += '<div class="sp-lbl" style="margin-top:14px">Hedefin en çok üstünde kalanlar</div>';
     slow.forEach(function(k){ h += spkRowHtml(k, fmtSec(prodAvgLat(k)) + ' / ' + fmtSec(fluencyTarget(SMAP[k].nl).akici)); });
