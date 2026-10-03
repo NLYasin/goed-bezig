@@ -98,6 +98,10 @@ Tanıma değil üretim çalıştırır: Türkçe ipucu gösterilir, kullanıcı 
 - **Ezberlediklerimden çalış (v25):** ders seçimi gerektirmeyen ana giriş. Bugünkü kartlar bittiyse bu kartın "Başla" düğmesi oranje birincil olur; bugün iş varsa ikincil (ghost) kalır. Tur sonunda devam edilebiliyorsa "Devam et" birincil, "Kapat" ikincildir.
 - Hareket: kart değişiminde 180 ms kayma, cevap açılırken 250 ms belirme (durum değişimi). Başka animasyon yok.
 
+## 5e. Ders durumu filtresi (v28)
+
+- Ezber Listesi'nin en üstünde hap düğmeler: Tümü / Devam eden (sarı nokta) / Başlanmamış (boş halka) / Biten (yeşil nokta), yanlarında ders sayısı. Seçili düğme accent dolgulu; noktalar ders kutularının renkleriyle aynı (lb-partial sarı, lb-done yeşil). Boş sonuç için açıklayıcı mesaj.
+
 ## 5c. Günlük hatırlatma
 
 - Ayar cihaza aittir (`gb3-reminder`), profile değil.
