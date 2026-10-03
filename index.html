@@ -1194,6 +1194,13 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 .lb-done-note{display:flex;gap:8px;align-items:flex-start;padding:12px 16px;font-size:calc(13.5px * var(--fs-scale));color:var(--muted);line-height:1.5;}
 .lb-done-note .ic{width:18px;height:18px;flex-shrink:0;margin-top:1px;}
 .lb-done-note a{color:var(--accent);font-weight:700;}
+
+/* ── v29: süre aralıkları ve öneri her zaman görünür ── */
+.sp-grade{gap:1px;padding:8px 6px;}
+.sp-grade .sp-rng{font-style:normal;font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;}
+.sp-grade span{font-size:calc(11px * var(--fs-scale));}
+.sp-grade.suggest .sp-rng{color:var(--accent);}
+.sp-fl-sub{display:block;margin-top:3px;font-size:calc(12px * var(--fs-scale));color:var(--muted);}
 </style>
 </head>
 <body>
@@ -1712,9 +1719,9 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
       </div>
       <div class="sp-fluency" id="sp-fluency" style="display:none"></div>
       <div class="sp-grades" id="sp-grades" style="display:none">
-        <button class="sp-grade" onclick="spGrade('t')"><b>Takıldım</b><span id="sp-g-t"></span></button>
-        <button class="sp-grade" onclick="spGrade('y')"><b>Yavaş</b><span id="sp-g-y"></span></button>
-        <button class="sp-grade" onclick="spGrade('a')"><b>Akıcı</b><span id="sp-g-a"></span></button>
+        <button class="sp-grade" onclick="spGrade('t')"><b>Takıldım</b><em class="sp-rng" id="sp-r-t"></em><span id="sp-g-t"></span></button>
+        <button class="sp-grade" onclick="spGrade('y')"><b>Yavaş</b><em class="sp-rng" id="sp-r-y"></em><span id="sp-g-y"></span></button>
+        <button class="sp-grade" onclick="spGrade('a')"><b>Akıcı</b><em class="sp-rng" id="sp-r-a"></em><span id="sp-g-a"></span></button>
       </div>
       <div class="sp-keys" id="sp-keys">Klavye: Boşluk cevabı gösterir, 1–3 değerlendirir, Esc kapatır</div>
     </div>
@@ -5225,6 +5232,23 @@ function learnedRemaining(opts, seen){
 }
 function startSpeakLearned(){ startSpeak('learned', { seen:{} }); }
 
+// v29: turdaki bütün kartların Türkçe ipucunu arka planda (3'er 3'er) önceden getir,
+// böylece kart açıldığında ipucu hazır olur ve süre hemen kurulabilir.
+function prefetchCues(keys){
+  var list = keys.filter(function(k){ return !promptTrSync(k); }), i = 0;
+  function next(){ if(i >= list.length) return; var k = list[i++]; getPromptTr(k).then(next, next); }
+  next(); next(); next();
+}
+// v29: ipucunu beklemeden alabiliyorsak al (null = çeviri servisine gidilmesi gerekiyor)
+function promptTrSync(key){
+  var cue = prodCues[key];
+  if(cue && cue.tr && cue.tr.trim()) return { text:cue.tr.trim(), src:'own' };
+  var s = SMAP[key];
+  if(s.tr && s.tr.trim()) return { text:s.tr.trim(), src:'app' };
+  if(trCache[s.nl]) return { text:trCache[s.nl], src:'auto' };
+  return null;
+}
+
 // ── Okuma payı (v27) ─────────────────────────────────────────────────────
 // Türkçe ipucunu okumak için süre sayılmadan önce tanınan pay:
 // 0,6 sn + kelime başına 0,18 sn, en az 1 sn, en fazla 2,5 sn.
@@ -5337,6 +5361,7 @@ function startSpeak(mode, arg){
   document.getElementById('sp-session').style.display = '';
   document.getElementById('sp-finish').style.display = 'none';
   document.getElementById('sp-overlay').classList.add('show');
+  prefetchCues(keys.slice(1));
   document.body.style.overflow = 'hidden';
   spRender();
 }
@@ -5394,8 +5419,14 @@ function spRender(){
   spStopReadBar();
 
   var token = ++sp.renderToken;
-  getPromptTr(key).then(function(r){
+  sp.cueShown = false;
+  // v29: ipucu elde hazırsa (kendi ipucun, uygulama içi çeviri, önbellek) hemen
+  // gösterilir ve süre anında kurulur; yalnızca çeviri servisinden gelecekse beklenir.
+  var syncCue = promptTrSync(key);
+  var cuePromise = syncCue ? { then: function(fn){ fn(syncCue); } } : getPromptTr(key);
+  cuePromise.then(function(r){
     if(!sp || sp.renderToken !== token) return;
+    sp.cueShown = true;
     trEl.classList.remove('loading');
     if(r.text){
       trEl.textContent = r.text;
@@ -5431,25 +5462,38 @@ function spShowHint(auto){
 function spReveal(){
   if(!sp || sp.revealed) return;
   sp.revealed = true;
+  // v29: süre her durumda hesaplanır ve gösterilir. Kayda geçmeyen durumlar:
+  // ipucu ekrana gelmeden cevaba bakıldıysa (ölçülemez) ve 60 sn'yi aşan süreler.
+  var shownMs = null, why = '';
   if(sp.shownAt !== null){
-    var ms = Math.round(performance.now() - sp.shownAt);
-    if(ms < 0) ms = 0;                                  // okuma payı içinde cevaplandı
-    sp.latMs = (ms < 60000) ? ms : null;                // 1 dakikadan uzunsa dikkat dağılmıştır, sayılmaz
-  }
+    shownMs = Math.max(0, Math.round(performance.now() - sp.shownAt));   // okuma payı içinde ise 0
+    if(shownMs >= 60000) why = 'long';
+  } else why = 'early';
+  sp.latMs = (shownMs !== null && shownMs < 60000) ? shownMs : null;
   var item = sp.queue[sp.i], key = item.key, s = SMAP[key], e = prodData[key];
   document.getElementById('sp-nl').textContent = s.nl;
   spStopReadBar();
   var tgt = fluencyTarget(s.nl);
-  sp.suggest = item.again ? null : suggestGrade(s.nl, sp.latMs, sp.hintUsed);
-  document.getElementById('sp-lat').innerHTML = sp.latMs !== null ? ic('clock') + ' ' + fmtSec(sp.latMs) : '';
+  sp.suggest = why === 'long' ? 't' : suggestGrade(s.nl, sp.latMs, sp.hintUsed);
+  document.getElementById('sp-lat').innerHTML = shownMs !== null ? ic('clock') + ' ' + fmtSec(shownMs) : '';
   var fb = document.getElementById('sp-fluency');
-  if(sp.latMs !== null){
-    var verdict = sp.suggest === 'a' ? 'akıcı hedefinin altında' : sp.suggest === 'y' ? 'yavaş aralıkta' : 'hedefin çok üstünde';
-    if(sp.hintUsed && sp.latMs <= tgt.akici) verdict = 'ipucuyla, bu yüzden en fazla yavaş';
-    fb.innerHTML = '<b>' + fmtSec(sp.latMs) + '</b> sürdü, ' + verdict + '. <span>Akıcı hedefi bu cümle için ' + fmtSec(tgt.akici) + ' (' + tgt.syl + ' hece). Okuma payı (' + fmtSec(sp.grace || 0) + ') sayılmadı.</span>';
-    fb.style.display = '';
-  } else { fb.style.display = 'none'; }
+  var gName = { a:'Akıcı', y:'Yavaş', t:'Takıldım' };
+  var line;
+  if(why === 'early'){
+    line = 'Süre ölçülemedi: Türkçe ipucu ekrana gelmeden cevaba baktın. Değerlendirmeyi kendin seç.';
+  } else if(why === 'long'){
+    line = '<b>' + fmtSec(shownMs) + '</b> sürdü (1 dakikadan uzun, ölçüme katılmadı). Öneri: <b>' + gName.t + '</b>.';
+  } else {
+    var note = (sp.hintUsed && sp.latMs <= tgt.akici) ? ' (ipucu kullandığın için en fazla Yavaş)' : '';
+    line = '<b>' + fmtSec(sp.latMs) + '</b> sürdü. Öneri: <b>' + gName[sp.suggest] + '</b>' + note + '.';
+  }
+  fb.innerHTML = line + '<span class="sp-fl-sub">Bu cümle ' + tgt.syl + ' hece. Okuma payı' + (sp.grace ? ' (' + fmtSec(sp.grace) + ')' : '') + ' süreye dahil değil.</span>';
+  fb.style.display = '';
   ['t','y','a'].forEach(function(g){ document.getElementById('sp-g-' + g).parentNode.classList.toggle('suggest', sp.suggest === g); });
+  // Her düğmede: süre aralığı + kartın ne zaman geri geleceği
+  document.getElementById('sp-r-a').textContent = '≤ ' + fmtSec(tgt.akici);
+  document.getElementById('sp-r-y').textContent = fmtSec(tgt.akici).replace(' sn','') + '–' + fmtSec(tgt.yavas);
+  document.getElementById('sp-r-t').textContent = '> ' + fmtSec(tgt.yavas);
   ['t','y','a'].forEach(function(g){
     var txt = item.again ? 'bu turda' : (g === 't' ? 'birazdan' : fmtDays(prodNextStep(e, g).days));
     document.getElementById('sp-g-' + g).textContent = txt;
