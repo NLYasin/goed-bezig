@@ -1235,6 +1235,14 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 .td-entry{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:0 16px;margin:4px 0 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:800;font-size:calc(14.5px * var(--fs-scale));cursor:pointer;}
 .td-entry .ic{width:18px;height:18px;color:var(--accent);}
 .td-entry span{margin-left:auto;font-weight:600;color:var(--muted);font-size:calc(12.5px * var(--fs-scale));}
+
+/* v32: üç adımlı gösterim (gizli → ilk harfler → tamamı) */
+.td-row .td-hint, .td-row .td-nl { display:none; }
+.td-row[data-st="1"] .td-hint { display:block; }
+.td-row[data-st="2"] .td-nl { display:block; }
+.td-tap { font-size:calc(12px * var(--fs-scale)); color:var(--muted); font-style:italic; }
+.td-row[data-st="1"] .td-tap, .td-row[data-st="2"] .td-tap { display:none; }
+.td-row[data-st="1"] { border-left-color:color-mix(in srgb,var(--accent) 65%,var(--border)); }
 </style>
 </head>
 <body>
@@ -5892,15 +5900,17 @@ function closeToday(){
 function setTdRange(r){ tdRange = r; renderToday(); }
 document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape' && document.getElementById('td-overlay') && document.getElementById('td-overlay').classList.contains('show')) closeToday(); });
 function setTdShow(v){ tdShowNl = v; renderToday(); }
-function tdToggleRow(el){ el.classList.toggle('open'); }
+// v32: 1. dokunuş ilk harfler, 2. dokunuş tam Hollandaca, 3. dokunuş yeniden gizler
+function tdToggleRow(el){ var st = ((parseInt(el.dataset.st, 10) || 0) + 1) % 3; el.dataset.st = st; el.classList.toggle('open', st === 2); }
 function tdRow(k, extra){
   var s = SMAP[k], tr = knownTr(k);
   var gl = { t:'Takıldım', y:'Yavaş', a:'Akıcı' };
   var g = extra === 'spoken' && prodData[k] ? prodData[k].g : '';
-  return '<button class="td-row' + (tdShowNl ? ' open' : '') + '" onclick="tdToggleRow(this)" data-key="' + k + '">' +
+  return '<button class="td-row' + (tdShowNl ? ' open' : '') + '" onclick="tdToggleRow(this)" data-st="' + (tdShowNl ? 2 : 0) + '" data-key="' + k + '">' +
     '<span class="td-tr" data-trk="' + k + '">' + (tr ? escHtml(tr) : '<i>Türkçesi yükleniyor…</i>') + '</span>' +
     '<span class="td-nl" lang="nl">' + escHtml(s.nl) + '</span>' +
     '<span class="td-hint" lang="nl">' + escHtml(prodHint(s.nl)) + '</span>' +
+    '<span class="td-tap">Hollandacası gizli · ipucu için dokun</span>' +
     '<span class="td-meta">' + escHtml(s.lesson.title) + (g ? ' · <b class="td-g ' + g + '">' + gl[g] + '</b>' : '') + '</span></button>';
 }
 function renderToday(){
@@ -5911,7 +5921,7 @@ function renderToday(){
   var seg = function(id, label){ return '<button class="' + (tdRange === id ? 'on' : '') + '" onclick="setTdRange(\'' + id + '\')">' + label + '</button>'; };
   var h = '<div class="td-seg" role="group" aria-label="Gün">' + seg('today','Bugün') + seg('yesterday','Dün') + seg('week','Son 7 gün') + '</div>' +
     '<div class="td-sum"><b>' + total + '</b> farklı cümle' + (tdRange === 'week' ? ' bu hafta' : tdRange === 'yesterday' ? ' dün' : ' bugün') + '</div>' +
-    '<div class="td-tip">' + ic('pencil') + '<span>Önce deftere aklından yaz. Sonra satıra dokunup Hollandacasını aç ve kontrol et.</span></div>' +
+    '<div class="td-tip">' + ic('pencil') + '<span>Önce deftere aklından yaz. Sonra kontrol et: bir dokunuş ilk harfleri, ikinci dokunuş Hollandacanın tamamını gösterir.</span></div>' +
     '<div class="theme-toggle td-toggle"><button class="theme-btn' + (!tdShowNl ? ' active' : '') + '" onclick="setTdShow(false)">Hollandaca gizli</button><button class="theme-btn' + (tdShowNl ? ' active' : '') + '" onclick="setTdShow(true)">Hepsini göster</button></div>';
   var sec = function(title, keys, kind){
     if(!keys.length) return '';
