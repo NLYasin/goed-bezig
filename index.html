@@ -1201,6 +1201,14 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 .sp-grade span{font-size:calc(11px * var(--fs-scale));}
 .sp-grade.suggest .sp-rng{color:var(--accent);}
 .sp-fl-sub{display:block;margin-top:3px;font-size:calc(12px * var(--fs-scale));color:var(--muted);}
+
+/* ── v30: ilerleme çubuğu açıklaması ── */
+.pst-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;margin-top:10px;font-size:calc(12px * var(--fs-scale));color:var(--muted);font-variant-numeric:tabular-nums;}
+.pst-legend span{display:inline-flex;align-items:center;gap:6px;}
+.pst-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.pst-legend i.c{background:var(--green);}
+.pst-legend i.l{background:var(--accent);}
+.pst-legend i.r{background:var(--tag);border:1px solid var(--border);}
 </style>
 </head>
 <body>
@@ -1491,10 +1499,11 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
           <div class="prog-stat-pct" id="pst-remaining-pct"></div>
         </div>
       </div>
-      <div class="prog-stats-bar">
-        <div class="prog-stats-bar-learned" id="pst-bar-learned" style="width:0%"></div>
+      <div class="prog-stats-bar" id="pst-bar" role="img" aria-label="">
         <div class="prog-stats-bar-completed" id="pst-bar-completed" style="width:0%"></div>
+        <div class="prog-stats-bar-learned" id="pst-bar-learned" style="width:0%"></div>
       </div>
+      <div class="pst-legend" id="pst-legend"></div>
     </div>
 
     <!-- STREAK KARTI -->
@@ -4346,12 +4355,24 @@ function renderStatsCard(){
   var cpEl = document.getElementById('pst-completed-pct');
   var rpEl = document.getElementById('pst-remaining-pct');
   if(lpEl) lpEl.textContent = '%' + learnedPct;
-  if(cpEl) cpEl.textContent = '%' + completedPct + ' tamamlandı';
+  if(cpEl) cpEl.textContent = 'ezberlenenlerin %' + completedPct + '\'si';
   if(rpEl) rpEl.textContent = '%' + remainingPct;
   var barL = document.getElementById('pst-bar-learned');
   var barC = document.getElementById('pst-bar-completed');
-  if(barL) barL.style.width = learnedPct + '%';
-  if(barC) barC.style.width = (learnedPct * completedPct / 100) + '%';
+  // v30: Tamamlananlar ezberlenenlerin içinde (alt küme). Çubuğun toplamı
+  // ezberlenen oranına eşit olmalı: yeşil = tamamlanan, mavi = tekrarı süren.
+  // (Önceden mavi %36 + yeşil ayrıca eklendiği için çubuk %44'e uzuyordu.)
+  var doneShare = activeTotal > 0 ? completed / activeTotal * 100 : 0;
+  var learningShare = activeTotal > 0 ? (learnedCount - completed) / activeTotal * 100 : 0;
+  if(barC) barC.style.width = doneShare.toFixed(2) + '%';
+  if(barL) barL.style.width = learningShare.toFixed(2) + '%';
+  var bar = document.getElementById('pst-bar');
+  if(bar) bar.setAttribute('aria-label', 'Toplam ' + activeTotal + ' cümlenin ' + learnedCount + ' tanesi ezberlendi (%' + learnedPct + '); bunların ' + completed + ' tanesi tamamlandı.');
+  var lg = document.getElementById('pst-legend');
+  if(lg) lg.innerHTML =
+    '<span><i class="c"></i>Tamamlanan ' + completed + ' (%' + Math.round(doneShare) + ')</span>' +
+    '<span><i class="l"></i>Tekrarı süren ' + (learnedCount - completed) + ' (%' + Math.round(learningShare) + ')</span>' +
+    '<span><i class="r"></i>Kalan ' + remaining + ' (%' + remainingPct + ')</span>';
 
   // Header pill
   var pctPill = document.getElementById('st-pct-pill');
