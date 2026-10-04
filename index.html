@@ -1209,6 +1209,32 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 .pst-legend i.c{background:var(--green);}
 .pst-legend i.l{background:var(--accent);}
 .pst-legend i.r{background:var(--tag);border:1px solid var(--border);}
+
+/* ── v31: Bugün çalıştıklarım ── */
+.td-title{font-family:var(--font-display);font-weight:700;font-size:calc(22px * var(--fs-scale));}
+.td-seg{display:flex;gap:4px;padding:4px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin:6px 0 12px;}
+.td-seg button{flex:1;min-height:40px;border:none;border-radius:10px;background:transparent;color:var(--muted);font-weight:800;font-size:calc(14px * var(--fs-scale));cursor:pointer;}
+.td-seg button.on{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12);}
+.td-sum{font-size:calc(14px * var(--fs-scale));color:var(--muted);margin-bottom:10px;}
+.td-sum b{font-family:var(--font-display);font-size:calc(26px * var(--fs-scale));color:var(--text);margin-right:4px;}
+.td-tip{display:flex;gap:8px;align-items:flex-start;font-size:calc(13px * var(--fs-scale));color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:10px;line-height:1.45;}
+.td-tip .ic{width:17px;height:17px;flex-shrink:0;margin-top:1px;color:var(--cta);}
+.td-toggle{margin-bottom:6px;}
+.td-sec{margin-top:16px;}
+.td-sec-h{font-size:calc(12px * var(--fs-scale));font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;}
+.td-row{display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;border-radius:14px;border:1px solid var(--border);border-left:4px solid color-mix(in srgb,var(--accent) 35%,var(--border));background:var(--surface);color:var(--text);cursor:pointer;font:inherit;}
+.td-row.open{border-left-color:var(--accent);}
+.td-tr{font-size:calc(15px * var(--fs-scale));font-weight:600;line-height:1.4;}
+.td-tr i{color:var(--muted);font-weight:500;}
+.td-nl{display:none;font-family:var(--font-display);font-weight:500;font-size:calc(18px * var(--fs-scale));line-height:1.3;color:var(--accent);}
+.td-hint{font-size:calc(14px * var(--fs-scale));letter-spacing:.08em;color:var(--muted);}
+.td-row.open .td-nl{display:block;}
+.td-row.open .td-hint{display:none;}
+.td-meta{font-size:calc(11.5px * var(--fs-scale));color:var(--muted);margin-top:2px;}
+.td-g.a{color:var(--green);} .td-g.y{color:var(--yellow);} .td-g.t{color:var(--red);}
+.td-entry{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:0 16px;margin:4px 0 14px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:800;font-size:calc(14.5px * var(--fs-scale));cursor:pointer;}
+.td-entry .ic{width:18px;height:18px;color:var(--accent);}
+.td-entry span{margin-left:auto;font-weight:600;color:var(--muted);font-size:calc(12.5px * var(--fs-scale));}
 </style>
 </head>
 <body>
@@ -1475,6 +1501,8 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 
   <div class="panel" id="pn-progress" style="padding-bottom:60px">
 
+    <button class="td-entry" onclick="openToday()"><svg class="ic"><use href="#i-book"/></svg>Bugün çalıştıklarım<span>defter kontrolü</span></button>
+
     <!-- PROFİL ETİKETİ -->
     <div class="prog-profile-label" id="prog-profile-label"></div>
 
@@ -1676,6 +1704,17 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
   <span>Son: <strong id="utxt"></strong></span>
   <button class="btn btn-ghost" onclick="undoLast()"><svg class="ic"><use href="#i-undo"/></svg>Geri Al</button>
   <button class="btn btn-ghost" onclick="hideUndo()" title="Kapat"><svg class="ic" style="margin:0"><use href="#i-x"/></svg></button>
+</div>
+
+<!-- BUGÜN ÇALIŞTIKLARIM (v31) -->
+<div class="sp-overlay" id="td-overlay" role="dialog" aria-modal="true" aria-label="Bugün çalıştıklarım">
+  <div class="sp-wrap">
+    <div class="sp-top">
+      <button class="sp-close" onclick="closeToday()" aria-label="Kapat"><svg class="ic"><use href="#i-x"/></svg></button>
+      <div class="td-title">Bugün çalıştıklarım</div>
+    </div>
+    <div id="td-body"></div>
+  </div>
 </div>
 
 <!-- KONUŞMA MODU — tam ekran oturum -->
@@ -5068,8 +5107,10 @@ function mergeProdLog(local, cloud){
   keys.forEach(function(k){
     var l = (local && local[k]) || {}, c = (cloud && cloud[k]) || {};
     var n = Math.max(l.n || 0, c.n || 0), nw = Math.max(l.nw || 0, c.nw || 0);
-    if(n > (c.n || 0) || nw > (c.nw || 0)) localNewer = true;
+    var ks = Array.from(new Set((l.k || []).concat(c.k || [])));
+    if(n > (c.n || 0) || nw > (c.nw || 0) || ks.length > (c.k || []).length) localNewer = true;
     out[k] = { n:n, nw:nw };
+    if(ks.length) out[k].k = ks;
   });
   return { data: out, localNewer: localNewer };
 }
@@ -5554,6 +5595,7 @@ function spGrade(g){
   var dk = dateKey(), pl = prodLog[dk] || { n:0, nw:0 };
   pl.n = (pl.n || 0) + 1;
   if(isNew && sp.mode === 'today') pl.nw = (pl.nw || 0) + 1;
+  pl.k = pl.k || []; if(pl.k.indexOf(key) === -1) pl.k.push(key);   // v31: o gün söylenen kalıplar
   prodLog[dk] = pl;
 
   if(!item.again){
@@ -5721,7 +5763,8 @@ function renderSpeak(){
   var fillLbl = learnOpts.src === 'hard' ? 'zorlandığın' : learnOpts.src === 'all' ? 'karışık' : 'yeni';
 
   var h = '<div class="spk-intro"><div class="ptitle">' + ic('microphone') + 'Konuşma</div>' +
-          '<div class="psub">Türkçeyi gör, Hollandacasını sesli söyle, sonra kontrol et.</div></div>';
+          '<div class="psub">Türkçeyi gör, Hollandacasını sesli söyle, sonra kontrol et.</div></div>' +
+          '<button class="td-entry" onclick="openToday()">' + ic('book') + 'Bugün çalıştıklarım<span>defter kontrolü</span></button>';
 
   // 1) Ana kart
   h += '<div class="prog-card spk-hero">';
@@ -5808,6 +5851,85 @@ function renderSpeak(){
   if(sel && window._spkLastLesson) sel.value = window._spkLastLesson;
   if(sel) sel.onchange = function(){ window._spkLastLesson = sel.value; };
   updateSpeakBadge();
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// [v31] BUGÜN ÇALIŞTIKLARIM — deftere aklından yazdıktan sonra kontrol için
+// Kaynaklar: repData[key].at (ezberlendiği an), repData[key].steps (tekrar
+// zamanları, dinleme modundaki "Tekrar Say" dahil), prodLog[gün].k (Konuş'ta
+// o gün söylenen kalıplar; v31'den itibaren tutulur) ve prodData[key].t.
+// Varsayılan olarak Hollandaca gizli: önce deftere yaz, sonra dokunup kontrol et.
+// ══════════════════════════════════════════════════════════════════════════
+var tdRange = 'today', tdShowNl = false;
+function tdDays(range){
+  var n = range === 'week' ? 7 : 1, start = range === 'yesterday' ? 1 : 0, out = {};
+  for(var i = 0; i < n; i++){ out[dateKey(addDays(today(), -(start + i)))] = true; }
+  return out;
+}
+function tdIsoDay(iso){ try{ return dateKey(new Date(iso)); }catch(e){ return ''; } }
+function tdCollect(range){
+  var days = tdDays(range), learnedNew = [], repeated = [], spoken = {};
+  Object.keys(repData).forEach(function(k){
+    if(!SMAP[k] || permDel.has(k) || trulyDeleted.has(k)) return;
+    var r = repData[k];
+    if(learned.has(k) && r.at && days[tdIsoDay(r.at)]) learnedNew.push(k);
+    else if((r.steps || []).some(function(s){ return days[tdIsoDay(s)]; })) repeated.push(k);
+  });
+  Object.keys(days).forEach(function(d){ var pl = prodLog[d]; (pl && pl.k || []).forEach(function(k){ spoken[k] = true; }); });
+  Object.keys(prodData).forEach(function(k){ var e = prodData[k]; if(e && e.t && days[dateKey(new Date(e.t))]) spoken[k] = true; });
+  var spokenArr = Object.keys(spoken).filter(function(k){ return SMAP[k] && !permDel.has(k) && !trulyDeleted.has(k); });
+  return { learnedNew: learnedNew, repeated: repeated, spoken: spokenArr };
+}
+function openToday(){
+  document.getElementById('td-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  renderToday();
+}
+function closeToday(){
+  document.getElementById('td-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function setTdRange(r){ tdRange = r; renderToday(); }
+document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape' && document.getElementById('td-overlay') && document.getElementById('td-overlay').classList.contains('show')) closeToday(); });
+function setTdShow(v){ tdShowNl = v; renderToday(); }
+function tdToggleRow(el){ el.classList.toggle('open'); }
+function tdRow(k, extra){
+  var s = SMAP[k], tr = knownTr(k);
+  var gl = { t:'Takıldım', y:'Yavaş', a:'Akıcı' };
+  var g = extra === 'spoken' && prodData[k] ? prodData[k].g : '';
+  return '<button class="td-row' + (tdShowNl ? ' open' : '') + '" onclick="tdToggleRow(this)" data-key="' + k + '">' +
+    '<span class="td-tr" data-trk="' + k + '">' + (tr ? escHtml(tr) : '<i>Türkçesi yükleniyor…</i>') + '</span>' +
+    '<span class="td-nl" lang="nl">' + escHtml(s.nl) + '</span>' +
+    '<span class="td-hint" lang="nl">' + escHtml(prodHint(s.nl)) + '</span>' +
+    '<span class="td-meta">' + escHtml(s.lesson.title) + (g ? ' · <b class="td-g ' + g + '">' + gl[g] + '</b>' : '') + '</span></button>';
+}
+function renderToday(){
+  var el = document.getElementById('td-body'); if(!el) return;
+  var d = tdCollect(tdRange);
+  var all = {}; d.learnedNew.concat(d.repeated, d.spoken).forEach(function(k){ all[k] = true; });
+  var total = Object.keys(all).length;
+  var seg = function(id, label){ return '<button class="' + (tdRange === id ? 'on' : '') + '" onclick="setTdRange(\'' + id + '\')">' + label + '</button>'; };
+  var h = '<div class="td-seg" role="group" aria-label="Gün">' + seg('today','Bugün') + seg('yesterday','Dün') + seg('week','Son 7 gün') + '</div>' +
+    '<div class="td-sum"><b>' + total + '</b> farklı cümle' + (tdRange === 'week' ? ' bu hafta' : tdRange === 'yesterday' ? ' dün' : ' bugün') + '</div>' +
+    '<div class="td-tip">' + ic('pencil') + '<span>Önce deftere aklından yaz. Sonra satıra dokunup Hollandacasını aç ve kontrol et.</span></div>' +
+    '<div class="theme-toggle td-toggle"><button class="theme-btn' + (!tdShowNl ? ' active' : '') + '" onclick="setTdShow(false)">Hollandaca gizli</button><button class="theme-btn' + (tdShowNl ? ' active' : '') + '" onclick="setTdShow(true)">Hepsini göster</button></div>';
+  var sec = function(title, keys, kind){
+    if(!keys.length) return '';
+    return '<div class="td-sec"><div class="td-sec-h">' + title + ' <span>' + keys.length + '</span></div>' + keys.map(function(k){ return tdRow(k, kind); }).join('') + '</div>';
+  };
+  h += sec('Konuş\'ta söylediklerin', d.spoken, 'spoken');
+  h += sec('Yeni ezberlediklerin', d.learnedNew, 'learned');
+  h += sec('Tekrar ettiklerin', d.repeated.filter(function(k){ return d.spoken.indexOf(k) === -1; }), 'rep');
+  if(!total) h += '<div class="spk-empty" style="margin-top:12px">' + ic('book') + '<span>Bu aralıkta çalışılan cümle yok.</span></div>';
+  el.innerHTML = h;
+  // Türkçesi olmayanları arka planda getir
+  Object.keys(all).forEach(function(k){
+    if(knownTr(k)) return;
+    getPromptTr(k).then(function(r){
+      var span = el.querySelector('[data-trk="' + k + '"]');
+      if(span) span.innerHTML = r.text ? escHtml(r.text) : '<i>Türkçesi alınamadı</i>';
+    });
+  });
 }
 
 var savedProfile = localStorage.getItem('gb3-active-profile');

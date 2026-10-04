@@ -3,7 +3,7 @@
 // başarısız olursa (çevrimdışıysa) cache'den verir. Böylece ders/cümle
 // güncellemeleri her zaman en güncel haliyle gelir, eski cache asılı kalmaz.
 
-const CACHE_NAME = 'goed-bezig-v30'; // her güncellemede bu numarayı artır
+const CACHE_NAME = 'goed-bezig-v31'; // her güncellemede bu numarayı artır
 const REMINDER_CACHE = 'gb-reminder';  // sayfa ile SW arasında hatırlatma ayarları
 const ASSETS = [
   './index.html',
