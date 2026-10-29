@@ -1111,6 +1111,21 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 .lp-finish-actions .btn-ghost{background:var(--tag);color:var(--text);border-color:var(--border);}
 .lp-finish-actions .btn-primary{background:#FFFFFF;color:#16233F;}
 .lp-finish-actions .btn{min-height:48px;font-size:calc(14px * var(--fs-scale));}
+.lp-heard-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin:14px auto 0;padding:10px 18px;min-height:44px;border-radius:999px;border:1px solid var(--border);background:var(--tag);color:var(--text);font:inherit;font-weight:700;font-size:calc(14px * var(--fs-scale));cursor:pointer;}
+.lp-heard-btn:active{transform:scale(.97);}
+.lp-heard-btn .ic{width:18px;height:18px;color:var(--green);}
+.lp-pick{text-align:left;display:flex;flex-direction:column;gap:10px;}
+.lp-pick-title{font-family:var(--font-display);font-weight:500;font-size:calc(24px * var(--fs-scale));text-align:center;}
+.lp-pick-sub{color:var(--muted);font-size:calc(14px * var(--fs-scale));line-height:1.45;text-align:center;}
+.lp-pick-all,.lp-pick-link{align-self:center;background:none;border:none;color:var(--accent);font:inherit;font-weight:700;font-size:calc(13px * var(--fs-scale));text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px 8px;}
+.lp-pick-link{display:block;margin:4px auto 8px;}
+.lp-pick-list{max-height:42vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;-webkit-overflow-scrolling:touch;}
+.lp-pick-row{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;cursor:pointer;}
+.lp-pick-row input{width:20px;height:20px;flex-shrink:0;margin-top:2px;accent-color:var(--green);}
+.lp-pick-nl{font-size:calc(15px * var(--fs-scale));line-height:1.4;}
+.lp-pick .lp-markall-btn:disabled{opacity:.5;}
+.lp-toast{white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis;position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#16233F;color:#FFFFFF;border:1px solid #2C416D;border-radius:999px;padding:12px 20px;font-weight:700;font-size:calc(14px * var(--fs-scale));z-index:10050;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:opacity .4s;}
+.lp-toast.out{opacity:0;}
 @media (max-width:600px){
   #listen-player-overlay{padding:0;background:#16233F;}
   #listen-player-overlay .listen-player-box{
@@ -1444,7 +1459,7 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
   <!-- DİNLEME MODU — OYNATICI -->
   <div class="listen-overlay" id="listen-player-overlay">
     <div class="listen-player-box">
-      <button class="lp-close" onclick="stopListenMode()"><svg class="ic"><use href="#i-x"/></svg></button>
+      <button class="lp-close" onclick="requestCloseListen()"><svg class="ic"><use href="#i-x"/></svg></button>
       <div class="lp-progress" id="lp-progress">1 / 20</div>
       <div class="lp-lesson" id="lp-lesson"></div>
       <div class="lp-nl" id="lp-nl" lang="nl">…</div>
@@ -1471,6 +1486,26 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
         <button class="lp-btn lp-btn-main" id="lp-playpause" onclick="listenTogglePause()" title="Duraklat"><svg class="ic"><use href="#i-pause"/></svg></button>
         <button class="lp-btn" onclick="listenNext()" title="Sonraki"><svg class="ic"><use href="#i-next"/></svg></button>
       </div>
+      <button class="lp-heard-btn" id="lp-heard-btn" onclick="openListenPick('pick')" style="display:none">
+        <svg class="ic"><use href="#i-circle-check"/></svg>
+        <span id="lp-heard-text">Dinlediklerimi Say</span>
+      </button>
+
+      <!-- v34: Dinlediklerimi say — hepsi / seçerek / hiçbiri -->
+      <div class="lp-pick" id="lp-pick" style="display:none">
+        <div class="lp-pick-title" id="lp-pick-title">Dinlediklerini say</div>
+        <div class="lp-pick-sub" id="lp-pick-sub"></div>
+        <button class="lp-pick-all" id="lp-pick-all" onclick="toggleListenPickAll()">Tümünün seçimini kaldır</button>
+        <div class="lp-pick-list" id="lp-pick-list"></div>
+        <button class="lp-markall-btn" id="lp-pick-go" onclick="confirmListenPick()">
+          <svg class="ic"><use href="#i-circle-check"/></svg>
+          <span id="lp-pick-go-text">Seçilenleri Say</span>
+        </button>
+        <div class="lp-finish-actions">
+          <button class="btn btn-ghost" id="lp-pick-cancel" onclick="cancelListenPick()">Dinlemeye dön</button>
+          <button class="btn btn-ghost" id="lp-pick-skip" onclick="stopListenMode()" style="display:none">Saymadan kapat</button>
+        </div>
+      </div>
 
       <!-- Dinleme bitince: tek dokunuşla tüm kuyruğun tekrarını say -->
       <div class="lp-finish" id="lp-finish" style="display:none">
@@ -1479,6 +1514,7 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
           <svg class="ic"><use href="#i-circle-check"/></svg>
           <span id="lp-markall-text">Hepsini Tekrar Say</span>
         </button>
+        <button class="lp-pick-link" id="lp-finish-pick" onclick="openListenPick('finish')">Seçerek say</button>
         <div class="lp-finish-actions">
           <button class="btn btn-ghost" onclick="restartListenMode()"><svg class="ic"><use href="#i-headphones"/></svg> Baştan Dinle</button>
           <button class="btn btn-primary" onclick="stopListenMode()">Kapat</button>
@@ -2071,10 +2107,17 @@ function getRep(key){
     console.warn('[getRep] Bozuk repData girdisi, onarılıyor:', key, rd);
     rd.steps = [];
   }
-  var base=new Date(rd.at); base.setHours(0,0,0,0);
   var done=rd.steps.length, total=REP_DAYS.length;
   if(done>=total) return {status:'cm',done:done,total:total,next:null,df:0};
-  var next=addDays(base,REP_DAYS[done]);
+  // v33: Bir sonraki tekrar SON TEKRARIN yapıldığı günden sayılır (ezberleme
+  // gününden sabit takvimle değil). Ara verince adımlar üst üste binmez:
+  // gecikmiş cümle tek bir tekrarla kapanır, sonraki aralık o günden başlar.
+  var base, gap;
+  if(done===0){ base=new Date(rd.at); gap=REP_DAYS[0]; }
+  else { base=new Date(rd.steps[done-1]); gap=REP_DAYS[done]-REP_DAYS[done-1]; }
+  if(isNaN(base.getTime())) base=new Date(rd.at);
+  base.setHours(0,0,0,0);
+  var next=addDays(base,gap);
   var df=diffDays(today(),next);
   var status=df<0?'ov':df===0?'td':'up';
   return {status:status,done:done,total:total,next:next,df:df};
@@ -3596,6 +3639,8 @@ function setListenSpeed(s){
   });
 }
 var listenQueue = [];
+var listenHeard = [];   // v34: bu oturumda en az bir kez sonuna kadar çalınan cümleler (sırayla)
+var listenPickMode = ''; // '' | 'pick' | 'close'
 var listenIndex = 0;
 var listenPaused = false;
 var listenStopped = true;
@@ -4040,6 +4085,8 @@ function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 // ── OYNATICI KONTROLÜ ─────────────────────────────────────────────────────
 function startListenMode(){
   listenQueue = getListenKeysScoped();
+  listenHeard = [];
+  setTimeout(updateHeardBtn, 0);
   if(listenQueue.length === 0){
     alert('Bu kapsamda dinlenecek ezberlenmiş cümle yok.');
     return;
@@ -4062,7 +4109,15 @@ function startListenMode(){
   runListenLoop(listenRunToken);
 }
 
+// X'e basınca: dinleyip henüz saymadığın cümle varsa önce sor
+function requestCloseListen(){
+  var finishOpen = document.getElementById('lp-finish') && document.getElementById('lp-finish').style.display !== 'none';
+  if(!finishOpen && getUnmarkedHeardKeys().length){ openListenPick('close'); return; }
+  stopListenMode();
+}
+
 function stopListenMode(){
+  hideListenPick();
   listenStopped = true;
   listenRunToken++; // aktif döngüyü geçersiz kıl
   hardStopListenAudio();
@@ -4174,6 +4229,7 @@ function markCurrentListenRep(){
   if(!key || !learned.has(key)) return;
   if(hasReviewedToday(key)) return; // aynı gün için ikinci kez sayılmasın
   markRepDone(key, null);
+  updateHeardBtn();
   var btn = document.getElementById('lp-mark-btn');
   if(btn){
     btn.classList.add('done');
@@ -4218,6 +4274,7 @@ function markAllListenReps(){
   if(navigator.vibrate){ try{ navigator.vibrate([18,60,18]); }catch(e){} }
   if(btn){ btn.classList.add('done'); btn.disabled = true; }
   if(txt) txt.textContent = keys.length + ' cümle sayıldı ✓';
+  var fp3 = document.getElementById('lp-finish-pick'); if(fp3) fp3.style.display = 'none';
   var sub = document.getElementById('lp-finish-sub');
   if(sub) sub.textContent = 'Tekrarlar işlendi, bir sonraki tekrar tarihleri güncellendi.';
 }
@@ -4247,10 +4304,114 @@ function updateListenTr(key){
   });
 }
 
+// ── v34: DİNLEDİKLERİMİ SAY ─────────────────────────────────────────────
+// Kuyruğun tamamını dinlemeden de, o ana kadar dinlediklerini tek seferde
+// sayabilirsin: hepsini, seçerek ya da hiçbirini. "Dinlendi" = cümle en az
+// bir kez sonuna kadar çalındı. Ezberlenmemiş ve bugün sayılmışlar listelenmez.
+function noteListenHeard(key){
+  if(listenHeard.indexOf(key) === -1) listenHeard.push(key);
+  updateHeardBtn();
+}
+function getUnmarkedHeardKeys(){
+  return listenHeard.filter(function(k){ return learned.has(k) && !hasReviewedToday(k); });
+}
+function updateHeardBtn(){
+  var btn = document.getElementById('lp-heard-btn'), txt = document.getElementById('lp-heard-text');
+  if(!btn) return;
+  var n = getUnmarkedHeardKeys().length;
+  var finishOpen = document.getElementById('lp-finish') && document.getElementById('lp-finish').style.display !== 'none';
+  btn.style.display = (n && !finishOpen) ? '' : 'none';
+  if(txt) txt.textContent = 'Dinlediklerimi Say (' + n + ')';
+}
+var _pickWasPlaying = false;
+function openListenPick(mode){
+  listenPickMode = mode;
+  var keys = mode === 'finish' ? getUnmarkedListenKeys() : getUnmarkedHeardKeys();
+  if(!keys.length){ if(mode === 'close') stopListenMode(); return; }
+  // Liste açıkken ses dursun; vazgeçince kaldığı yerden devam etsin
+  _pickWasPlaying = !listenPaused && mode !== 'finish';
+  if(_pickWasPlaying) listenTogglePause();
+  var list = document.getElementById('lp-pick-list');
+  list.innerHTML = keys.map(function(k){
+    var info = SMAP[k];
+    return '<label class="lp-pick-row"><input type="checkbox" checked data-k="' + k + '" onchange="updateListenPickCount()">' +
+      '<span class="lp-pick-nl" lang="nl">' + escHtml(info ? info.nl : k) + '</span></label>';
+  }).join('');
+  document.getElementById('lp-pick-title').textContent = mode === 'close' ? 'Kapatmadan önce' : 'Dinlediklerini say';
+  document.getElementById('lp-pick-sub').textContent = mode === 'finish'
+    ? 'Saymak istemediklerinin işaretini kaldır.'
+    : 'Şu ana kadar ' + keys.length + ' cümleyi dinledin ama tekrarını saymadın. Saymak istemediklerinin işaretini kaldır.';
+  document.getElementById('lp-pick-skip').style.display = mode === 'close' ? '' : 'none';
+  document.getElementById('lp-pick-cancel').textContent = mode === 'finish' ? 'Geri' : 'Dinlemeye dön';
+  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-tr-row','lp-heard-btn','lp-finish'].forEach(function(id){
+    var el = document.getElementById(id); if(el){ el.dataset.pickPrev = el.style.display; el.style.display = 'none'; }
+  });
+  document.getElementById('lp-pick').style.display = '';
+  updateListenPickCount();
+}
+function pickBoxes(){ return Array.prototype.slice.call(document.querySelectorAll('#lp-pick-list input[type=checkbox]')); }
+function updateListenPickCount(){
+  var boxes = pickBoxes(), n = boxes.filter(function(b){ return b.checked; }).length;
+  var go = document.getElementById('lp-pick-go');
+  document.getElementById('lp-pick-go-text').textContent = n ? 'Seçilenleri Say (' + n + ')' : 'Seçili cümle yok';
+  go.disabled = !n;
+  document.getElementById('lp-pick-all').textContent = n === boxes.length ? 'Tümünün seçimini kaldır' : 'Tümünü seç';
+}
+function toggleListenPickAll(){
+  var boxes = pickBoxes(), all = boxes.every(function(b){ return b.checked; });
+  boxes.forEach(function(b){ b.checked = !all; });
+  updateListenPickCount();
+}
+function hideListenPick(){
+  var box = document.getElementById('lp-pick');
+  if(!box || box.style.display === 'none') return;
+  box.style.display = 'none';
+  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-tr-row','lp-heard-btn','lp-finish'].forEach(function(id){
+    var el = document.getElementById(id); if(el && el.dataset.pickPrev !== undefined){ el.style.display = el.dataset.pickPrev; delete el.dataset.pickPrev; }
+  });
+}
+function cancelListenPick(){
+  hideListenPick();
+  if(_pickWasPlaying && listenPaused) listenTogglePause();
+  _pickWasPlaying = false;
+  updateHeardBtn();
+}
+function confirmListenPick(){
+  var keys = pickBoxes().filter(function(b){ return b.checked; }).map(function(b){ return b.dataset.k; })
+    .filter(function(k){ return learned.has(k) && !hasReviewedToday(k); });
+  var mode = listenPickMode;
+  if(keys.length){
+    var now = new Date().toISOString();
+    keys.forEach(function(k){ initRep(k); repData[k].steps.push(now); });
+    save();
+    refreshAfterRepeat();
+    if(navigator.vibrate){ try{ navigator.vibrate([18,60,18]); }catch(e){} }
+  }
+  if(mode === 'close'){ stopListenMode(); toastListen(keys.length + ' cümlenin tekrarı sayıldı ✓'); return; }
+  hideListenPick();
+  if(mode === 'finish'){ showListenFinish(); }
+  else {
+    // Şu an çalan cümle sayıldıysa onun "Tekrar Say" düğmesini de güncelle
+    var mb = document.getElementById('lp-mark-btn');
+    if(mb && _currentListenKey && hasReviewedToday(_currentListenKey)){ mb.classList.add('done'); var sp = mb.querySelector('span'); if(sp) sp.textContent = 'Sayıldı ✓'; }
+    if(_pickWasPlaying && listenPaused) listenTogglePause();
+  }
+  _pickWasPlaying = false;
+  updateHeardBtn();
+  toastListen(keys.length + ' cümlenin tekrarı sayıldı ✓');
+}
+function toastListen(msg){
+  var t = document.createElement('div');
+  t.className = 'lp-toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.classList.add('out'); }, 1800);
+  setTimeout(function(){ t.remove(); }, 2300);
+}
+
 function showListenFinish(){
   var box = document.getElementById('lp-finish');
   if(!box) return;
-  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-tr-row'].forEach(function(id){
+  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-tr-row','lp-heard-btn'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = 'none';
   });
@@ -4267,16 +4428,22 @@ function showListenFinish(){
     if(sub) sub.textContent = listenQueue.length + ' cümle dinlendi. ' + keys.length + ' cümlenin bugünkü tekrarı henüz sayılmadı.';
     if(txt) txt.textContent = 'Hepsini Tekrar Say (' + keys.length + ')';
     if(btn) btn.style.display = '';
+    var fp = document.getElementById('lp-finish-pick'); if(fp) fp.style.display = '';
   } else {
     if(sub) sub.textContent = listenQueue.length + ' cümle dinlendi. Sayılacak tekrar kalmadı.';
     if(btn) btn.style.display = 'none';
+    var fp2 = document.getElementById('lp-finish-pick'); if(fp2) fp2.style.display = 'none';
   }
+  // Seçim listesi açıkken kuyruk biterse bitiş ekranı liste kapanınca görünsün
+  var pick = document.getElementById('lp-pick');
+  if(pick && pick.style.display !== 'none'){ box.dataset.pickPrev = ''; box.style.display = 'none'; return; }
   box.style.display = '';
 }
 
 function hideListenFinish(){
   var box = document.getElementById('lp-finish');
   if(box) box.style.display = 'none';
+  setTimeout(updateHeardBtn, 0);
   var ctrl = document.getElementById('lp-controls');
   if(ctrl) ctrl.style.display = '';
   var trRow = document.getElementById('lp-tr-row');
@@ -4291,6 +4458,7 @@ function hideListenFinish(){
 function restartListenMode(){
   if(!listenQueue.length) return;
   hideListenFinish();
+  hideListenPick();
   listenIndex = 0;
   listenPaused = false;
   listenStopped = false;
@@ -4323,6 +4491,7 @@ async function runListenLoop(token){
       try{ played = await speakQueued(info.nl, 'nl-NL', EDGE_TTS_VOICE, listenSettings.speed, token); }catch(e){}
       setWaveActive(false);
       if(token !== listenRunToken) return;
+      if(played) noteListenHeard(key);
       // Arka planda ses çıkmadıysa kuyruğu sessizce tüketme — öne dönünce
       // aynı cümleden devam et (yoksa "girince ilerlemiş oluyor" hissi doğuyor)
       if(!played && document.hidden){

@@ -144,3 +144,6 @@ Her ekran dört durumu tasarlar: yükleniyor, boş, hata, dolu.
 4. Hollandaca metin öğesi `lang="nl"` taşıyor mu?
 5. İki temada da bakıldı mı? 375 px genişlikte bakıldı mı?
 6. Boş ve hata durumu var mı?
+
+## v34 (2026-10-29)
+- Dinleme modu: "Dinlediklerimi Say (N)" hap düğmesi (kontrollerin altında, `--tag` zemin, yeşil ikon). Seçim listesi `.lp-pick`: satırlar `--card` zemin, 14px köşe, yeşil onay kutusu; ana eylem turuncu `.lp-markall-btn`. Gece mavisi sahne korunur. Kısa onay mesajı `.lp-toast`.
