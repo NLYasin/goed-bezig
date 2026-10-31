@@ -153,3 +153,15 @@ Her ekran dört durumu tasarlar: yükleniyor, boş, hata, dolu.
 - Senin cümlelerinden: katlanır kutu `.rel-box`, satırlar dokununca seslendirir.
 - Sonra bak: yer imi ikonu (`i-bookmark`), kayıtlıyken `--cta`. Liste ekranı "Bugün çalıştıklarım" düzeninde (`td-seg`, `td-tip`).
 - Hız: −/+ yuvarlak düğmeler + Fraunces değer + `--cta` kaydırıcı; oynatıcıda küçük −/+ satırı.
+
+## v36 (2026-10-31)
+- Dönüştür kartı üç katman: Kalıp (küçük kutu) → Görev · ne değişecek? (kalın, tam cümle) → Türkçesi · bunu Hollandaca söyle (`--cta` kesik çizgili kutu). Zor modda Türkçe kutusu soluk yazıyla gizli.
+- "Yeni cümle" çipi (`--yellow` tonu): kalıbın birebir dönüşümü olmayan kartlar.
+- Hollandaca büyük metinlerde kelime bölme kapalı (`hyphens:manual`).
+- Konuş'taki Dönüştür kartında "Hangi yapılar?" ve "Tur ayarları" kapanabilir; ok işaretli.
+
+## v37 (2026-10-31)
+- Dönüştür kartının başında üç sekmeli mod seçici (`.tf-kinds`, segment kontrolü; seçili `--cta`, sayaç rozeti): Kur · Geri çevir · Dinle, tanı.
+- Dinle, tanı: büyük "Dönüşmüş cümleyi dinle" düğmesi (`.tf-play-q`, `--cta` tonu) + numaralı seçenek kartları (`.tf-choice`; doğru `--green`, yanlış `--red`) + tam genişlik "Devam" (`.tf-next`, doğruysa yeşil).
+- Geri çevir: kalıp kutusunda "Dönüşmüş cümle", görevin altında soluk "Bu cümlede yapılan değişiklik: …".
+- Mod çipi `.tf-kind` (`--accent` tonu). Seviye 4 türleri yalnızca Kur modunda.
