@@ -1258,6 +1258,95 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 .td-tap { font-size:calc(12px * var(--fs-scale)); color:var(--muted); font-style:italic; }
 .td-row[data-st="1"] .td-tap, .td-row[data-st="2"] .td-tap { display:none; }
 .td-row[data-st="1"] { border-left-color:color-mix(in srgb,var(--accent) 65%,var(--border)); }
+/* ── v35: hız ayarı ── */
+.spd-box{display:flex;flex-direction:column;gap:10px;}
+.spd-row{display:flex;align-items:center;justify-content:center;gap:14px;}
+.spd-step{width:48px;height:48px;border-radius:50%;border:1px solid var(--border);background:var(--tag);color:var(--text);font-size:calc(24px * var(--fs-scale));font-weight:700;line-height:1;cursor:pointer;}
+.spd-step:active{transform:scale(.94);}
+.spd-val{min-width:96px;text-align:center;font-family:var(--font-display);font-weight:600;font-size:calc(30px * var(--fs-scale));color:var(--text);}
+.spd-range{width:100%;accent-color:var(--cta);height:28px;}
+.spd-presets .lc-btn{min-width:0;}
+.spd-note{text-align:center;}
+.lp-speed{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;}
+.lp-speed button{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--tag);color:var(--text);font-size:calc(20px * var(--fs-scale));font-weight:700;line-height:1;cursor:pointer;}
+.lp-speed span{display:inline-flex;align-items:center;gap:6px;min-width:76px;justify-content:center;color:var(--muted);font-size:calc(14px * var(--fs-scale));}
+.lp-speed span b{color:var(--text);font-size:calc(16px * var(--fs-scale));}
+.lp-speed .ic{width:16px;height:16px;}
+.lp-tr-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.lp-sv .ic{width:15px;height:15px;}
+.lp-sv.on{color:var(--cta);border-color:color-mix(in srgb,var(--cta) 50%,var(--border));}
+
+/* ── v35: Sonra bak ── */
+.sv-btn .ic{width:16px;height:16px;}
+.sv-btn.on{color:var(--cta);border-color:color-mix(in srgb,var(--cta) 45%,var(--border));background:color-mix(in srgb,var(--cta) 10%,var(--tag));}
+.sv-ico .ic{width:17px;height:17px;}
+.spkbtn.sv-ico.on,.icnbtn.sv-ico.on{color:var(--cta);opacity:1;}
+.sv-empty{padding:28px 8px;text-align:center;color:var(--muted);font-size:calc(14px * var(--fs-scale));line-height:1.5;}
+.sv-empty .ic{width:15px;height:15px;vertical-align:-2px;}
+.sv-actions{display:flex;gap:8px;align-items:center;margin:4px 0 12px;flex-wrap:wrap;}
+.sv-actions .btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;}
+.sv-actions .btn-primary{flex:1;justify-content:center;}
+.sv-actions .ic{width:16px;height:16px;}
+.sv-share{padding:0 12px;}
+.sv-item{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 12px 10px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px;}
+.sv-head{display:flex;gap:10px;align-items:flex-start;}
+.sv-check input{width:20px;height:20px;margin-top:3px;accent-color:var(--cta);}
+.sv-txt{flex:1;min-width:0;}
+.sv-nl{font-family:var(--font-display);font-weight:500;font-size:calc(18px * var(--fs-scale));line-height:1.3;}
+.sv-tr{font-size:calc(13.5px * var(--fs-scale));color:var(--muted);margin-top:3px;}
+.sv-src{display:inline-block;margin-top:5px;font-size:calc(11px * var(--fs-scale));font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);}
+.sv-ico-btn{width:40px;height:40px;flex-shrink:0;border-radius:50%;border:1px solid var(--border);background:var(--tag);color:var(--text);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;}
+.sv-ico-btn .ic{width:17px;height:17px;}
+.sv-note{width:100%;box-sizing:border-box;min-height:42px;padding:8px 12px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:calc(14px * var(--fs-scale));}
+.sv-ans summary{cursor:pointer;font-weight:700;font-size:calc(13px * var(--fs-scale));color:var(--accent);padding:4px 0;}
+.sv-ans textarea{width:100%;box-sizing:border-box;margin-top:6px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:calc(14px * var(--fs-scale));line-height:1.5;resize:vertical;}
+.sv-mini-txt{white-space:pre-wrap;font-size:calc(13.5px * var(--fs-scale));line-height:1.5;padding:4px 2px 2px;}
+
+/* ── v35: Senin cümlelerinden ── */
+.rel-box{border:1px solid var(--border);border-radius:14px;background:var(--card);padding:0 12px;}
+.rel-box summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:46px;font-weight:800;font-size:calc(13.5px * var(--fs-scale));color:var(--text);}
+.rel-box summary::-webkit-details-marker{display:none;}
+.rel-box summary .ic{width:16px;height:16px;color:var(--accent);}
+.rel-box summary span{margin-left:auto;font-weight:700;color:var(--muted);}
+.rel-box[open]{padding-bottom:10px;}
+.rel-row{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;padding:9px 10px;margin-top:6px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;cursor:pointer;}
+.rel-row.playing{border-color:var(--accent);}
+.rel-nl{font-size:calc(15px * var(--fs-scale));font-weight:600;line-height:1.35;}
+.rel-tr{font-size:calc(13px * var(--fs-scale));color:var(--muted);}
+.rel-meta{font-size:calc(11px * var(--fs-scale));color:var(--muted);opacity:.8;}
+#sp-extra,#tf-extra{display:flex;flex-direction:column;gap:10px;}
+#sp-extra:empty,#tf-extra:empty{display:none;}
+
+/* ── v35: Dönüştür ── */
+.tf-base{padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--border);}
+.tf-base .sp-lbl{margin-bottom:4px;}
+.tf-base-row{display:flex;align-items:center;gap:10px;}
+.tf-base-nl{flex:1;font-family:var(--font-display);font-weight:500;font-size:calc(19px * var(--fs-scale));line-height:1.3;}
+.tf-base-tr{font-size:calc(13px * var(--fs-scale));color:var(--muted);margin-top:4px;}
+.tf-base-tr:empty{display:none;}
+.tf-task{font-size:calc(21px * var(--fs-scale));font-weight:800;line-height:1.35;color:var(--text);}
+.tf-task.tr{font-weight:600;}
+.tf-mean{font-size:calc(14px * var(--fs-scale));color:var(--muted);margin-top:6px;line-height:1.45;}
+.tf-mean b{color:var(--text);}
+.tf-rule{font-size:calc(13.5px * var(--fs-scale));line-height:1.5;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--accent) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--border));}
+.tf-rule-h{display:flex;align-items:center;gap:6px;font-weight:800;margin-bottom:3px;color:var(--accent);}
+.tf-rule-h .ic{width:16px;height:16px;}
+.tf-note{margin-top:6px;}
+.sp-chip.tf-type{color:var(--text);}
+.tf-weak{padding:10px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--border);margin-bottom:6px;font-weight:700;}
+.tf-weak.ok{color:var(--green);}
+.tf-home-nums{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 12px;font-size:calc(13px * var(--fs-scale));color:var(--muted);}
+.tf-home-nums b{font-family:var(--font-display);font-size:calc(22px * var(--fs-scale));color:var(--text);margin-right:3px;}
+.tf-all-link{float:right;background:none;border:none;color:var(--accent);font:inherit;font-weight:700;font-size:calc(12px * var(--fs-scale));cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0;}
+.tf-lv{margin-top:10px;}
+.tf-lv-h{background:none;border:none;padding:0;margin-bottom:6px;color:var(--muted);font:inherit;font-weight:800;font-size:calc(12px * var(--fs-scale));letter-spacing:.04em;cursor:pointer;}
+.tf-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.tf-chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 12px;border-radius:19px;border:1px solid var(--border);background:var(--tag);color:var(--text);font:inherit;font-weight:700;font-size:calc(13px * var(--fs-scale));cursor:pointer;}
+.tf-chip.on{background:color-mix(in srgb,var(--cta) 14%,var(--tag));border-color:color-mix(in srgb,var(--cta) 55%,var(--border));color:var(--cta);}
+.tf-chip-n{font-weight:600;color:var(--muted);font-size:calc(11.5px * var(--fs-scale));}
+.tf-chip-warn{font-weight:800;color:var(--red);font-size:calc(11.5px * var(--fs-scale));}
+.tf-more{margin-top:14px;border-top:1px solid var(--border);padding-top:10px;}
+.tf-more summary{cursor:pointer;font-weight:800;font-size:calc(13.5px * var(--fs-scale));color:var(--accent);min-height:36px;display:flex;align-items:center;}
 </style>
 </head>
 <body>
@@ -1303,6 +1392,7 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/></symbol>
   <symbol id="i-message" viewBox="0 0 24 24"><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24"><path d="M4 5v14l12 -7z"/><path d="M20 5v14"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z"/></symbol>
 </svg>
 
 <!-- PROFİL SEÇİCİ — uygulama açılınca ilk gösterilen ekran -->
@@ -1440,12 +1530,21 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 
       <div class="lc-section">
         <div class="lc-label"><svg class="ic"><use href="#i-bolt"/></svg>Hız</div>
-        <div class="lc-btn-row" id="lc-speed-row">
-          <button class="lc-btn" data-speed="0.75" onclick="setListenSpeed(0.75)">0.75×</button>
-          <button class="lc-btn active" data-speed="1" onclick="setListenSpeed(1)">1×</button>
-          <button class="lc-btn" data-speed="1.25" onclick="setListenSpeed(1.25)">1.25×</button>
-          <button class="lc-btn" data-speed="1.5" onclick="setListenSpeed(1.5)">1.5×</button>
-          <button class="lc-btn" data-speed="2" onclick="setListenSpeed(2)">2×</button>
+        <div class="spd-box">
+          <div class="spd-row">
+            <button class="spd-step" onclick="nudgeListenSpeed(-0.05)" aria-label="Yavaşlat">−</button>
+            <div class="spd-val" id="lc-speed-val">1×</div>
+            <button class="spd-step" onclick="nudgeListenSpeed(0.05)" aria-label="Hızlandır">+</button>
+          </div>
+          <input type="range" id="lc-speed-range" class="spd-range" min="0.6" max="1.6" step="0.05" value="1" oninput="setListenSpeed(parseFloat(this.value))" aria-label="Konuşma hızı">
+          <div class="lc-btn-row spd-presets" id="lc-speed-row">
+            <button class="lc-btn spd-preset" data-speed="0.8" onclick="setListenSpeed(0.8)">0.8×</button>
+            <button class="lc-btn spd-preset" data-speed="0.9" onclick="setListenSpeed(0.9)">0.9×</button>
+            <button class="lc-btn spd-preset active" data-speed="1" onclick="setListenSpeed(1)">1×</button>
+            <button class="lc-btn spd-preset" data-speed="1.1" onclick="setListenSpeed(1.1)">1.1×</button>
+            <button class="lc-btn spd-preset" data-speed="1.25" onclick="setListenSpeed(1.25)">1.25×</button>
+          </div>
+          <div class="lc-sub spd-note">0.05'lik adımlarla 0.6× – 1.6×. Dinlerken de değiştirebilirsin; seçtiğin hız hatırlanır.</div>
         </div>
       </div>
 
@@ -1465,6 +1564,7 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
       <div class="lp-nl" id="lp-nl" lang="nl">…</div>
       <div class="lp-tr-row" id="lp-tr-row">
         <button class="lp-tr-btn" id="lp-tr-btn" onclick="toggleListenTr()" aria-pressed="false"><span class="lp-tr-badge">TR</span><span id="lp-tr-btn-txt">Çeviriyi göster</span></button>
+        <button class="lp-tr-btn lp-sv" id="lp-save" data-sv="" onclick="lpToggleSave()"><svg class="ic"><use href="#i-bookmark"/></svg><span>Sonra bak</span></button>
       </div>
       <div class="lp-tr" id="lp-tr" aria-live="polite"></div>
       <div class="lp-wave" id="lp-wave">
@@ -1485,6 +1585,11 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
         <button class="lp-btn" onclick="listenPrev()" title="Önceki"><svg class="ic"><use href="#i-prev"/></svg></button>
         <button class="lp-btn lp-btn-main" id="lp-playpause" onclick="listenTogglePause()" title="Duraklat"><svg class="ic"><use href="#i-pause"/></svg></button>
         <button class="lp-btn" onclick="listenNext()" title="Sonraki"><svg class="ic"><use href="#i-next"/></svg></button>
+      </div>
+      <div class="lp-speed" id="lp-speed">
+        <button onclick="nudgeListenSpeed(-0.05)" aria-label="Yavaşlat">−</button>
+        <span><svg class="ic"><use href="#i-bolt"/></svg><b id="lp-speed-val">1×</b></span>
+        <button onclick="nudgeListenSpeed(0.05)" aria-label="Hızlandır">+</button>
       </div>
       <button class="lp-heard-btn" id="lp-heard-btn" onclick="openListenPick('pick')" style="display:none">
         <svg class="ic"><use href="#i-circle-check"/></svg>
@@ -1761,6 +1866,83 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
   </div>
 </div>
 
+
+<!-- v35: DÖNÜŞTÜR — tam ekran oturum -->
+<div class="sp-overlay" id="tf-overlay" role="dialog" aria-modal="true" aria-label="Dönüştür">
+  <div class="sp-wrap">
+    <div class="sp-top">
+      <button class="sp-close" onclick="closeTf()" aria-label="Kapat"><svg class="ic"><use href="#i-x"/></svg></button>
+      <div class="sp-bar" aria-hidden="true"><div class="sp-bar-fill" id="tf-bar"></div></div>
+      <div class="sp-count" id="tf-count" aria-live="polite">1 / 1</div>
+    </div>
+    <div class="sp-session" id="tf-session">
+      <div class="sp-chips" id="tf-chips"></div>
+      <div class="sp-card" id="tf-card">
+        <div class="tf-base">
+          <div class="sp-lbl">Kalıp</div>
+          <div class="tf-base-row"><div class="tf-base-nl" id="tf-base-nl" lang="nl"></div>
+            <button class="sv-ico-btn" onclick="tfPlayBase(this)" title="Kalıbı dinle"><svg class="ic"><use href="#i-volume"/></svg></button></div>
+          <div class="tf-base-tr" id="tf-base-tr"></div>
+        </div>
+        <div class="tf-task-box">
+          <div class="sp-lbl" id="tf-task-lbl">Görev</div>
+          <div class="tf-task" id="tf-task"></div>
+        </div>
+        <div class="sp-hint" id="tf-hint" lang="nl" style="display:none"></div>
+        <div class="sp-say" id="tf-say"><svg class="ic" aria-hidden="true"><use href="#i-microphone"/></svg>Önce sesli söyle, sonra kontrol et</div>
+        <div class="sp-ans" id="tf-ans" style="display:none">
+          <div class="sp-div"></div>
+          <div>
+            <div class="sp-lbl">Nederlands</div>
+            <div class="sp-nl" id="tf-nl" lang="nl"></div>
+            <div class="tf-mean" id="tf-mean"></div>
+          </div>
+          <div class="sp-tools">
+            <button class="sp-tool" id="tf-listen" onclick="tfListen(this)"><svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg>Dinle</button>
+          </div>
+          <div class="tf-rule" id="tf-rule"></div>
+          <div id="tf-extra"></div>
+        </div>
+      </div>
+      <div class="sp-actions" id="tf-q-actions">
+        <button class="sp-btn" id="tf-hint-btn" onclick="tfHint()"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>İpucu</button>
+        <button class="sp-btn primary" onclick="tfReveal()"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg>Cevabı göster</button>
+      </div>
+      <div class="sp-grades" id="tf-grades" style="display:none">
+        <button class="sp-grade" onclick="tfGrade('t')"><b>Takıldım</b><span id="tf-g-t"></span></button>
+        <button class="sp-grade" onclick="tfGrade('y')"><b>Yavaş</b><span id="tf-g-y"></span></button>
+        <button class="sp-grade" onclick="tfGrade('a')"><b>Akıcı</b><span id="tf-g-a"></span></button>
+      </div>
+      <div class="sp-keys">Klavye: Boşluk cevabı gösterir, 1–3 değerlendirir, Esc kapatır</div>
+    </div>
+    <div class="sp-finish" id="tf-finish" style="display:none">
+      <div class="sp-fin-title">Tur bitti</div>
+      <div class="sp-stats">
+        <div class="sp-stat"><div class="sp-stat-num" id="tf-fin-a">0</div><div class="sp-stat-lbl">Akıcı</div></div>
+        <div class="sp-stat"><div class="sp-stat-num" id="tf-fin-y">0</div><div class="sp-stat-lbl">Yavaş</div></div>
+        <div class="sp-stat"><div class="sp-stat-num" id="tf-fin-t">0</div><div class="sp-stat-lbl">Takıldım</div></div>
+      </div>
+      <div id="tf-fin-weak"></div>
+      <div class="sp-fin-actions">
+        <button class="sp-btn" id="tf-fin-retry" onclick="tfRetryStuck()"><svg class="ic" aria-hidden="true"><use href="#i-repeat"/></svg>Takıldıklarım</button>
+        <button class="sp-btn" onclick="tfMoreRound()"><svg class="ic" aria-hidden="true"><use href="#i-next"/></svg>Yeni tur</button>
+        <button class="sp-btn primary" onclick="closeTf()">Kapat</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- v35: SONRA BAK -->
+<div class="sp-overlay" id="sv-overlay" role="dialog" aria-modal="true" aria-label="Sonra bak">
+  <div class="sp-wrap">
+    <div class="sp-top">
+      <button class="sp-close" onclick="closeSaved()" aria-label="Kapat"><svg class="ic"><use href="#i-x"/></svg></button>
+      <div class="td-title">Sonra bak</div>
+    </div>
+    <div id="sv-body"></div>
+  </div>
+</div>
+
 <!-- KONUŞMA MODU — tam ekran oturum -->
 <div class="sp-overlay" id="sp-overlay" role="dialog" aria-modal="true" aria-label="Konuşma modu">
   <div class="sp-wrap">
@@ -1803,6 +1985,7 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
               <button class="btn btn-primary" onclick="spSaveEdit()">Kaydet</button>
             </div>
           </div>
+          <div id="sp-extra"></div>
         </div>
       </div>
       <div class="sp-actions" id="sp-q-actions">
@@ -1992,6 +2175,8 @@ function pushToCloud(){
       prodData: prodData,
       prodCues: prodCues,
       prodLog: prodLog,
+      tfData: tfData,
+      saved: savedItems,
       updatedAt: firebase.database.ServerValue.TIMESTAMP,
       updatedBy: (window.deviceId || 'unknown')
     };
@@ -2708,6 +2893,7 @@ function renderStudy(){
       actionsWrap.appendChild(spkbtn);
       actionsWrap.appendChild(ipabtn);
       actionsWrap.appendChild(trbtn);
+      (function(k){ var sv=document.createElement('button'); sv.type='button'; sv.className='spkbtn sv-ico'+(isSaved(k)?' on':''); sv.dataset.sv=k; sv.title=isSaved(k)?'Kaydedildi (çıkarmak için dokun)':'Sonra bak listesine ekle'; sv.innerHTML=ic('bookmark'); sv.addEventListener('click',function(e){ e.stopPropagation(); toggleSaved(k); }); actionsWrap.appendChild(sv); })(r.key);
       actionsWrap.appendChild(cbtn);
       actionsWrap.appendChild(tbtn);
 
@@ -2911,6 +3097,7 @@ function renderLearned(){
     spkBtn.title='Seslendir';
     (function(nlText, btn){ btn.addEventListener('click',function(){ speakNL(nlText,btn); }); })(info.nl, spkBtn);
     card.appendChild(spkBtn);
+    (function(k){ var sv=document.createElement('button'); sv.className='icnbtn sv-ico'+(isSaved(k)?' on':''); sv.style.cssText='right:136px'; sv.dataset.sv=k; sv.title='Sonra bak listesine ekle'; sv.innerHTML=ic('bookmark'); sv.addEventListener('click',function(e){ e.stopPropagation(); toggleSaved(k); }); card.appendChild(sv); })(key);
 
     var lIpaBtn=document.createElement('button');
     lIpaBtn.className='icnbtn ib ib-abc'; lIpaBtn.type='button';
@@ -2998,6 +3185,7 @@ function renderRepeat(){
     rSpkBtn.title='Seslendir';
     (function(nlText,btn){ btn.addEventListener('click',function(e){ e.stopPropagation(); speakNL(nlText,btn); }); })(info.nl, rSpkBtn);
     bodyD.appendChild(rSpkBtn);
+    (function(k){ var sv=document.createElement('button'); sv.className='spkbtn sv-ico'+(isSaved(k)?' on':''); sv.style.cssText='margin-top:4px;'; sv.dataset.sv=k; sv.title='Sonra bak listesine ekle'; sv.innerHTML=ic('bookmark'); sv.addEventListener('click',function(e){ e.stopPropagation(); toggleSaved(k); }); bodyD.appendChild(sv); })(key);
 
     // Çeviri butonu
     var rTrBtn=document.createElement('button');
@@ -3322,7 +3510,9 @@ function exportData(){
       dayLog: dayLog,
       prodData: prodData,
       prodCues: prodCues,
-      prodLog: prodLog
+      prodLog: prodLog,
+      tfData: tfData,
+      saved: savedItems
     }
   };
   var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
@@ -3360,6 +3550,8 @@ function importData(event){
       if(d.prodData) prodData = normalizeProdData(d.prodData);
       if(d.prodCues) prodCues = d.prodCues;
       if(d.prodLog)  prodLog  = d.prodLog;
+      if(d.tfData)   tfData   = d.tfData;
+      if(d.saved)    savedItems = d.saved;
 
       // dayLog — yeni format veya eski activityLog+timeLog birleştir
       if(d.dayLog && Object.keys(d.dayLog).length > 0){
@@ -3399,7 +3591,7 @@ function resetAllData(){
   trulyDeleted.clear();
   prios = {};
   repData = {};
-  prodData = {}; prodCues = {}; prodLog = {};
+  prodData = {}; prodCues = {}; prodLog = {}; tfData = {}; savedItems = {};
   collapsedLessons = new Set(lessons.map(function(l){ return l.id; })); // varsayılan: hepsi kapalı
   save();
   renderStudy();
@@ -4343,7 +4535,7 @@ function openListenPick(mode){
     : 'Şu ana kadar ' + keys.length + ' cümleyi dinledin ama tekrarını saymadın. Saymak istemediklerinin işaretini kaldır.';
   document.getElementById('lp-pick-skip').style.display = mode === 'close' ? '' : 'none';
   document.getElementById('lp-pick-cancel').textContent = mode === 'finish' ? 'Geri' : 'Dinlemeye dön';
-  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-tr-row','lp-heard-btn','lp-finish'].forEach(function(id){
+  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-speed','lp-tr-row','lp-heard-btn','lp-finish'].forEach(function(id){
     var el = document.getElementById(id); if(el){ el.dataset.pickPrev = el.style.display; el.style.display = 'none'; }
   });
   document.getElementById('lp-pick').style.display = '';
@@ -4366,7 +4558,7 @@ function hideListenPick(){
   var box = document.getElementById('lp-pick');
   if(!box || box.style.display === 'none') return;
   box.style.display = 'none';
-  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-tr-row','lp-heard-btn','lp-finish'].forEach(function(id){
+  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-speed','lp-tr-row','lp-heard-btn','lp-finish'].forEach(function(id){
     var el = document.getElementById(id); if(el && el.dataset.pickPrev !== undefined){ el.style.display = el.dataset.pickPrev; delete el.dataset.pickPrev; }
   });
 }
@@ -4411,7 +4603,7 @@ function toastListen(msg){
 function showListenFinish(){
   var box = document.getElementById('lp-finish');
   if(!box) return;
-  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-tr-row','lp-heard-btn'].forEach(function(id){
+  ['lp-wave','lp-repeat-dots','lp-mark-btn','lp-controls','lp-speed','lp-tr-row','lp-heard-btn'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = 'none';
   });
@@ -4448,6 +4640,8 @@ function hideListenFinish(){
   if(ctrl) ctrl.style.display = '';
   var trRow = document.getElementById('lp-tr-row');
   if(trRow) trRow.style.display = '';
+  var spdRow = document.getElementById('lp-speed');
+  if(spdRow) spdRow.style.display = '';
   ['lp-wave','lp-repeat-dots'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = '';
@@ -5941,7 +6135,7 @@ function renderSpeak(){
 
   var h = '<div class="spk-intro"><div class="ptitle">' + ic('microphone') + 'Konuşma</div>' +
           '<div class="psub">Türkçeyi gör, Hollandacasını sesli söyle, sonra kontrol et.</div></div>' +
-          '<button class="td-entry" onclick="openToday()">' + ic('book') + 'Bugün çalıştıklarım<span>defter kontrolü</span></button>';
+          '<button class="td-entry" onclick="openToday()">' + ic('book') + 'Bugün çalıştıklarım<span>defter kontrolü</span></button>' + svEntryHtml();
 
   // 1) Ana kart
   h += '<div class="prog-card spk-hero">';
@@ -5970,6 +6164,9 @@ function renderSpeak(){
     h += '</div>';
   }
   h += '</div>';
+
+  // v35: Dönüştür
+  if(learned.size) h += tfCardHtml();
 
   // 2) İlerleme
   if(base.length){
@@ -6195,6 +6392,582 @@ function dismissInstallBanner() {
   document.getElementById('install-banner').classList.remove('show');
   localStorage.setItem('gb3-install-dismissed', '1');
 }
+
+
+// ══════════════════════════════════════════════════════════════════════════
+// [v35] DÖNÜŞTÜR · SENİN CÜMLELERİNDEN · SONRA BAK · İNCE HIZ AYARI
+// ══════════════════════════════════════════════════════════════════════════
+// Dönüşüm verisi: TF_DATA[cümle anahtarı] = [[tür, görev, hollandaca, türkçe, not], ...]
+// Claude tarafından hazırlanıp kontrol edildi; parti parti eklenir (parti 1: Konuş'taki 109 cümle).
+var TF_DATA = {"1-1":[["zaman","Geçmiş zamana çevir","Was ik te vroeg?","Çok mu erken gelmiştim?","te vroeg = fazla erken"],["soru","Olumsuz soru yap","Ben ik niet te vroeg?","Çok erken değil miyim?",""],["partikel","'misschien' ekle","Ben ik misschien te vroeg?","Acaba erken mi geldim?","misschien soruyu yumuşatır"],["bijzin","'Ik weet niet of…' ile başlat","Ik weet niet of ik te vroeg ben.","Erken miyim bilmiyorum.",""],["inversie","'Gisteren' ile başlat, geçmiş zaman","Gisteren was ik te vroeg.","Dün fazla erkendim.",""]],"3-2":[["zaman","Geçmiş zamana çevir","De kans was voorbij.","Fırsat kaçmıştı.",""],["nuans","'nog niet' ile olumsuz yap","De kans is nog niet voorbij.","Fırsat henüz kaçmadı.","al ↔ nog niet"],["soru","Soru yap","Is de kans voorbij?","Fırsat kaçtı mı?",""],["inversie","'Helaas' ile başlat","Helaas is de kans voorbij.","Maalesef fırsat kaçtı.",""],["gelecek","'zullen' ve 'binnenkort' ile","De kans zal binnenkort voorbij zijn.","Fırsat yakında kaçacak.","zullen burada tahmin bildirir"],["bijzin","'Ik denk dat…' ile başlat","Ik denk dat de kans voorbij is.","Bence fırsat kaçtı.",""]],"3-3":[["olumsuz","Olumsuz yap","Hier is het niet veilig.","Burası güvenli değil.",""],["soru","Soru yap","Is het hier veilig?","Burası güvenli mi?",""],["nuans","'niet meer' ile","Hier is het niet meer veilig.","Burası artık güvenli değil.","niet meer = artık değil"],["zaman","'vroeger' ekle, geçmiş zaman","Vroeger was het hier veilig.","Eskiden burası güvenliydi.",""],["bijzin","'Ik vind dat…' ile başlat","Ik vind dat het hier veilig is.","Bence burası güvenli.",""],["er","'hier' yerine 'er' (daha önce söylenen yer)","Het is er veilig.","Orası güvenli.","er = vurgusuz 'daar'"]],"3-4":[["zaman","Geçmiş zamana çevir","Hoe was je relatie met de gemeente?","Belediyeyle ilişkin nasıldı?",""],["zamir","Resmî sor (u)","Hoe is uw relatie met de gemeente?","Belediyeyle ilişkiniz nasıl?","u / uw = resmî hitap"],["bijzin","'Mag ik vragen…' ile dolaylı soru","Mag ik vragen hoe uw relatie met de gemeente is?","Belediyeyle ilişkinizin nasıl olduğunu sorabilir miyim?","Dolaylı soruda fiil sona gider"],["olumsuz","Cevap ver: pek iyi değil","Mijn relatie met de gemeente is niet zo goed.","Belediyeyle ilişkim pek iyi değil.",""],["er","'met de gemeente' yerine er…mee","Heb je er nog contact mee?","Onlarla hâlâ temasın var mı?","met + dat/het → ermee; er…mee bölünebilir"]],"4-2":[["partikel","'nog' ekle (ileride)","Ik hoor nog van je.","Senden haber beklerim.","nog = daha sonra, ileride"],["soru","Soru yap","Hoor ik nog van je?","Senden haber alacak mıyım?",""],["olumsuz","Perfectum, olumsuz: hiç haber almadım","Ik heb niets van je gehoord.","Senden hiç haber almadım.","iets ↔ niets"],["nuans","'nog steeds' ekle","Ik heb nog steeds niets van je gehoord.","Senden hâlâ haber alamadım.",""],["bijzin","'Ik hoop dat…' + 'snel'","Ik hoop dat ik snel van je hoor.","Umarım yakında senden haber alırım.",""],["inversie","'Morgen' ile başlat","Morgen hoor ik van je.","Yarın senden haber alırım.",""]],"4-3":[["zamir","Resmî yap (u) ve 'nog' ekle","U hoort nog van mij.","Sizi bilgilendireceğim.","Ofiste çok kullanılır"],["inversie","'Voor vrijdag' ile başlat","Voor vrijdag hoort u van mij.","Cumadan önce benden haber alırsınız.",""],["gelecek","'zullen' ile söz ver","Je zult snel van mij horen.","Yakında benden haber alacaksın.","zullen = söz / tahmin"],["soru","Soru: ondan haber aldın mı?","Heb je al iets van hem gehoord?","Ondan hiç haber aldın mı?","al = şimdiye kadar"],["er","'Ik zorg ervoor dat…' ile","Ik zorg ervoor dat je snel van mij hoort.","Yakında benden haber almanı sağlarım.","zorgen voor + dat-cümlesi → ervoor"]],"4-4":[["bijzin","'Weet u wanneer…' ile","Weet u wanneer ik het resultaat hoor?","Sonucu ne zaman öğreneceğimi biliyor musunuz?","Dolaylı soruda fiil sona"],["soru","Evet/hayır sorusu, 'deze week' ekle","Hoor ik het resultaat deze week?","Sonucu bu hafta öğrenir miyim?",""],["zaman","Perfectum: sonucu duydun mu?","Heb je het resultaat al gehoord?","Sonucu duydun mu?",""],["nuans","'nog steeds niet' ile","Ik heb het resultaat nog steeds niet gehoord.","Sonucu hâlâ öğrenemedim.",""],["inversie","'Pas volgende week' ile başlat","Pas volgende week hoor ik het resultaat.","Sonucu ancak haftaya öğreneceğim.","pas = ancak (beklenenden geç)"]],"4-5":[["nuans","Olumsuz perfectum: henüz bir şey duymadım","Ik heb nog niets van je gehoord.","Senden henüz haber almadım.","iets ↔ niets"],["bijzin","'Ik wil weten wanneer…'","Ik wil weten wanneer ik iets van je hoor.","Senden ne zaman haber alacağımı bilmek istiyorum.",""],["soru","Belediyeden haber aldın mı?","Heb je al iets van de gemeente gehoord?","Belediyeden haber aldın mı?",""],["partikel","Rica: 'iets van je laten horen'","Laat je snel iets van je horen?","Yakında haber verir misin?","iets van je laten horen = haber vermek"],["zou","Kibar rica (zou … willen)","Zou u mij iets willen laten weten?","Bana haber verebilir misiniz?","zou … willen = kibar rica"]],"5-0":[["nuans","'nog niet' ile olumsuz","Mijn huiswerk is nog niet af.","Ödevim henüz bitmedi.","al ↔ nog niet"],["soru","Soru yap","Is je huiswerk al af?","Ödevin bitti mi?",""],["zaman","'gisteren' ile geçmiş","Mijn huiswerk was gisteren al af.","Ödevim dün zaten bitmişti.",""],["modal","'moeten' ile: bugün bitmeli","Mijn huiswerk moet vandaag af.","Ödevim bugün bitmeli.","moeten + af: 'zijn' düşer"],["bijzin","'Ik ga pas weg als…'","Ik ga pas weg als mijn huiswerk af is.","Ödevim bitince çıkarım.","pas … als = ancak … olunca"]],"6-4":[["soru","Soru: ne zamandır tanıyorsun?","Hoe lang ken je hem al?","Onu ne zamandır tanıyorsun?","al jaren → hoe lang … al"],["olumsuz","Olumsuz: çok uzun zamandır değil","Ik ken hem nog niet zo lang.","Onu çok uzun zamandır tanımıyorum.",""],["zaman","Geçmiş: o zaman henüz tanımıyordum","Ik kende hem toen nog niet.","O zaman onu henüz tanımıyordum.",""],["bijzin","'Omdat…' ile başlat, sonra 'güvenirim'","Omdat ik hem al jaren ken, vertrouw ik hem.","Onu yıllardır tanıdığım için ona güvenirim.","Yan cümle önde → ana cümlede fiil önce gelir"],["one","'Al jaren' ile başlat","Al jaren ken ik hem.","Onu yıllardır tanırım.","Vurgu süreye geçer"]],"10-3":[["soru","Soru yap","Is dit het nieuwe huis?","Yeni ev bu mu?",""],["olumsuz","'het' ile olumsuz","Dit is niet het nieuwe huis.","Yeni ev bu değil.","Belirli isim (het/de) → niet"],["olumsuz","Belirsiz isimle olumsuz","Dit is geen nieuw huis.","Bu yeni bir ev değil.","Belirsiz isim (een/–) → geen"],["zaman","Geçmiş: eski evimizdi","Dit was ons oude huis.","Burası eski evimizdi.",""],["bijzin","'waar' ile: taşınacağımız ev","Dit is het huis waar we gaan wonen.","Burası taşınacağımız ev.","waar = yer bildiren ilgi zamiri"]],"7-2":[["olumsuz","Olumsuz soru","Weten jullie de weg niet?","Yolu bilmiyor musunuz?",""],["olumsuz","Cevap ver: hayır, bilmiyoruz","Nee, we weten de weg niet.","Hayır, yolu bilmiyoruz.",""],["zaman","Geçmiş zaman","Wisten jullie de weg?","Yolu biliyor muydunuz?","weten → wist (düzensiz)"],["bijzin","'Weten jullie hoe…' ile","Weten jullie hoe we daar komen?","Oraya nasıl gideceğimizi biliyor musunuz?",""],["modal","'kunnen' ile rica","Kunnen jullie mij de weg wijzen?","Bana yolu gösterebilir misiniz?","de weg wijzen = yol tarif etmek"]],"7-3":[["er","Geçmiş, er…van ile","Wist je er niets van?","Bundan haberin yok muydu?","van + dat → ervan"],["er","Cevap: hayır, haberim yok","Nee, ik weet er niets van.","Hayır, bundan haberim yok.",""],["bijzin","'Ik vraag me af of…'","Ik vraag me af of hij er iets van weet.","Bundan haberi var mı merak ediyorum.",""],["nuans","'echt' ve 'meer' ekle","Weet je echt niets meer?","Gerçekten başka bir şey bilmiyor musun?","niets meer = başka hiçbir şey / artık hiçbir şey"]],"9-2":[["er","'er zijn' ile: büyük farklar var","Er zijn grote verschillen.","Büyük farklar var.","er zijn + belirsiz çoğul"],["olumsuz","Olumsuz: fark yok","Er is geen verschil.","Fark yok.",""],["soru","Evet/hayır sorusu","Zijn er verschillen?","Farklar var mı?",""],["bijzin","'Kunt u uitleggen…' ile","Kunt u uitleggen wat de verschillen zijn?","Farkların ne olduğunu açıklayabilir misiniz?","Dolaylı soruda fiil sona"],["one","'tussen' ile iki şeyi karşılaştır","Wat is het verschil tussen merken en realiseren?","Merken ile realiseren arasındaki fark ne?","merken = duyuyla/deneyimle fark etmek; realiseren = bir gerçeği kavramak"]],"9-6":[["er","'van dit idee' yerine ervan","Wat vinden jullie ervan?","Bu konuda ne düşünüyorsunuz?","van + dit/dat → ervan"],["zaman","Geçmiş zaman","Wat vonden jullie van het idee?","Fikir hakkında ne düşündünüz?","vinden → vond"],["olumsuz","Cevap: iyi bir fikir değil","Ik vind het geen goed idee.","Bence iyi bir fikir değil.","Belirsiz isim → geen"],["partikel","'eigenlijk' ekle","Wat vinden jullie eigenlijk van dit idee?","Aslında bu fikir hakkında ne düşünüyorsunuz?","eigenlijk = aslında, soruyu yumuşatır"],["zou","Öneri: başka türlü yapsak?","Wat zouden jullie ervan vinden als we het anders doen?","Başka türlü yapsak ne dersiniz?",""]],"10-4":[["er","'met je baan' yerine ermee","Ben je er blij mee?","Bundan memnun musun?","met + het → ermee"],["olumsuz","Olumsuz cevap","Ik ben niet zo blij met mijn nieuwe baan.","Yeni işimden pek memnun değilim.",""],["zaman","Geçmiş: önceki işin","Was je blij met je vorige baan?","Önceki işinden memnun muydun?",""],["bijzin","'Ik hoop dat…'","Ik hoop dat je blij bent met je nieuwe baan.","Umarım yeni işinden memnunsundur.",""],["nuans","'nog steeds' ekle","Ben je nog steeds blij met je baan?","İşinden hâlâ memnun musun?",""]],"11-3":[["soru","Olumlu soru","Is dit het juiste moment?","Şimdi doğru zaman mı?",""],["olumsuz","Belirsiz isimle: iyi bir zaman değil","Dit is geen goed moment.","Şimdi iyi bir zaman değil.","het juiste → niet; een goed → geen"],["zaman","Geçmiş zaman","Het was niet het juiste moment.","Doğru zaman değildi.",""],["inversie","'Volgens mij' ile başlat","Volgens mij is dit niet het juiste moment.","Bence şimdi doğru zaman değil.",""],["te","'om te' ile: beklemek daha iyi olur","Het zou beter zijn om te wachten.","Beklemek daha iyi olur.",""]],"11-5":[["er","'er komt' ile","Er komt elke dag een nieuwe kans.","Her gün yeni bir fırsat gelir.",""],["inversie","'Morgen' ile başlat","Morgen krijg je een nieuwe kans.","Yarın yeni bir fırsat bulursun.",""],["modal","'moeten' ile: her fırsatı değerlendir","Je moet elke kans grijpen.","Her fırsatı değerlendirmelisin.","een kans grijpen = fırsatı yakalamak"],["bijzin","'Ik geloof dat…'","Ik geloof dat elke dag een nieuwe kans is.","Her günün yeni bir fırsat olduğuna inanıyorum.",""]],"11-7":[["soru","Soru yap","Is dit de laatste dag van het jaar?","Bugün yılın son günü mü?",""],["zaman","'Gisteren' ile geçmiş","Gisteren was de laatste dag van het jaar.","Dün yılın son günüydü.",""],["nuans","'nog niet' ile","Vandaag is nog niet de laatste dag.","Bugün henüz son gün değil.",""],["bijzin","'Ik kan niet geloven dat…'","Ik kan niet geloven dat dit de laatste dag van het jaar is.","Bugünün yılın son günü olduğuna inanamıyorum.",""]],"11-8":[["olumsuz","Olumsuz yap","Ik heb geen ander plan.","Başka bir planım yok.","een → geen"],["soru","Soru yap","Heb je een ander plan?","Başka bir planın var mı?",""],["zaman","Geçmiş zaman","Ik had een ander plan.","Başka bir planım vardı.",""],["partikel","'eigenlijk' ekle","Ik heb eigenlijk een ander plan.","Aslında başka bir planım var.","eigenlijk itirazı yumuşatır"],["er","'voor' ile: bunun için","Ik heb er een ander plan voor.","Bunun için başka bir planım var.","voor + dat → ervoor; er…voor bölünür"]],"64-2":[["zaman","Perfectum: daha önce tanışmadık","Ik geloof dat wij elkaar nog niet eerder ontmoet hebben.","Sanırım daha önce tanışmadık.",""],["soru","Soru: tanışıyor muyuz?","Kennen wij elkaar al?","Tanışıyor muyuz?","al ↔ nog niet"],["inversie","'Volgens mij' ile başlat","Volgens mij kennen wij elkaar nog niet.","Bence henüz tanışmıyoruz.",""],["nuans","Tersine çevir: uzun zamandır tanışıyoruz","Wij kennen elkaar al lang.","Uzun zamandır tanışıyoruz.",""],["bijzin","'Ik weet niet of…'","Ik weet niet of wij elkaar al kennen.","Tanışıyor muyuz bilmiyorum.",""]],"78-22":[["er","'bij de herinneringen' yerine erbij","Ik sta er even bij stil.","Bunun üzerinde biraz duruyorum.","stilstaan bij → erbij stilstaan"],["zaman","Geçmiş zaman","Ik nam de tijd om stil te staan bij de mooie herinneringen.","Güzel anıları düşünmek için zaman ayırdım.",""],["ayrilan","Perfectum (ayrılan fiil)","Ik heb stilgestaan bij de mooie herinneringen.","Güzel anılar üzerinde durdum.","stilstaan → stilgestaan"],["modal","'moeten' ile tavsiye","Je moet de tijd nemen om stil te staan bij mooie momenten.","Güzel anlar üzerinde durmak için zaman ayırmalısın.",""],["olumsuz","Olumsuz: sık değil","Ik neem niet vaak de tijd om stil te staan.","Durup düşünmek için sık zaman ayırmam.",""]],"82-39":[["zou","Cevap ver: Utrecht'te","Ik zou graag in Utrecht een huis kopen.","Utrecht'te ev almak isterdim.","zou graag = isterdim"],["olumsuz","'nooit' ile","Ik zou nooit in een grote stad een huis kopen.","Büyük bir şehirde asla ev almazdım.",""],["gelecek","'gaan' ile niyet sorusu","Waar ga je een huis kopen?","Nereden ev alacaksın?","gaan = niyet / plan"],["zaman","Perfectum","Waar heb je je huis gekocht?","Evini nereden aldın?","kopen → gekocht"],["zou","'Als ik genoeg geld had…'","Als ik genoeg geld had, zou ik een huis kopen.","Yeterli param olsa ev alırdım.","Gerçek dışı koşul: als + geçmiş, zou + mastar"]],"84-30":[["partikel","Olumlu yap ('wel')","Ik zie het wel zitten.","Bu işe varım / içime siniyor.","wel = olumlu vurgu"],["soru","Soru yap","Zie je het zitten?","Bu işe var mısın?",""],["zaman","Geçmiş: önce gözüm yemedi","Ik zag het eerst niet zitten.","Önce gözüm yemedi.",""],["zaman","Perfectum + 'nooit'","Ik heb het nooit zien zitten.","Hiç içime sinmedi.","İki fiil olunca 'gezien' değil 'zien' kalır"],["nuans","'niet meer' ile","Ik zie het niet meer zitten.","Artık gözüm yemiyor.",""]],"86-16":[["soru","Soru yap","Laat je het me morgen weten?","Yarın bana haber verir misin?",""],["zaman","Perfectum, 'gisteren'","Ik heb het je gisteren laten weten.","Sana dün haber verdim.","laten + mastar: perfectum'da 'laten' kalır"],["inversie","'Morgen' ile başlat","Morgen laat ik het je weten.","Yarın sana haber veririm.",""],["zou","Kibar rica (u)","Zou u het mij willen laten weten?","Bana haber verebilir misiniz?",""],["nuans","Olumsuz: bana hâlâ haber vermedi","Hij heeft het me nog steeds niet laten weten.","Bana hâlâ haber vermedi.",""],["gelecek","'zullen' ile söz ver","Ik zal het je zo snel mogelijk laten weten.","En kısa zamanda sana haber vereceğim.","zullen = söz"]],"92-4":[["soru","Soru yap","Maak je je zorgen?","Endişeleniyor musun?","Dönüşlü: je … je"],["er","'over' ile: bunun hakkında","Ik maak me er zorgen over.","Bunun için endişeleniyorum.","over + dat → erover; er…over"],["olumsuz","'hoeven' ile: gerek yok","Je hoeft je geen zorgen te maken.","Endişelenmene gerek yok.","hoeven + geen/niet + te"],["emir","Emir kipi","Maak je geen zorgen!","Endişelenme!",""],["zaman","Perfectum","Ik heb me zorgen gemaakt.","Endişelendim.",""],["zamir","Özneyi 'hij' yap","Hij maakt zich zorgen.","O endişeleniyor.","hij/zij/u → zich"]],"93-27":[["er","'van die avond' yerine ervan","Ik herinner me er niks meer van.","Ondan hiçbir şey hatırlamıyorum.",""],["nuans","Olumlu: hâlâ iyi hatırlıyorum","Ik herinner me die avond nog goed.","O akşamı hâlâ iyi hatırlıyorum.","nog ↔ niet meer"],["soru","Soru yap","Herinner je je die avond nog?","O akşamı hâlâ hatırlıyor musun?",""],["zamir","Özneyi 'we' yap","We herinneren ons die avond nog goed.","O akşamı hâlâ iyi hatırlıyoruz.","wij → ons"],["bijzin","'Het is raar dat…'","Het is raar dat ik me niks meer herinner.","Hiçbir şey hatırlamamam garip.",""]],"95-38":[["ayrilan","Şimdiki zaman, 'vandaag'","Hij schrijft zich vandaag in.","Bugün kaydını yaptırıyor.","inschrijven ayrılır: schrijft … in"],["soru","Soru: sen kaydoldun mu?","Heb je je al ingeschreven?","Kaydını yaptırdın mı?",""],["modal","'moeten' ile","Je moet je eerst inschrijven.","Önce kaydolman gerekiyor.",""],["te","'Vergeet niet om…'","Vergeet niet om je in te schrijven.","Kaydolmayı unutma.","Ayrılan fiil + te: in te schrijven"],["edilgen","Durum: kayıtlı değil","Hij is nog niet ingeschreven.","Henüz kayıtlı değil.","zijn + ingeschreven = kayıtlı olmak (durum)"],["bijzin","'Ik weet niet of…'","Ik weet niet of hij zich al heeft ingeschreven.","Kaydolup olmadığını bilmiyorum.",""]],"96-15":[["zaman","Şimdiki zaman, olumlu","Ik voel me hier welkom.","Burada kendimi hoş karşılanmış hissediyorum.",""],["nuans","'helemaal niet' ile","Ik voelde me helemaal niet welkom.","Kendimi hiç hoş karşılanmış hissetmedim.","niet echt = pek değil; helemaal niet = hiç"],["soru","Soru yap","Voelde je je welkom?","Kendini hoş karşılanmış hissettin mi?",""],["zaman","Perfectum + 'nooit'","Ik heb me nooit welkom gevoeld.","Kendimi hiç hoş karşılanmış hissetmedim.",""],["bijzin","'Ik wil dat iedereen…'","Ik wil dat iedereen zich welkom voelt.","Herkesin kendini hoş karşılanmış hissetmesini istiyorum.",""],["inversie","'Op mijn eerste werkdag' ile başlat","Op mijn eerste werkdag voelde ik me niet echt welkom.","İlk iş günümde pek hoş karşılanmış hissetmedim.",""]],"98-16":[["edilgen","Etken çatıya çevir","Mijn collega begeleidt mij.","Meslektaşım bana rehberlik ediyor.",""],["zaman","Geçmiş (imperfectum)","Ik werd begeleid door mijn collega.","Bana meslektaşım rehberlik etti.",""],["zaman","Perfectum","Ik ben begeleid door mijn collega.","Bana meslektaşım rehberlik etti.","Edilgen perfectum: zijn + deelwoord ('worden' düşer)"],["soru","Soru yap","Word je goed begeleid?","İyi destek alıyor musun?",""],["modal","'moeten' ile genelle","Nieuwe medewerkers moeten goed begeleid worden.","Yeni çalışanlara iyi rehberlik edilmeli.",""]],"95-23":[["zaman","Şimdiki zaman","Ik voel me niet goed.","Kendimi iyi hissetmiyorum.",""],["zaman","Imperfectum, 'gisteren'","Ik voelde me gisteren niet goed.","Dün kendimi iyi hissetmedim.",""],["soru","Soru: daha iyi misin?","Voel je je al beter?","Kendini daha iyi hissediyor musun?",""],["nuans","'nog steeds niet helemaal'","Ik voel me nog steeds niet helemaal goed.","Hâlâ tam iyi hissetmiyorum.","niet helemaal = tam değil"],["bijzin","'Ik bleef thuis omdat…'","Ik bleef thuis omdat ik me niet goed voelde.","Kendimi iyi hissetmediğim için evde kaldım.",""]],"72-15":[["one","Normal sıraya çevir","Ik durf dat niet te zeggen.","Bunu söylemeye cesaret edemiyorum.","'Dat' öne gelince fiil-özne yer değiştirir"],["zaman","Geçmiş zaman","Ik durfde het niet te zeggen.","Söylemeye cesaret edemedim.",""],["soru","Soru yap","Durf je het te zeggen?","Söylemeye cesaretin var mı?",""],["zaman","Perfectum","Ik heb het niet durven zeggen.","Söylemeye cesaret edemedim.","durven + mastar: perfectum'da 'durven' kalır, 'te' düşer"],["zou","'zou' ile","Dat zou ik niet durven.","Buna cesaret edemezdim.",""]],"101-38":[["edilgen","Etken çatı: 'Je hoeft…'","Je hoeft de afspraak niet af te zeggen.","Randevuyu iptal etmene gerek yok.","hoeven + niet + te"],["modal","Olumlu: iptal edilmeli","De afspraak moet afgezegd worden.","Randevunun iptal edilmesi gerekiyor.","Olumsuzda 'moet niet' yerine 'hoeft niet … te'"],["zaman","Perfectum edilgen: iptal edildi","De afspraak is afgezegd.","Randevu iptal edildi.",""],["soru","Soru yap","Moet de afspraak afgezegd worden?","Randevunun iptal edilmesi gerekiyor mu?",""],["ayrilan","Şimdiki, etken: iptal ediyorum","Ik zeg de afspraak af.","Randevuyu iptal ediyorum.","afzeggen ayrılır: zeg … af"]],"91-10":[["olumsuz","Olumsuz yap","Dit is geen goed moment.","Şu an iyi bir zaman değil.","een goed → geen goed"],["zou","Daha kibar sor","Zou dit een goed moment zijn?","Şimdi uygun bir zaman olur mu?",""],["bijzin","'Ik weet niet of…'","Ik weet niet of dit een goed moment is.","Şimdi iyi bir zaman mı bilmiyorum.",""],["er","'er' ile: daha iyi bir zaman var mı?","Is er een beter moment?","Daha uygun bir zaman var mı?","er is + belirsiz isim"],["zaman","Geçmiş zaman","Was het een goed moment?","İyi bir zaman mıydı?",""]],"96-4":[["soru","Soru yap","Voel je je een beetje down?","Biraz moralin bozuk mu?",""],["zamir","Özneyi 'ze' yap","Ze voelt zich een beetje down.","Onun biraz morali bozuk.","ze → zich"],["zaman","Geçmiş, 'gisteren'","Ik voelde me gisteren een beetje down.","Dün biraz moralim bozuktu.",""],["nuans","'niet meer zo' ile","Ik voel me niet meer zo down.","Artık o kadar moralim bozuk değil.",""],["bijzin","'Ik merk dat…'","Ik merk dat ik me een beetje down voel.","Biraz moralimin bozuk olduğunu fark ediyorum.","merken = içten/deneyimle fark etmek"]],"12-6":[["er","Daha doğal: 'daar … voor'","Daar is geen reden voor.","Bunun bir sebebi yok.","daarvoor bölünebilir: daar … voor"],["soru","Soru: bunun bir sebebi var mı?","Is daar een reden voor?","Bunun bir sebebi var mı?",""],["te","Geçmiş + 'om te klagen'","Er was geen reden om te klagen.","Şikâyet etmek için bir sebep yoktu.",""],["bijzin","'Ik denk dat…' olumlu","Ik denk dat daar een goede reden voor is.","Bence bunun iyi bir sebebi var.",""],["nuans","'geen enkele' ile güçlendir","Er is geen enkele reden om je zorgen te maken.","Endişelenmen için hiçbir sebep yok.","geen enkele = hiçbir"]],"96-24":[["zaman","Geçmiş zaman","Ik vroeg me af waarom het zo moeilijk was.","Neden bu kadar zor olduğunu merak ettim.",""],["bijzin","Doğrudan soruya çevir","Waarom is dit zo moeilijk?","Bu neden bu kadar zor?","Doğrudan soruda fiil yine başa/ikinci sıraya gelir"],["bijzin","'of' ile evet/hayır","Ik vraag me af of dit moeilijk is.","Bunun zor olup olmadığını merak ediyorum.","evet/hayır → of"],["er","'wat … daarvan vindt'","Ik vraag me af wat jij daarvan vindt.","Bu konuda ne düşündüğünü merak ediyorum.",""],["zamir","Özneyi 'hij' yap","Hij vraagt zich af waarom het zo lang duurt.","Neden bu kadar uzun sürdüğünü merak ediyor.",""]],"96-25":[["bijzin","Doğrudan soruya çevir","Heb ik iets verkeerd gedaan?","Yanlış bir şey mi yaptım?",""],["olumsuz","'Ik weet zeker dat…' + niets","Ik weet zeker dat ik niets verkeerd heb gedaan.","Yanlış bir şey yapmadığımdan eminim.",""],["zaman","Geçmiş: plusquamperfectum","Ik vroeg me af of ik iets verkeerd had gedaan.","Yanlış bir şey yapıp yapmadığımı merak ettim.",""],["zamir","Özneyi 'zij' yap","Zij vraagt zich af of ze iets verkeerd heeft gedaan.","Yanlış bir şey yapıp yapmadığını merak ediyor.",""],["bijzin","'Het spijt me dat…'","Het spijt me dat ik iets verkeerd heb gedaan.","Yanlış bir şey yaptığım için üzgünüm.",""]],"89-16":[["inversie","'Blijkbaar' ile başlat","Blijkbaar heb ik iets verkeerds begrepen.","Anlaşılan yanlış bir şey anladım.","iets + sıfat + -s: iets verkeerds"],["nuans","'nog steeds niet goed'","Ik heb het nog steeds niet goed begrepen.","Hâlâ tam anlamadım.",""],["nuans","'niet helemaal' ile şimdiki","Ik begrijp het niet helemaal.","Tam anlamıyorum.","niet helemaal = tam değil; helemaal niet = hiç"],["zaman","Plusquamperfectum + 'al'","Ik had het al begrepen.","Zaten anlamıştım.",""],["inversie","'Toen' ile başlat + 'eindelijk'","Toen heb ik het eindelijk begrepen.","O zaman sonunda anladım.",""],["er","er…van: hiçbir şey","Ik heb er niets van begrepen.","Hiçbir şey anlamadım.","van + dat → ervan"],["edilgen","Edilgen: yanlış anlaşıldı","Dat is verkeerd begrepen.","Bu yanlış anlaşılmış.",""],["bijzin","'Ik weet niet of…'","Ik weet niet of ik het goed begrepen heb.","Doğru anladım mı bilmiyorum.",""],["gelecek","'zullen' ile tahmin","Je zult het wel begrijpen.","Anlarsın herhalde.","zullen + wel = tahmin"]],"101-12":[["modal","Yasak anlamı: 'mogen'","Het mag niet vergeten worden.","Unutulmamalı.","Yasak için daha çok 'mag niet' kullanılır"],["emir","Emir kipi","Vergeet het niet!","Unutma!",""],["zaman","Perfectum: unuttum","Ik ben het vergeten.","Unuttum.","vergeten: 'ben vergeten' daha yaygın"],["edilgen","Geçmiş edilgen","Het werd vergeten.","Unutuldu.",""],["te","'Vergeet niet om…'","Vergeet niet om het formulier op te sturen.","Formu göndermeyi unutma.","opsturen + te → op te sturen"]],"63-15":[["olumsuz","Olumsuz yap","Ik heb geen afleiding nodig.","Oyalanmaya ihtiyacım yok.",""],["soru","Soru: bir şeye ihtiyacın var mı?","Heb je iets nodig?","Bir şeye ihtiyacın var mı?",""],["zaman","Geçmiş + 'echt even'","Ik had echt even afleiding nodig.","Gerçekten biraz kafa dağıtmaya ihtiyacım vardı.",""],["nuans","'niets meer'","Ik heb niets meer nodig.","Başka bir şeye ihtiyacım yok.",""],["zamir","'het formulier' → het","Ik heb het niet meer nodig.","Ona artık ihtiyacım yok.","het-isim → het; de-isim → hem/die"]],"101-6":[["edilgen","Etken çatı","Kunnen we apart betalen?","Ayrı ayrı ödeyebilir miyiz?",""],["zaman","Perfectum edilgen","De rekening is al betaald.","Hesap zaten ödendi.",""],["nuans","'nog niet'","De rekening is nog niet betaald.","Hesap henüz ödenmedi.",""],["bijzin","'Ik wil weten of…'","Ik wil weten of de rekening apart betaald kan worden.","Hesabın ayrı ödenip ödenemeyeceğini öğrenmek istiyorum.","Yan cümlede fiil grubu sonda"],["zaman","Imperfectum edilgen + 'door'","De rekening werd door mijn collega betaald.","Hesabı meslektaşım ödedi.","door = tarafından"]],"83-20":[["zou","Daha kibar","Zou je iets willen gaan drinken?","Bir şeyler içmeye gitmek ister misin?",""],["laten","'Laten we…' öneri","Laten we iets gaan drinken.","Hadi bir şeyler içmeye gidelim.",""],["zaman","Perfectum: dün gittik","We zijn gisteren iets gaan drinken.","Dün bir şeyler içmeye gittik.","gaan + mastar: perfectum'da 'zijn … gaan drinken'"],["er","'zin in' + er","Heb je er zin in?","Canın istiyor mu?",""],["olumsuz","'niets meer'","Ik wil vandaag niets meer drinken.","Bugün başka bir şey içmek istemiyorum.",""]],"84-19":[["bijzin","Cümleyi tamamla: 5'te evdeyim","Als alles goed gaat, ben ik om vijf uur thuis.","Her şey yolunda giderse beşte evdeyim.","Yan cümle önde → ana cümlede fiil önce"],["bijzin","'Als het goed is' ile tamamla","Als het goed is, krijg ik morgen de uitslag.","Plana göre yarın sonucu alırım.","als het goed is = normalde / beklendiği gibi"],["olumsuz","Olumsuz koşul","Als het niet goed gaat, bel ik je.","İyi gitmezse seni ararım.",""],["zaman","Perfectum","Alles is goed gegaan.","Her şey yolunda gitti.","gaan perfectum'da 'zijn' alır"],["soru","Soru yap","Gaat alles goed?","Her şey yolunda mı?",""]],"93-46":[["one","Normal sıra","Ik herinner me dat niet.","Onu hatırlamıyorum.",""],["er","er…van ile","Ik herinner me er niets van.","Ondan hiçbir şey hatırlamıyorum.",""],["nuans","'niet meer'","Dat herinner ik me niet meer.","Onu artık hatırlamıyorum.",""],["soru","Soru yap","Herinner je je dat nog?","Onu hâlâ hatırlıyor musun?",""],["zaman","Geçmiş + 'pas later'","Dat herinnerde ik me pas later.","Onu ancak sonra hatırladım.","pas = ancak"]],"83-17":[["er","'zin in' + er","Heb je er zin in?","Canın istiyor mu?","in + dat → erin; er zin in hebben"],["te","Fiille: 'om te wandelen'","Heb je zin om te wandelen?","Yürüyüş yapmak ister misin?","İsimle 'zin in', fiille 'zin om te'"],["olumsuz","Olumsuz","Ik heb geen zin in een wandeling.","Yürüyüşe canım istemiyor.",""],["zaman","Geçmiş: dışarı çıkmak istemedim","Ik had geen zin om naar buiten te gaan.","Dışarı çıkmaya canım istemedi.",""],["laten","'Laten we…' öneri","Laten we een wandeling maken.","Hadi yürüyüş yapalım.",""]],"94-41":[["one","Daha yaygın sıra","Ik realiseer het me ineens.","Birden farkına varıyorum.","Zamirlerde 'het' genelde 'me'den önce gelir"],["bijzin","'dat' ile: anahtarları unuttuğumu","Ik realiseer me ineens dat ik mijn sleutels vergeten ben.","Birden anahtarlarımı unuttuğumu fark ediyorum.",""],["zaman","Geçmiş + 'pas later'","Ik realiseerde me pas later dat het fout was.","Yanlış olduğunu ancak sonra fark ettim.",""],["nuans","'merken' ile karşılaştır","Ik merk dat het koud wordt.","Havanın soğuduğunu hissediyorum.","merken = duyuyla/deneyimle fark etmek; realiseren = bir gerçeği kavramak"],["soru","Soru yap","Realiseer je je hoe belangrijk dit is?","Bunun ne kadar önemli olduğunun farkında mısın?",""],["zamir","Olumsuz, özne 'hij'","Hij realiseert zich niet wat hij doet.","Ne yaptığının farkında değil.",""]],"86-4":[["soru","'Zullen we…?' öneri sorusu","Zullen we koffie halen?","Kahve alalım mı?","zullen we = …alım mı? (öneri)"],["gelecek","Teklif: sana getireyim mi?","Zal ik koffie voor je halen?","Sana kahve getireyim mi?","zal ik = …ayım mı? (teklif)"],["zaman","Perfectum","We hebben koffie gehaald.","Kahve aldık.",""],["olumsuz","'hoeven' ile: istemem","Ik hoef geen koffie.","Kahve istemem.","hoeven = gerek / istemek (olumsuzda)"],["gelecek","'gaan' + even","Ik ga even koffie halen.","Bir kahve alıp geliyorum.",""]],"81-19":[["bijzin","'als' ile tamamla","Wat zou je doen als je in mijn situatie zat?","Benim durumumda olsaydın ne yapardın?",""],["zou","Cevap: senin yerinde olsam","Als ik jou was, zou ik de gemeente bellen.","Senin yerinde olsam belediyeyi arardım.",""],["olumsuz","'Dat zou ik niet doen'","Dat zou ik niet doen.","Ben bunu yapmazdım.",""],["zaman","Geçmiş varsayım","Wat zou je gedaan hebben?","Ne yapardın (o zaman)?","zou + hebben + deelwoord"],["inversie","'In jouw situatie' ile başlat","In jouw situatie zou ik hulp vragen.","Senin durumunda yardım isterdim.",""]],"79-31":[["zou","Doğrudan söz: 'Ik zal…'","Hij zei: 'Ik zal helpen.'","'Yardım edeceğim' dedi.","Aktarımda zal → zou"],["zaman","Şimdiki zamana çevir","Hij belooft dat hij zal helpen.","Yardım edeceğine söz veriyor.",""],["olumsuz","Olumsuz: geç kalmayacaktı","Hij beloofde dat hij niet te laat zou komen.","Geç kalmayacağına söz verdi.",""],["te","Perfectum + 'om te'","Hij heeft beloofd om te helpen.","Yardım etmeye söz verdi.",""],["soru","Soru yap","Heeft hij beloofd dat hij zou helpen?","Yardım edeceğine söz verdi mi?",""]],"86-9":[["zaman","Perfectum","Ik heb dat laten repareren.","Onu tamir ettirdim.","laten + mastar: perfectum'da 'laten' kalır"],["soru","Soru yap","Laat je dat repareren?","Onu tamir ettiriyor musun?",""],["olumsuz","'hoeven … te' ile","Ik hoef dat niet te laten repareren.","Onu tamir ettirmeme gerek yok.",""],["edilgen","Edilgen","Dat moet gerepareerd worden.","Onun tamir edilmesi gerekiyor.",""],["one","'Dat' öne + 'morgen'","Dat laat ik morgen repareren.","Onu yarın tamir ettiriyorum.",""]],"95-25":[["zaman","Şimdiki + 'nooit'","Ik verslaap me nooit.","Hiç uyuyakalmam.",""],["soru","Soru yap","Heb je je verslapen?","Uyuyakaldın mı?",""],["zamir","Özneyi 'hij' yap","Hij heeft zich verslapen.","Uyuyakalmış.",""],["bijzin","'omdat' + plusquamperfectum","Ik kwam te laat omdat ik me had verslapen.","Uyuyakaldığım için geç kaldım.",""],["modal","'mogen' + niet","Ik mag me morgen niet verslapen.","Yarın uyuyakalmamam lazım.","mag niet = olmamalı"]],"95-29":[["partikel","Şimdiki + 'wel'","Ik red me wel.","İdare ederim.","wel = güven verir"],["soru","Soru yap","Red je je?","İdare edebiliyor musun?",""],["olumsuz","Olumsuz: yardımsız olmaz","Ik red me niet zonder hulp.","Yardımsız idare edemem.",""],["zamir","Özneyi 'zij' (çoğul) yap","Ze redden zich goed.","İyi idare ediyorlar.",""],["zaman","Imperfectum + 'toen'","Ik redde me toen prima.","O zaman gayet iyi idare ettim.",""]],"89-12":[["zaman","Şimdiki zaman","Ze vinden het blijkbaar niet leuk.","Anlaşılan hoşlarına gitmiyor.",""],["partikel","Olumlu + 'wel'","Ze vonden het wel leuk.","Aslında hoşlarına gitti.","wel = karşıtlık vurgusu"],["soru","Soru yap","Vonden ze het leuk?","Hoşlarına gitti mi?",""],["bijzin","'Ik merkte dat…'","Ik merkte dat ze het niet leuk vonden.","Hoşlarına gitmediğini fark ettim.",""],["inversie","'Blijkbaar' ile başlat","Blijkbaar vonden ze het niet leuk.","Anlaşılan hoşlarına gitmedi.",""],["er","'er niets aan vinden'","Ze vonden er niets aan.","Hiç beğenmediler.","er niets aan vinden = hiç beğenmemek"]],"94-2":[["er","'op het ergste' yerine erop","Ik bereid me er goed op voor.","Ona iyi hazırlanıyorum.","op + dat → erop; er…op bölünür"],["zaman","Perfectum","Ik heb me goed voorbereid.","İyi hazırlandım.","voorbereiden → voorbereid"],["soru","Soru yap","Heb je je goed voorbereid?","İyi hazırlandın mı?",""],["te","'Het is belangrijk om…'","Het is belangrijk om je goed voor te bereiden.","İyi hazırlanmak önemli.","voor te bereiden"],["er","'hopen' ile: en iyisini umuyorum","Ik hoop er het beste van.","En iyisini umuyorum.","Kalıp ifade"]],"100-7":[["edilgen","Etken çatı","De politie pakt daar dagelijks mensen op.","Polis orada her gün insanları gözaltına alıyor.",""],["zaman","Imperfectum","Er werden gisteren drie mensen opgepakt.","Dün üç kişi gözaltına alındı.",""],["zaman","Perfectum","Er zijn gisteren drie mensen opgepakt.","Dün üç kişi gözaltına alındı.","Edilgen perfectum: zijn + deelwoord"],["olumsuz","Olumsuz: kimse","Er is niemand opgepakt.","Kimse gözaltına alınmadı.",""],["soru","Soru yap","Is er iemand opgepakt?","Gözaltına alınan oldu mu?",""]],"81-16":[["bijzin","Sırayı değiştir: ana cümle önde","Ik zou niet te lang wachten als ik jou was.","Senin yerinde olsam çok beklemezdim.","Yan cümle sonda → ana cümle normal sırada"],["zou","Olumlu tavsiye","Als ik jou was, zou ik meteen bellen.","Senin yerinde olsam hemen arardım.",""],["zaman","Geçmiş varsayım","Als ik jou was geweest, had ik niet zo lang gewacht.","Senin yerinde olsaydım bu kadar beklemezdim.","Geçmiş varsayım: had + deelwoord"],["soru","Soru: sen olsan ne yapardın?","Wat zou jij doen als je mij was?","Benim yerimde olsan ne yapardın?",""]],"93-29":[["nuans","Olumsuz cevap + 'niet meer'","Nee, ik herinner me zijn naam niet meer.","Hayır, adını artık hatırlamıyorum.",""],["nuans","'weten … nog' ile","Weet je zijn naam nog?","Adını hatırlıyor musun?","Günlük dilde 'weten … nog' çok yaygın"],["te","'Ik probeer…'","Ik probeer me zijn naam te herinneren.","Adını hatırlamaya çalışıyorum.",""],["er","Kalıp: aklıma gelmiyor","Ik kan er niet op komen.","Aklıma gelmiyor.","er niet op kunnen komen = hatırlayamamak"],["one","'Zijn naam' öne","Zijn naam herinner ik me niet.","Adını hatırlamıyorum.",""]],"100-16":[["edilgen","Etken çatı","Iemand belt aan.","Biri kapıyı çalıyor.",""],["zaman","Imperfectum","Er werd aangebeld.","Kapı çalındı.",""],["zaman","Perfectum","Er is aangebeld.","Kapı çalındı.",""],["olumsuz","Olumsuz: kapı açılmıyor","Er wordt niet opengedaan.","Kapı açılmıyor.",""],["soru","Soru yap (geçmiş)","Werd er aangebeld?","Kapı çalındı mı?",""]],"101-42":[["edilgen","Etken: ben mi almalıyım?","Moet ik de auto vandaag ophalen?","Arabayı bugün almam gerekiyor mu?",""],["olumsuz","'hoeven … te' ile","De auto hoeft vandaag niet opgehaald te worden.","Arabanın bugün alınmasına gerek yok.",""],["zaman","Perfectum edilgen","De auto is al opgehaald.","Araba alındı bile.",""],["bijzin","'Weet je of…'","Weet je of de auto vandaag opgehaald moet worden?","Arabanın bugün alınması gerekiyor mu, biliyor musun?",""],["ayrilan","Şimdiki, 'morgen'","Ik haal de auto morgen op.","Arabayı yarın alıyorum.","ophalen ayrılır"]],"95-28":[["nuans","Daha doğal söyleyiş","We waren positief verrast.","Olumlu yönde şaşırdık.","'zich verbazen' daha çok 'şaşkınlık duymak'; 'verrast zijn' daha doğal"],["er","'erover' ile","Ik verbaas me erover.","Buna şaşırıyorum.","zich verbazen over → erover"],["soru","Soru yap","Verbaas je je daarover?","Buna şaşırıyor musun?",""],["zamir","Özneyi 'hij' yap","Hij verbaast zich over alles.","Her şeye şaşırıyor.",""]],"96-59":[["one","Normal sıra","Ik vraag me dat ook af.","Ben de bunu merak ediyorum.",""],["zamir","Özneyi 'zij' yap","Dat vraagt zij zich ook af.","O da bunu merak ediyor.",""],["zaman","Geçmiş zaman","Dat vroeg ik me ook af.","Ben de bunu merak ettim.",""],["bijzin","'of' ile: gelecek mi?","Ik vraag me af of hij komt.","Gelip gelmeyeceğini merak ediyorum.",""]],"12-10":[["olumsuz","Olumsuz","Er is geen belangrijk verschil.","Önemli bir fark yok.",""],["soru","Soru yap","Is er een belangrijk verschil?","Önemli bir fark var mı?",""],["er","Çoğul","Er zijn belangrijke verschillen.","Önemli farklar var.",""],["bijzin","'Ik denk dat…'","Ik denk dat er een belangrijk verschil is.","Bence önemli bir fark var.","Yan cümlede 'er' öne, 'is' sona"],["er","Miktar 'er': iki tane","Ik zie er twee.","İki tane görüyorum.","er + sayı = …tanesi"]],"80-21":[["zou","Cevap: beklemeni tavsiye ederim","Ik zou je adviseren om te wachten.","Beklemeni tavsiye ederim.",""],["zamir","Resmî sor (u)","Wat zou u mij adviseren?","Bana ne tavsiye edersiniz?",""],["zaman","Perfectum: ne tavsiye etti?","Wat heeft hij je geadviseerd?","Sana ne tavsiye etti?",""],["olumsuz","Olumsuz tavsiye","Ik zou je niet adviseren om te tekenen.","İmzalamanı tavsiye etmem.",""],["bijzin","'Ik wil weten wat…'","Ik wil weten wat u mij zou adviseren.","Bana ne tavsiye edeceğinizi bilmek istiyorum.",""]],"78-55":[["edilgen","Edilgen çatı","Wanneer wordt de uitslag bekendgemaakt?","Sonuç ne zaman açıklanıyor?",""],["zaman","Perfectum","Ze hebben de uitslag bekendgemaakt.","Sonucu açıkladılar.",""],["bijzin","'Weet je wanneer…'","Weet je wanneer ze de uitslag bekendmaken?","Sonucu ne zaman açıklayacaklarını biliyor musun?","Ayrılan fiil yan cümlede birleşir"],["nuans","'nog niet' ile durum","De uitslag is nog niet bekend.","Sonuç henüz belli değil.",""],["ayrilan","'morgen' ile","Ze maken de uitslag morgen bekend.","Sonucu yarın açıklıyorlar.","bekendmaken ayrılır"]],"92-31":[["olumsuz","Olumsuz","Ik kan me niet voorstellen dat het zo moeilijk is.","Bu kadar zor olduğunu hayal edemiyorum.",""],["soru","Soru yap","Kun je je dat voorstellen?","Bunu hayal edebiliyor musun?",""],["emir","Emir kipi","Stel je voor!","Düşünsene!",""],["zaman","Plusquamperfectum: farklı hayal etmiştim","Ik had me dat anders voorgesteld.","Bunu farklı hayal etmiştim.",""],["er","Kalıp: 'er iets bij voorstellen'","Ik kan me er iets bij voorstellen.","Anlayabiliyorum.","er iets bij kunnen voorstellen = anlayış göstermek"]],"91-1":[["one","Tam cümle: 'tijd' ile","Heb je straks even tijd?","Birazdan bir dakikan var mı?",""],["partikel","Cevap: şimdi değil ama sonra evet","Ik heb nu geen tijd, maar straks wel.","Şimdi vaktim yok ama sonra var.","geen … wel karşıtlığı"],["zou","Daha kibar","Zou je straks even tijd hebben?","Birazdan biraz vaktin olur mu?",""],["inversie","'Straks' ile başlat","Straks heb ik even tijd.","Birazdan biraz vaktim olur.",""]],"100-6":[["nuans","Doğru biçim ('een' ile)","Er wordt soms een uitzondering gemaakt.","Bazen istisna yapılıyor.","uitzondering sayılabilir: 'een' gerekli"],["olumsuz","Olumsuz","Er wordt geen uitzondering gemaakt.","İstisna yapılmıyor.",""],["edilgen","Etken çatı","Ze maken soms een uitzondering.","Bazen istisna yapıyorlar.",""],["zaman","Imperfectum: benim için","Er werd voor mij een uitzondering gemaakt.","Benim için istisna yapıldı.",""],["modal","Soru: yapılabilir mi?","Kan er een uitzondering gemaakt worden?","İstisna yapılabilir mi?",""]],"63-11":[["olumsuz","Olumsuz: para meselesi değil","Het is geen kwestie van geld.","Bu para meselesi değil.",""],["bijzin","'Ik denk dat…'","Ik denk dat het een kwestie van tijd is.","Bence bu zaman meselesi.",""],["zaman","Geçmiş + 'maar'","Het was maar een kwestie van tijd.","Sadece zaman meselesiydi.","maar = sadece"],["zou","'zou … kunnen'","Het zou een kwestie van weken kunnen zijn.","Birkaç hafta meselesi olabilir.",""]],"79-21":[["one","Normal sıra","Ik zou dat nooit doen.","Bunu asla yapmazdım.",""],["soru","Soru yap","Zou jij dat doen?","Sen bunu yapar mıydın?",""],["zaman","Geçmiş varsayım","Dat zou ik nooit gedaan hebben.","Bunu asla yapmazdım (o zaman).",""],["partikel","Olumlu + 'meteen'","Dat zou ik meteen doen.","Bunu hemen yapardım.",""],["zamir","Özneyi 'hij' yap","Dat zou hij nooit doen.","O bunu asla yapmaz.",""]],"79-24":[["zou","Kibar rica: benim için","Zou je dat voor mij willen doen?","Bunu benim için yapar mısın?","zou … willen = kibar rica"],["partikel","Cevap: evet + 'wel'","Ja, dat zou ik wel doen.","Evet, onu yapardım.",""],["gelecek","'zullen' ile söz iste","Zul je dat doen?","Bunu yapacak mısın?","zullen = söz"],["zaman","Perfectum","Heb je dat gedaan?","Bunu yaptın mı?",""],["bijzin","'Ik weet niet of…'","Ik weet niet of ik dat zou doen.","Bunu yapar mıydım bilmiyorum.",""]],"79-33":[["zaman","Şimdiki: 'zal' ile","Ik denk dat het goedkoper zal zijn.","Bence daha ucuz olacak.","denk → zal / dacht → zou"],["olumsuz","Olumsuz + 'zo duur'","Ik dacht niet dat het zo duur zou zijn.","Bu kadar pahalı olacağını düşünmemiştim.",""],["inversie","'Eerlijk gezegd' ile başlat","Eerlijk gezegd dacht ik dat het goedkoper zou zijn.","Açıkçası daha ucuz olacağını düşünmüştüm.",""],["one","Karşılaştırma: düşündüğümden pahalı","Het is duurder dan ik dacht.","Düşündüğümden pahalı.",""],["soru","Soru yap","Dacht je dat het goedkoper zou zijn?","Daha ucuz olacağını mı düşünmüştün?",""]],"83-18":[["te","İsimle: 'zin in'","Heb je zin in een terrasje?","Bir terasta oturmak ister misin?","İsimle 'zin in', fiille 'zin om te'"],["laten","'Laten we…' öneri","Laten we een terrasje pakken.","Hadi bir terasa oturalım.",""],["soru","'Zullen we…?' öneri","Zullen we een terrasje pakken?","Bir terasa oturalım mı?",""],["olumsuz","Olumsuz","Ik heb geen zin om te gaan.","Gitmeye canım istemiyor.",""],["er","Cevap: 'er zin in' + wel","Ik heb er wel zin in!","Hiç fena olmaz, canım istiyor!",""]],"88-20":[["bijzin","'Ik hoop dat…' ile","Ik hoop dat mijn moeder volgend weekend komt.","Umarım annem haftaya hafta sonu gelir.","hopelijk + inversie ↔ ik hoop dat + fiil sona"],["zaman","Perfectum: geçen hafta sonu geldi","Mijn moeder is vorig weekend gekomen.","Annem geçen hafta sonu geldi.","komen perfectum'da 'zijn' alır"],["olumsuz","Olumsuz + 'helaas'","Mijn moeder kan volgend weekend helaas niet komen.","Annem maalesef haftaya gelemiyor.",""],["soru","Soru yap","Komt je moeder volgend weekend?","Annen haftaya geliyor mu?",""],["zou","'zou' ile plan (belirsiz)","Mijn moeder zou volgend weekend komen, maar…","Annem haftaya gelecekti ama…","zou = planlanmış ama belirsiz"]],"91-13":[["one","Cevap: perşembe","Ik heb donderdag een gaatje.","Perşembe boş vaktim var.",""],["olumsuz","Olumsuz","Ik heb deze week geen gaatje.","Bu hafta boş vaktim yok.",""],["zou","Daha kibar","Zou je volgende week een gaatje hebben?","Haftaya boş vaktin olur mu?",""],["bijzin","'Laat me weten wanneer…'","Laat me weten wanneer je een gaatje hebt.","Ne zaman boş vaktin olursa haber ver.",""],["inversie","'Donderdagmiddag' ile başlat","Donderdagmiddag heb ik een gaatje.","Perşembe öğleden sonra boşum.",""]],"93-11":[["zaman","Şimdiki zaman","We redden ons prima.","Gayet iyi idare ediyoruz.",""],["inversie","'Toen' ile başlat","Toen hebben we ons prima gered.","O zaman gayet iyi idare ettik.",""],["zou","Geçmiş varsayım: yardımsız","Zonder hulp hadden we ons niet gered.","Yardım olmasaydı idare edemezdik.","had + deelwoord = geçmiş varsayım"],["zamir","Özneyi 'ze' yap","Ze hebben zich prima gered.","Gayet iyi idare ettiler.",""]],"94-32":[["soru","Soru: sen nasıl?","Hoe ontspan jij je het liefst?","Sen en çok nasıl rahatlarsın?","het liefst = en çok tercih edilen"],["zaman","Perfectum","Ik heb me lekker ontspannen.","Güzelce dinlendim.",""],["modal","'moeten' + 'ook eens'","Je moet je ook eens ontspannen.","Sen de biraz rahatlamalısın.",""],["te","'om … te' ile amaç","Ik ga wandelen om me te ontspannen.","Rahatlamak için yürüyüşe çıkıyorum.",""],["olumsuz","Olumsuz","Ik kan me niet ontspannen.","Rahatlayamıyorum.",""]],"96-6":[["one","Karşılaştırma: dünden daha iyi","Ik voel me beter dan gisteren.","Kendimi dünden daha iyi hissediyorum.",""],["soru","Soru yap","Voel je je al beter?","Kendini daha iyi hissediyor musun?",""],["nuans","'nog niet' ile","Ik voel me nog niet beter.","Henüz daha iyi hissetmiyorum.","nog beter = daha da iyi; nog niet beter = henüz iyileşmedim"],["zaman","Geçmiş + 'daarna veel'","Ik voelde me daarna veel beter.","Sonra çok daha iyi hissettim.",""]],"98-23":[["edilgen","Etken çatı","Ik hoop dat ze mij uitnodigen.","Umarım beni davet ederler.",""],["zaman","Perfectum: görüşmeye davet edildim","Ik ben uitgenodigd voor een gesprek.","Görüşmeye davet edildim.",""],["olumsuz","Olumsuz + 'helaas'","Ik ben helaas niet uitgenodigd.","Maalesef davet edilmedim.",""],["soru","Soru yap","Ben je uitgenodigd?","Davet edildin mi?",""],["inversie","'Hopelijk' ile başlat","Hopelijk word ik uitgenodigd.","Umarım davet edilirim.",""]],"99-7":[["edilgen","Etken çatı","We kunnen dit gesprek opnemen.","Bu görüşmeyi kaydedebiliriz.",""],["modal","Yasak: 'mag niet'","Dit gesprek mag niet opgenomen worden.","Bu görüşme kaydedilemez.",""],["soru","Soru yap","Wordt dit gesprek opgenomen?","Bu görüşme kaydediliyor mu?",""],["zaman","Perfectum edilgen","Het gesprek is opgenomen.","Görüşme kaydedildi.",""]],"100-12":[["edilgen","Etken çatı","Mensen klagen veel.","İnsanlar çok şikâyet ediyor.",""],["er","er…over ile","Er wordt veel over geklaagd.","Hakkında çok şikâyet ediliyor.","over + dat → erover"],["zaman","Imperfectum + 'vroeger'","Er werd vroeger minder geklaagd.","Eskiden daha az şikâyet edilirdi.",""],["nuans","'nooit' ile","Er wordt nooit geklaagd.","Hiç şikâyet edilmiyor.",""],["soru","Soru yap","Wordt er veel geklaagd?","Çok şikâyet ediliyor mu?",""]],"100-18":[["edilgen","Etken çatı","Niemand heeft teruggebeld.","Kimse geri aramadı.",""],["nuans","'nog steeds' ekle","Er is nog steeds niet teruggebeld.","Hâlâ geri aranmadı.",""],["soru","Soru yap","Is er al teruggebeld?","Geri arandı mı?",""],["bijzin","'Ik bel omdat…'","Ik bel omdat er niet is teruggebeld.","Geri aranmadığı için arıyorum.",""],["ayrilan","Etken, 'morgen', u","Ik bel u morgen terug.","Sizi yarın geri ararım.","terugbellen ayrılır"]],"64-1":[["soru","Soru: tanıştık mı?","Hebben wij elkaar al ontmoet?","Tanıştık mı?",""],["nuans","'al eens' ile","Ik heb hem al eens ontmoet.","Onunla bir kez tanıştım.","al eens = daha önce bir kez"],["zaman","Imperfectum","Ik ontmoette haar op mijn eerste werkdag.","Onunla ilk iş günümde tanıştım.",""],["bijzin","'Ik denk dat…'","Ik denk dat ik jou nog niet heb ontmoet.","Sanırım seninle henüz tanışmadım.",""]],"64-11":[["zaman","Perfectum + 'als'","Ik heb jarenlang als advocaat gewerkt.","Yıllarca avukat olarak çalıştım.","als = olarak"],["bijzin","'Voordat…' ile başlat","Voordat ik naar Nederland kwam, was ik advocaat.","Hollanda'ya gelmeden önce avukattım.",""],["soru","Soru: Türkiye'de ne yapıyordun?","Wat deed je in Turkije?","Türkiye'de ne iş yapıyordun?",""],["zaman","Şimdiki: 'Nu' ile","Nu werk ik als sociaal raadsman.","Şimdi sosyal danışman olarak çalışıyorum.",""]],"77-15":[["one","Cevap: evet, onu da","Ja, ik nodig haar ook uit.","Evet, onu da davet ediyorum.",""],["olumsuz","Olumsuz","Ik nodig haar niet uit.","Onu davet etmiyorum.","Ayrılan fiil: 'niet' önekten önce"],["zaman","Perfectum","Heb je haar ook uitgenodigd?","Onu da davet ettin mi?",""],["edilgen","Edilgen","Is zij ook uitgenodigd?","O da davet edildi mi?",""],["te","'Vergeet niet om…'","Vergeet niet om haar uit te nodigen.","Onu davet etmeyi unutma.","uit te nodigen"]],"86-18":[["soru","'Zullen we…?' ile","Zullen we naar buiten gaan?","Dışarı çıkalım mı?",""],["zaman","Perfectum","We zijn even naar buiten gegaan.","Biraz dışarı çıktık.",""],["olumsuz","Olumsuz","Ik ga vandaag niet naar buiten.","Bugün dışarı çıkmıyorum.",""],["te","'zin om te'","Heb je zin om naar buiten te gaan?","Dışarı çıkmak ister misin?",""]],"86-8":[["zaman","Şimdiki zaman","We laten onze meubels vanuit Turkije brengen.","Mobilyalarımızı Türkiye'den getirtiyoruz.",""],["edilgen","Edilgen","Onze meubels zijn vanuit Turkije gebracht.","Mobilyalarımız Türkiye'den getirildi.",""],["soru","Soru yap","Hebben jullie je meubels laten brengen?","Mobilyalarınızı getirttiniz mi?",""],["gelecek","'gaan' ile plan","We gaan onze meubels laten brengen.","Mobilyalarımızı getirteceğiz.",""],["nuans","'laten' olmadan: kendimiz","We hebben onze meubels zelf gebracht.","Mobilyalarımızı kendimiz getirdik.","laten = …tirmek (başkasına yaptırmak)"]],"91-31":[["soru","'Zullen we…?' ile","Zullen we straks even zitten?","Birazdan biraz oturalım mı?",""],["zou","Daha kibar","Zouden we straks even kunnen zitten?","Birazdan biraz oturabilir miyiz?",""],["olumsuz","Cevap: maalesef olmaz","Ik kan straks helaas niet.","Birazdan maalesef olmaz.",""],["te","'tijd om te'","Heb je straks tijd om even te zitten?","Birazdan oturmaya vaktin var mı?",""],["inversie","'Straks' ile başlat","Straks kunnen we even zitten.","Birazdan biraz oturabiliriz.",""]],"91-6":[["one","Tam cümle: 'tijd' ile","Heb je nu heel even tijd?","Şimdi bir dakikan var mı?",""],["olumsuz","Cevap: şu an olmaz","Nu kan ik even niet.","Şu an olmaz.","even olumsuzu yumuşatır"],["zou","Daha kibar","Zou je nu heel even kunnen?","Şimdi bir dakika ayırabilir misin?",""]],"93-2":[["nuans","'steeds beter' ile","Ik red me steeds beter in het Nederlands.","Hollandacada giderek daha iyi idare ediyorum.",""],["inversie","'In het Engels' ile başlat, olumsuz","In het Engels red ik me niet zo goed.","İngilizcede pek iyi idare edemiyorum.",""],["zaman","Geçmiş: başta","In het begin redde ik me nog niet in het Nederlands.","Başta Hollandacada henüz idare edemiyordum.",""],["soru","Soru yap","Red je je in het Nederlands?","Hollandacada idare edebiliyor musun?",""]],"95-0":[["zaman","Şimdiki + 'misschien … nog'","Misschien bedenk ik me nog.","Belki fikrimi değiştiririm.",""],["soru","Soru yap","Heb je je bedacht?","Fikrini mi değiştirdin?",""],["zamir","Özneyi 'hij' yap","Hij heeft zich bedacht.","Fikrini değiştirdi.",""],["bijzin","'Als…' ile: haber ver","Als je je bedenkt, laat het me weten.","Fikrini değiştirirsen haber ver.","zich bedenken = fikir değiştirmek; iets bedenken = bir şey düşünüp bulmak"]],"98-0":[["edilgen","Etken çatı","Wij regelen alles.","Her şeyi biz hallederiz.",""],["zaman","Perfectum + 'al'","Alles is al geregeld.","Her şey halledildi bile.",""],["nuans","Olumsuz: henüz hiçbir şey","Er is nog niets geregeld.","Henüz hiçbir şey halledilmedi.",""],["soru","Soru yap","Is alles geregeld?","Her şey halledildi mi?",""],["modal","'moeten … nog'","Dit moet nog geregeld worden.","Bunun daha halledilmesi gerekiyor.",""]],"101-25":[["edilgen","Etken çatı (u)","U mag deze informatie niet delen.","Bu bilgiyi paylaşamazsınız.",""],["modal","Olumlu","Deze informatie mag gedeeld worden.","Bu bilgi paylaşılabilir.",""],["zaman","Perfectum edilgen","Deze informatie is met de gemeente gedeeld.","Bu bilgi belediyeyle paylaşıldı.",""],["soru","Soru yap","Mag deze informatie gedeeld worden?","Bu bilgi paylaşılabilir mi?",""],["bijzin","'Ik wil zeker weten dat…'","Ik wil zeker weten dat deze informatie niet gedeeld wordt.","Bu bilginin paylaşılmadığından emin olmak istiyorum.",""]],"83-32":[["er","'ervan' ile","Wat denk je ervan?","Ne dersin?",""],["soru","'Zullen we…?' ile","Zullen we een weekendje weggaan?","Bir hafta sonu uzaklaşalım mı?",""],["te","'zin in' ile","Heb je zin in een weekendje weg?","Bir hafta sonu kaçamağı ister misin?",""],["one","Cevap: iyi fikir","Dat lijkt me een goed idee.","Bence iyi bir fikir.",""],["olumsuz","Olumsuz + 'om weg te gaan'","Ik heb dit weekend geen tijd om weg te gaan.","Bu hafta sonu bir yere gitmeye vaktim yok.",""]],"86-24":[["inversie","'Hopelijk' ile","Hopelijk is het snel voorbij.","Umarım çabuk geçer.",""],["partikel","'Gelukkig' ile","Gelukkig is het voorbij.","Neyse ki geçti.",""],["nuans","'nog niet'","Het is nog niet voorbij.","Henüz bitmedi.",""],["soru","Soru yap","Is het al voorbij?","Bitti mi?",""]],"88-18":[["bijzin","'Ik hoop dat…' ile","Ik hoop dat ik deze week een antwoord krijg.","Umarım bu hafta cevap alırım.",""],["inversie","'Hopelijk' ile başlat","Hopelijk krijg ik deze week een antwoord.","Umarım bu hafta cevap alırım.",""],["nuans","'nog steeds geen' + perfectum","Ik heb nog steeds geen antwoord gekregen.","Hâlâ cevap alamadım.",""],["soru","Soru yap","Heb je al een antwoord gekregen?","Cevap aldın mı?",""],["zou","'zou' ile: söylenmişti","Ik zou deze week een antwoord krijgen.","Bu hafta cevap alacaktım (öyle söylenmişti).","zou = beklenen ama gerçekleşmemiş olabilir"]],"96-52":[["bijzin","Doğrudan soru","Is dit waar?","Bu doğru mu?",""],["olumsuz","'Ik denk niet dat…'","Ik denk niet dat dit waar is.","Bunun doğru olduğunu sanmıyorum.",""],["zaman","Geçmiş zaman","Ik vroeg me af of het waar was.","Doğru olup olmadığını merak ettim.",""],["zamir","Özneyi 'zij' yap","Zij vraagt zich af of het waar is.","Doğru olup olmadığını merak ediyor.",""]],"98-21":[["edilgen","Etken çatı","De arts opereert hem binnenkort.","Doktor onu yakında ameliyat edecek.",""],["zaman","Perfectum edilgen","Hij is gisteren geopereerd.","Dün ameliyat oldu.",""],["soru","Soru: ne zaman?","Wanneer wordt hij geopereerd?","Ne zaman ameliyat olacak?",""],["olumsuz","'hoeven … te'","Hij hoeft niet geopereerd te worden.","Ameliyat olmasına gerek yok.",""],["bijzin","'Ik hoorde dat…'","Ik hoorde dat hij binnenkort geopereerd wordt.","Yakında ameliyat olacağını duydum.",""]],"13-18":[["one","Cevap: evet, çok","Ja, ik heb het erg druk.","Evet, çok yoğunum.",""],["olumsuz","Olumsuz: şu an pek değil","Ik heb het nu niet zo druk.","Şu an pek yoğun değilim.",""],["zaman","Geçmiş zaman","Had je het druk vandaag?","Bugün yoğun muydun?",""],["bijzin","'Ik begrijp dat…'","Ik begrijp dat je het druk hebt.","Yoğun olduğunu anlıyorum.",""],["nuans","'nog steeds zo'","Heb je het nog steeds zo druk?","Hâlâ o kadar yoğun musun?",""]],"63-10":[["partikel","'zo' ekle","Ik kom er zo aan.","Hemen geliyorum.","zo = birazdan; er…aan bölünür"],["soru","Soru yap","Kom je eraan?","Geliyor musun?",""],["zamir","Özneyi 'hij' yap","Hij komt eraan.","Geliyor.",""],["nuans","Kalıp: vakit bulamamak","Ik kom er niet aan toe.","Ona vakit bulamıyorum.","er (niet) aan toekomen = (bir şeye) vakit bulmak"]],"64-7":[["soru","Soru: ne zamandır?","Hoe lang werk je hier al?","Ne zamandır burada çalışıyorsun?",""],["partikel","Olumlu: 'al' + süre","Ik werk hier al drie jaar.","Üç yıldır burada çalışıyorum.","al + süre = …dır"],["zaman","Geçmiş + 'vroeger'","Ik werkte hier vroeger.","Eskiden burada çalışırdım.",""],["bijzin","'Omdat…' ile başlat","Omdat ik hier nog niet zo lang werk, weet ik het niet.","Burada çok uzun süredir çalışmadığım için bilmiyorum.",""],["er","Yer 'er' + 'sinds april'","Ik werk er sinds april.","Nisandan beri orada çalışıyorum.",""]],"72-20":[["te","'om te wachten' ekle","Het heeft geen zin om te wachten.","Beklemenin anlamı yok.",""],["soru","Olumlu soru + 'om te bellen'","Heeft het zin om te bellen?","Aramanın bir anlamı var mı?",""],["zaman","Geçmiş zaman","Het had geen zin.","Anlamı yoktu.",""],["er","Dikkat: farklı anlam","Ik heb er geen zin in.","Canım istemiyor.","zin hebben in = canı istemek; zin hebben = anlamı olmak"],["bijzin","'Ik denk dat…'","Ik denk dat het geen zin heeft.","Bence anlamı yok.",""]],"72-25":[["soru","Soru yap","Scheelt dat veel?","Bu çok fark eder mi?",""],["olumsuz","Olumsuz","Dat scheelt niet veel.","Pek fark etmez.",""],["zaman","Geçmiş: çok zaman kazandırdı","Dat scheelde een hoop tijd.","Bu çok zaman kazandırdı.","schelen = fark etmek / kazandırmak"],["bijzin","'Ik denk dat…'","Ik denk dat het veel scheelt.","Bence çok fark eder.",""]],"82-19":[["modal","Daha doğrudan: 'Mag ik…'","Mag ik mijn spullen hier laten?","Eşyalarımı burada bırakabilir miyim?","zou … mogen daha kibar"],["olumsuz","Olumsuz (u)","U mag uw spullen hier niet laten.","Eşyalarınızı burada bırakamazsınız.",""],["zamir","'spullen' → ze","Mag ik ze hier neerzetten?","Onları buraya koyabilir miyim?","Çoğul isim → ze"],["zaman","Perfectum: unuttum","Ik heb mijn spullen daar laten liggen.","Eşyalarımı orada unuttum.","laten liggen = (unutup) bırakmak"]],"90-17":[["zaman","Perfectum","Ik ben gisteren eerder weggegaan.","Dün erken çıktım.","weggaan perfectum'da 'zijn' alır"],["modal","İzin iste","Mag ik vanmiddag eerder weg?","Bugün öğleden sonra erken çıkabilir miyim?","Modal + yön: 'gaan' düşebilir"],["olumsuz","Olumsuz","Ik kan vanmiddag niet eerder weg.","Bugün erken çıkamam.",""],["inversie","'Vanmiddag' ile başlat","Vanmiddag ga ik eerder weg.","Bugün öğleden sonra erken çıkıyorum.",""],["bijzin","'Ik zeg even dat…'","Ik zeg even dat ik vanmiddag eerder wegga.","Bugün erken çıkacağımı söyleyeyim.","Ayrılan fiil yan cümlede birleşir: wegga"]],"91-15":[["zou","Daha kibar","Zou ik heel even tussendoor mogen?","Bir dakikalığına araya girebilir miyim?",""],["partikel","Cevap: şimdi olmaz, sonra evet","Nu even niet, straks wel.","Şimdi olmaz, birazdan olur.",""],["bijzin","'Ik wilde vragen of…'","Ik wilde vragen of ik heel even tussendoor mag.","Bir dakikalığına araya girebilir miyim diye soracaktım.","wilde vragen = kibar giriş"]],"92-37":[["emir","Emir + 'dat'","Stel je eens voor dat je een miljoen wint.","Bir milyon kazandığını düşün.",""],["soru","Soru yap","Kun je je dat voorstellen?","Bunu hayal edebiliyor musun?",""],["zamir","Resmî emir (u)","Stelt u zich eens voor…","Bir düşünün…","u → zich; fiil -t alır"],["zaman","Plusquamperfectum","Ik had het me anders voorgesteld.","Bunu farklı hayal etmiştim.",""]],"101-1":[["edilgen","Etken çatı","We moeten het probleem snel oplossen.","Sorunu hızla çözmeliyiz.",""],["zaman","Perfectum edilgen","Het probleem is snel opgelost.","Sorun hızla çözüldü.",""],["nuans","'nog steeds niet'","Het probleem is nog steeds niet opgelost.","Sorun hâlâ çözülmedi.",""],["soru","Soru yap","Moet het probleem snel opgelost worden?","Sorunun hızla çözülmesi gerekiyor mu?",""],["bijzin","'Ik hoop dat…'","Ik hoop dat het probleem snel opgelost wordt.","Umarım sorun hızla çözülür.",""]],"101-3":[["edilgen","Etken çatı","Ik moet het rapport vandaag versturen.","Raporu bugün göndermem gerekiyor.",""],["zaman","Perfectum edilgen + 'al'","Het rapport is al verstuurd.","Rapor zaten gönderildi.",""],["olumsuz","'hoeven … te'","Het rapport hoeft vandaag niet verstuurd te worden.","Raporun bugün gönderilmesine gerek yok.",""],["soru","Soru yap","Is het rapport al verstuurd?","Rapor gönderildi mi?",""],["zaman","Imperfectum + 'door'","Het rapport werd door mijn collega verstuurd.","Raporu meslektaşım gönderdi.","door = tarafından"]]};
+var TF_TYPES = {
+  zaman:   { l:'Zaman', lv:1, r:'Zaman değişince fiil biçimi değişir. Perfectum: hebben/zijn + deelwoord; deelwoord sona gider.' },
+  gelecek: { l:'Gelecek · zullen', lv:1, r:'zullen = tahmin ya da söz; gaan + mastar = niyet, yakın gelecek. Mastar sona gider.' },
+  olumsuz: { l:'Olumsuz', lv:1, r:'Belirli isim, fiil, sıfat → niet. Belirsiz isim (een / artikelsiz) → geen.' },
+  nuans:   { l:'Anlam nüansı', lv:1, r:'nog niet = henüz · niet meer = artık · nog steeds niet = hâlâ · niet helemaal = tam değil ↔ helemaal niet = hiç.' },
+  soru:    { l:'Soru', lv:1, r:'Evet/hayır sorusunda fiil başa gelir. Soru kelimesi varsa fiil ikinci sırada kalır.' },
+  inversie:{ l:'Zarfla başlatma', lv:2, r:'Cümle zarfla başlarsa fiil yine 2. sırada kalır, özne fiilden sonra gelir.' },
+  partikel:{ l:'Ton kelimeleri', lv:2, r:'wel, toch, eigenlijk, even, maar, al, pas: anlamı değil tonu değiştirir.' },
+  modal:   { l:'Modal fiil', lv:2, r:'kunnen / moeten / mogen / willen çekimlenir, ana fiil mastar olarak sona gider. Olumsuz zorunluluk: hoeven + niet + te.' },
+  one:     { l:'Öne alma · sıra', lv:2, r:'Özne dışında bir öğe başa gelirse fiil 2. sırada kalır, özne fiilden sonra gelir.' },
+  zamir:   { l:'Zamir · özne', lv:2, r:'Dönüşlü zamir özneye uyar: ik → me, jij → je, hij/zij/u → zich, wij → ons.' },
+  emir:    { l:'Emir kipi', lv:2, r:'Emirde fiil kökü başa gelir: Vergeet het niet! Dönüşlü fiilde: Maak je geen zorgen.' },
+  laten:   { l:'Laten · öneri', lv:2, r:'Laten we + mastar = …alım. Zullen we …? = …alım mı?' },
+  bijzin:  { l:'Yan cümle', lv:3, r:'dat / omdat / als / of / wat… ile başlayan yan cümlede bütün fiiller sona gider.' },
+  er:      { l:'Er yapıları', lv:3, r:'er: var (er is) · yer (er = daar) · miktar (ik heb er twee) · edat + er (ervan, erover, ermee) · edilgen (er wordt…).' },
+  zou:     { l:'Zou yapıları', lv:3, r:'zou: koşul (als…, zou ik…), kibarlık (Zou u … willen?), geçmişteki gelecek (Hij zei dat hij zou komen).' },
+  edilgen: { l:'Edilgen çatı', lv:3, r:'worden + deelwoord (geçmiş: werd). Perfectum: zijn + deelwoord. Yapan kişi: door.' },
+  te:      { l:'om te · te', lv:3, r:'om … te + mastar: amaç ya da açıklama. Ayrılan fiilde te araya girer: op te sturen.' },
+  ayrilan: { l:'Ayrılan fiil', lv:3, r:'Ana cümlede ön ek sona gider (bel … op); yan cümlede ve mastarda birleşir (opbel, opbellen).' }
+};
+var TF_LEVELS = { 1:'Seviye 1 · Temel', 2:'Seviye 2 · Sıra ve ton', 3:'Seviye 3 · İleri yapılar' };
+
+var tfData = {};    // tfData['1-1_0'] = { s, n, g, r, t, f }  (Firebase anahtarında # olamaz)
+var tfPrefs = { mode:'mix', types:[], size:15, newPerDay:15 };
+var savedItems = {}; // savedItems[anahtar] = { at, u, note, ans, d }  d=1 → silindi (senkron için iz)
+var tf = null;
+
+function tfId(key, i){ return key + '_' + i; }
+function tfParse(id){ var p = id.lastIndexOf('_'); return { key:id.slice(0, p), i:parseInt(id.slice(p + 1), 10) }; }
+function tfVariant(id){ var p = tfParse(id), arr = TF_DATA[p.key]; return arr ? arr[p.i] : null; }
+
+// ── Saklama (profil bazlı, konuşma verisiyle aynı düzen) ─────────────────
+function loadV35Local(){
+  tfData = {}; savedItems = {}; tfPrefs = { mode:'mix', types:[], size:15, newPerDay:15 };
+  if(!activeProfile) return;
+  var prefix = 'gb3-' + activeProfile + '-';
+  try{
+    var a = localStorage.getItem(prefix + 'tf'); if(a) tfData = JSON.parse(a) || {};
+    var b = localStorage.getItem(prefix + 'saved'); if(b) savedItems = JSON.parse(b) || {};
+    var c = localStorage.getItem(prefix + 'tfprefs');
+    if(c){ var p = JSON.parse(c) || {}; Object.keys(tfPrefs).forEach(function(k){ if(p[k] !== undefined) tfPrefs[k] = p[k]; }); }
+  }catch(e){ console.error('[loadV35Local] HATA:', e); }
+}
+function saveV35Local(){
+  if(!activeProfile) return;
+  var prefix = 'gb3-' + activeProfile + '-';
+  try{
+    localStorage.setItem(prefix + 'tf', JSON.stringify(tfData));
+    localStorage.setItem(prefix + 'saved', JSON.stringify(savedItems));
+    localStorage.setItem(prefix + 'tfprefs', JSON.stringify(tfPrefs));
+  }catch(e){ console.error('[saveV35Local] HATA:', e); }
+}
+// Buluttan gelenle birleştir; yerelde daha yeni bir şey varsa true döner
+function applyV35FromCloud(data){
+  var a = mergeByStamp(tfData, (data && data.tfData) || {}, 't');
+  var b = mergeByStamp(savedItems, (data && data.saved) || {}, 'u');
+  tfData = a.data; savedItems = b.data;
+  saveV35Local();
+  return a.localNewer || b.localNewer;
+}
+function save35(){ saveV35Local(); save(); }
+
+// ── İnce hız ayarı (dinleme modu) ───────────────────────────────────────
+var SPEED_MIN = 0.6, SPEED_MAX = 1.6;
+function loadListenSpeed(){
+  try{ var v = parseFloat(localStorage.getItem('gb-listen-speed')); if(v >= SPEED_MIN && v <= SPEED_MAX) listenSettings.speed = v; }catch(e){}
+}
+function fmtSpeed(v){ return String(parseFloat((Math.round(v * 100) / 100).toFixed(2))) + '×'; }
+setListenSpeed = function(s){
+  s = Math.round(Math.min(SPEED_MAX, Math.max(SPEED_MIN, s)) * 100) / 100;
+  listenSettings.speed = s;
+  try{ localStorage.setItem('gb-listen-speed', String(s)); }catch(e){}
+  ['lc-speed-val','lp-speed-val'].forEach(function(id){ var el = document.getElementById(id); if(el) el.textContent = fmtSpeed(s); });
+  var rg = document.getElementById('lc-speed-range'); if(rg && parseFloat(rg.value) !== s) rg.value = s;
+  document.querySelectorAll('.spd-preset').forEach(function(b){ b.classList.toggle('active', Math.abs(parseFloat(b.dataset.speed) - s) < 0.001); });
+};
+function nudgeListenSpeed(d){ setListenSpeed(listenSettings.speed + d); }
+
+// ── Senin cümlelerinden: aynı kelime/fiille kurulmuş cümleler ────────────
+var REL_STOP = ('de het een en of maar want dus dat die dit deze wat wie waar wanneer hoe waarom welk welke ' +
+  'ik jij je u hij zij ze wij we jullie mij me jou hem haar ons hun hen zich mijn jouw uw zijn haar onze ons hun ' +
+  'niet geen wel ook nog al dan toen als om te van in op aan met voor bij naar uit over door tot tegen zonder na ' +
+  'er hier daar daarvan ervan zo heel erg even maar toch eens nu straks ja nee hé ' +
+  'ben bent is zijn was waren geweest heb hebt heeft hebben had hadden gehad word wordt worden werd werden geworden ' +
+  'zal zult zullen zou zouden kan kun kunt kunnen kon konden moet moeten moest mag mogen mocht wil wilt willen wilde ' +
+  'ga gaat gaan ging gingen gegaan laat laten liet doe doet doen iets niets niks alles veel meer weer ' +
+  'goed graag echt nooit altijd soms vandaag morgen gisteren ' +
+  'blijkbaar ineens eigenlijk misschien hopelijk gelukkig helaas ergens achteraf eindelijk meteen zeker gewoon natuurlijk vaak snel later eerst daarna dagelijks binnenkort volgens mij jou zo\'n').split(' ');
+var REL_STOP_SET = {}; REL_STOP.forEach(function(w){ REL_STOP_SET[w] = 1; });
+var REL_IRR = {}, REL_VERB = {};
+[
+ ['begrijp','begrijp begrijpt begrijpen begreep begrepen'],['kom','kom komt komen kwam kwamen gekomen'],
+ ['zie','zie ziet zien zag zagen gezien'],['weet','weet weten wist wisten geweten'],
+ ['vind','vind vindt vinden vond vonden gevonden'],['denk','denk denkt denken dacht dachten gedacht'],
+ ['breng','breng brengt brengen bracht brachten gebracht'],['krijg','krijg krijgt krijgen kreeg kregen gekregen'],
+ ['neem','neem neemt nemen nam namen genomen'],['geef','geef geeft geven gaf gaven gegeven'],
+ ['zeg','zeg zegt zeggen zei zeiden gezegd'],['sta','sta staat staan stond stonden gestaan'],
+ ['lig','lig ligt liggen lag lagen gelegen'],['zit','zit zitten zat zaten gezeten'],
+ ['loop','loop loopt lopen liep liepen gelopen'],['schrijf','schrijf schrijft schrijven schreef schreven geschreven'],
+ ['lees','lees leest lezen las lazen gelezen'],['spreek','spreek spreekt spreken sprak spraken gesproken'],
+ ['help','help helpt helpen hielp hielpen geholpen'],['vraag','vraag vraagt vragen vroegen gevraagd'],
+ ['koop','koop koopt kopen kocht kochten gekocht'],['zoek','zoek zoekt zoeken zocht zochten gezocht'],
+ ['houd','hou houd houdt houden hield hielden gehouden'],['blijf','blijf blijft blijven bleef bleven gebleven'],
+ ['begin','begin begint beginnen begon begonnen'],['drink','drink drinkt drinken dronk dronken gedronken'],
+ ['eet','eet eten aten gegeten'],['slaap','slaap slaapt slapen sliep sliepen geslapen'],
+ ['verslaap','verslaap verslaapt verslapen versliep versliepen'],['vergeet','vergeet vergeten vergat vergaten'],
+ ['ken','ken kent kennen kende kenden gekend'],['bedenk','bedenk bedenkt bedenken bedacht bedachten'],
+ ['verlies','verlies verliest verliezen verloor verloren'],['win','win wint winnen won wonnen gewonnen'],
+ ['kies','kies kiest kiezen koos kozen gekozen'],['bied','bied biedt bieden bood boden geboden'],
+ ['wijs','wijs wijst wijzen wees gewezen'],['trek','trek trekt trekken trok trokken getrokken'],
+ ['red','red redt redden redde redden gered'],['voel','voel voelt voelen voelde voelden gevoeld'],
+ ['herinner','herinner herinnert herinneren herinnerde herinnerden herinnerd'],
+ ['realiseer','realiseer realiseert realiseren realiseerde realiseerden gerealiseerd']
+].forEach(function(r){ r[1].split(' ').forEach(function(f){ REL_IRR[f] = r[0]; }); REL_VERB[relNorm(r[0])] = 1; });
+var REL_PREFIX = ['terug','samen','bekend','voor','door','over','weg','mee','aan','uit','op','af','in','na','bij','toe','om','stil'];
+function relNorm(s){
+  s = s.replace(/aa/g,'a').replace(/ee/g,'e').replace(/oo/g,'o').replace(/uu/g,'u');
+  s = s.replace(/([bcdfgklmnprstvz])\1$/,'$1');
+  s = s.replace(/v$/,'f').replace(/z$/,'s');
+  return s;
+}
+function relStem(w){
+  if(REL_IRR[w]) return relNorm(REL_IRR[w]);
+  var s = w;
+  for(var i = 0; i < REL_PREFIX.length; i++){
+    var p = REL_PREFIX[i];
+    if(s.indexOf(p + 'ge') === 0 && s.length > p.length + 4 && /[dt]$/.test(s)){ s = p + s.slice(p.length + 2, -1); return relNorm(s); }
+  }
+  if(s.indexOf('ge') === 0 && s.length > 5 && /[dt]$/.test(s)) s = s.slice(2, -1);
+  else if(/(den|ten)$/.test(s) && s.length > 6) s = s.slice(0, -3);
+  else if(/(de|te)$/.test(s) && s.length > 5) s = s.slice(0, -2);
+  else if(/en$/.test(s) && s.length > 4) s = s.slice(0, -2);
+  else if(/t$/.test(s) && s.length > 4) s = s.slice(0, -1);
+  s = s.replace(/([bcdfgklmnprstvz])\1$/,'$1');
+  if(/[td]$/.test(s) && s.length > 4) s = s.slice(0, -1);
+  return relNorm(s);
+}
+function relKeys(nl){
+  var out = {}, words = String(nl).toLowerCase().replace(/[^a-zà-ÿ\s'-]/g,' ').split(/\s+/);
+  words.forEach(function(w){
+    w = w.replace(/^['-]+|['-]+$/g,'');
+    if(w.length < 3 || REL_STOP_SET[w]) return;
+    var k = relStem(w); if(k.length >= 3) out[k] = 1;
+  });
+  return Object.keys(out);
+}
+var _relIdx = null;
+function relIndex(){
+  if(_relIdx) return _relIdx;
+  var byKey = {}, df = {}, n = 0;
+  Object.keys(SMAP).forEach(function(k){
+    var ks = relKeys(SMAP[k].nl); byKey[k] = ks; n++;
+    ks.forEach(function(x){ df[x] = (df[x] || 0) + 1; });
+  });
+  var post = {};
+  Object.keys(byKey).forEach(function(k){ byKey[k].forEach(function(x){ (post[x] = post[x] || []).push(k); }); });
+  _relIdx = { byKey:byKey, df:df, post:post, n:n };
+  return _relIdx;
+}
+function relatedKeys(key, max){
+  var I = relIndex(), mine = I.byKey[key] || [], score = {}, shared = {};
+  mine.forEach(function(x){
+    var d = I.df[x] || 1; if(d > 120) return;           // çok yaygın kelimeler eşleştirmeye yaramaz
+    var w = Math.log(I.n / d);
+    (I.post[x] || []).forEach(function(k){
+      if(k === key || permDel.has(k) || trulyDeleted.has(k)) return;
+      score[k] = (score[k] || 0) + w * (REL_VERB[x] ? 1.6 : 1); (shared[k] = shared[k] || []).push(x);
+    });
+  });
+  return Object.keys(score).filter(function(k){ return score[k] >= 3.2; })
+    .sort(function(a, b){ return (score[b] + (learned.has(b) ? 0.5 : 0)) - (score[a] + (learned.has(a) ? 0.5 : 0)); })
+    .filter(function(k){ var t = SMAP[k].nl.trim().toLowerCase(); if(this[t] || t === (SMAP[key] ? SMAP[key].nl.trim().toLowerCase() : '')) return false; this[t] = 1; return true; }, {})
+    .slice(0, max || 6);
+}
+function relatedHtml(key, nlOverride){
+  var ks = relatedKeys(key, 6);
+  if(nlOverride){ var own = SMAP[key] && SMAP[key].nl; ks = ks.filter(function(k){ return SMAP[k].nl !== nlOverride; }); if(own && own !== nlOverride) ks.unshift(key); ks = ks.slice(0, 6); }
+  if(!ks.length) return '';
+  return '<details class="rel-box"><summary>' + ic('book') + 'Senin cümlelerinden <span>' + ks.length + '</span></summary>' +
+    ks.map(function(k){
+      var s = SMAP[k], tr = knownTr(k);
+      return '<button class="rel-row" onclick="speakNL(' + escHtml(JSON.stringify(s.nl)) + ', this)"><span class="rel-nl" lang="nl">' + escHtml(s.nl) + '</span>' +
+        (tr ? '<span class="rel-tr">' + escHtml(tr) + '</span>' : '') +
+        '<span class="rel-meta">' + escHtml(s.lesson.title) + (learned.has(k) ? ' · ezberledin' : '') + '</span></button>';
+    }).join('') + '</details>';
+}
+
+// ── Sonra bak ───────────────────────────────────────────────────────────
+function svText(id){
+  if(id.indexOf('tf:') === 0){ var v = tfVariant(id.slice(3)); return v ? { nl:v[2], tr:v[3] } : null; }
+  var s = SMAP[id]; return s ? { nl:s.nl, tr:knownTr(id) } : null;
+}
+function isSaved(id){ var e = savedItems[id]; return !!(e && !e.d); }
+function savedList(){ return Object.keys(savedItems).filter(function(k){ return isSaved(k) && svText(k); }).sort(function(a, b){ return (savedItems[b].at || 0) - (savedItems[a].at || 0); }); }
+function toggleSaved(id){
+  var now = Date.now(), e = savedItems[id];
+  if(isSaved(id)){ e.d = 1; e.u = now; }
+  else savedItems[id] = { at:now, u:now, note:(e && e.note) || '', ans:(e && e.ans) || '', d:0 };
+  save35();
+  updateSaveButtons();
+  toastListen(isSaved(id) ? 'Sonra bak listesine eklendi' : 'Listeden çıkarıldı');
+  return isSaved(id);
+}
+function saveBtnHtml(id, extraCls){
+  var on = isSaved(id);
+  return '<button class="sp-tool sv-btn' + (on ? ' on' : '') + (extraCls ? ' ' + extraCls : '') + '" data-sv="' + escHtml(id) + '" onclick="toggleSaved(this.dataset.sv)">' +
+    ic('bookmark') + '<span>' + (on ? 'Kaydedildi' : 'Sonra bak') + '</span></button>';
+}
+function updateSaveButtons(){
+  document.querySelectorAll('[data-sv]').forEach(function(b){
+    var on = isSaved(b.dataset.sv);
+    b.classList.toggle('on', on);
+    var sp = b.querySelector('span'); if(sp && !b.classList.contains('sv-ico')) sp.textContent = on ? 'Kaydedildi' : 'Sonra bak';
+    if(b.classList.contains('sv-ico')) b.title = on ? 'Kaydedildi (çıkarmak için dokun)' : 'Sonra bak listesine ekle';
+  });
+  var c = savedList().length;
+  document.querySelectorAll('.sv-count').forEach(function(el){ el.textContent = c; });
+}
+function svEntryHtml(){
+  var list = savedList(), open = list.filter(function(k){ return !(savedItems[k].ans || '').trim(); }).length;
+  return '<button class="td-entry" onclick="openSaved()">' + ic('bookmark') + 'Sonra bak<span>' +
+    (list.length ? list.length + ' kayıt' + (open ? ' · ' + open + ' cevapsız' : '') : 'boş') + '</span></button>';
+}
+var svFilter = 'open';
+function openSaved(){
+  document.getElementById('sv-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  renderSaved();
+}
+function closeSaved(){
+  document.getElementById('sv-overlay').classList.remove('show');
+  if(!document.querySelector('.sp-overlay.show')) document.body.style.overflow = '';
+  if(curTab === 'speak') renderSpeak();
+}
+function setSvFilter(f){ svFilter = f; renderSaved(); }
+function renderSaved(){
+  var el = document.getElementById('sv-body'); if(!el) return;
+  var all = savedList();
+  var open = all.filter(function(k){ return !(savedItems[k].ans || '').trim(); });
+  var done = all.filter(function(k){ return (savedItems[k].ans || '').trim(); });
+  var list = svFilter === 'open' ? open : svFilter === 'done' ? done : all;
+  var seg = function(f, l, n){ return '<button class="' + (svFilter === f ? 'on' : '') + '" onclick="setSvFilter(\'' + f + '\')">' + l + ' (' + n + ')</button>'; };
+  var h = '<div class="td-tip">' + ic('bulb') + '<span>Anlamını, kullanım yerini ya da benzer kelimelerle farkını sormak istediğin cümleleri burada topla. "Claude\'a sor" seçtiklerini hazır bir soruyla kopyalar; cevabı alınca ilgili kartın altına yapıştırıp saklayabilirsin.</span></div>';
+  h += '<div class="td-seg">' + seg('open', 'Cevapsız', open.length) + seg('done', 'Cevaplı', done.length) + seg('all', 'Tümü', all.length) + '</div>';
+  if(!list.length){
+    h += '<div class="sv-empty">' + (all.length ? 'Bu grupta kayıt yok.' : 'Henüz kayıt yok. Dinlerken, Konuş\'ta ya da kart listelerinde ' + ic('bookmark') + ' düğmesine dokunarak ekleyebilirsin.') + '</div>';
+  } else {
+    h += '<div class="sv-actions">' +
+      '<button class="btn btn-ghost" onclick="svSelectAll()">' + ic('check') + '<span id="sv-selall-txt">Tümünü seç</span></button>' +
+      '<button class="btn btn-primary" onclick="svAsk(false)">' + ic('message') + 'Claude\'a sor <span class="sv-selcount" id="sv-selcount"></span></button>' +
+      (navigator.share ? '<button class="btn btn-ghost sv-share" onclick="svAsk(true)" title="Paylaş">' + ic('upload') + '</button>' : '') +
+    '</div>';
+    list.forEach(function(k){
+      var t = svText(k), e = savedItems[k], ans = (e.ans || '').trim();
+      h += '<div class="sv-item" data-k="' + escHtml(k) + '">' +
+        '<div class="sv-head"><label class="sv-check"><input type="checkbox" class="sv-sel" value="' + escHtml(k) + '" onchange="svUpdateSel()"' + (ans ? '' : ' checked') + '></label>' +
+          '<div class="sv-txt"><div class="sv-nl" lang="nl">' + escHtml(t.nl) + '</div>' + (t.tr ? '<div class="sv-tr">' + escHtml(t.tr) + '</div>' : '') +
+          (k.indexOf('tf:') === 0 ? '<div class="sv-src">Dönüştür</div>' : '') + '</div>' +
+          '<button class="sv-ico-btn" onclick="speakNL(' + escHtml(JSON.stringify(t.nl)) + ', this)" title="Dinle">' + ic('volume') + '</button>' +
+          '<button class="sv-ico-btn" onclick="svRemove(this.closest(\'.sv-item\').dataset.k)" title="Listeden çıkar">' + ic('trash') + '</button></div>' +
+        '<input class="sv-note" type="text" placeholder="Ne soracaksın? (ör. merken ile farkı?)" value="' + escHtml(e.note || '') + '" onchange="svSetField(this.closest(\'.sv-item\').dataset.k, \'note\', this.value)">' +
+        '<details class="sv-ans"' + (ans ? ' open' : '') + '><summary>' + (ans ? 'Cevap / notlarım' : 'Cevabı yapıştır') + '</summary>' +
+          '<textarea rows="' + (ans ? 6 : 3) + '" placeholder="Claude\'un cevabını buraya yapıştır" onchange="svSetField(this.closest(\'.sv-item\').dataset.k, \'ans\', this.value)">' + escHtml(e.ans || '') + '</textarea></details>' +
+      '</div>';
+    });
+  }
+  el.innerHTML = h;
+  svUpdateSel();
+}
+function svSetField(k, f, v){ var e = savedItems[k]; if(!e) return; e[f] = v; e.u = Date.now(); save35(); }
+function svRemove(k){ var e = savedItems[k]; if(!e) return; e.d = 1; e.u = Date.now(); save35(); renderSaved(); updateSaveButtons(); }
+function svSelected(){ return Array.prototype.slice.call(document.querySelectorAll('.sv-sel:checked')).map(function(c){ return c.value; }); }
+function svUpdateSel(){
+  var n = svSelected().length, all = document.querySelectorAll('.sv-sel').length;
+  var c = document.getElementById('sv-selcount'); if(c) c.textContent = n ? '(' + n + ')' : '';
+  var t = document.getElementById('sv-selall-txt'); if(t) t.textContent = (n === all && all) ? 'Seçimi kaldır' : 'Tümünü seç';
+}
+function svSelectAll(){
+  var boxes = document.querySelectorAll('.sv-sel'), all = svSelected().length === boxes.length;
+  boxes.forEach(function(b){ b.checked = !all; }); svUpdateSel();
+}
+function svPrompt(keys){
+  var lines = keys.map(function(k, i){
+    var t = svText(k), note = (savedItems[k].note || '').trim();
+    return (i + 1) + '. ' + t.nl + (note ? '\n   Sorum: ' + note : '');
+  });
+  return 'Türkçe konuşuyorum ve Hollandaca öğreniyorum (B2 seviyesi, Hollanda\'da sosyal danışman olarak çalışıyorum). ' +
+    'Aşağıdaki Hollandaca cümlelerin her biri için ayrı başlık altında, sade ve kısa şekilde açıkla:\n' +
+    '1) Türkçe anlamı ve günlük hayatta hangi durumda kullanıldığı\n' +
+    '2) Önemli kelime ya da yapının nüansı ve benzer kelimelerle farkı (varsa sorumu cevapla)\n' +
+    '3) 2 doğal örnek cümle (Türkçesiyle)\n\n' + lines.join('\n');
+}
+function svAsk(share){
+  var keys = svSelected();
+  if(!keys.length){ toastListen('Önce en az bir cümle seç'); return; }
+  var text = svPrompt(keys);
+  if(share && navigator.share){ navigator.share({ text:text }).catch(function(){}); return; }
+  copyText(text).then(function(ok){ toastListen(ok ? keys.length + ' cümle kopyalandı. Claude\'a yapıştır.' : 'Kopyalanamadı'); });
+}
+function copyText(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text).then(function(){ return true; }).catch(function(){ return copyFallback(text); });
+  }
+  return Promise.resolve(copyFallback(text));
+}
+function copyFallback(text){
+  try{ var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); var ok = document.execCommand('copy'); ta.remove(); return ok; }catch(e){ return false; }
+}
+function savedAnsHtml(id){
+  var e = savedItems[id]; if(!isSaved(id) || !(e.ans || '').trim()) return '';
+  return '<details class="rel-box sv-mini"><summary>' + ic('bookmark') + 'Kayıtlı açıklaman</summary><div class="sv-mini-txt">' + escHtml(e.ans) + '</div></details>';
+}
+
+// ── Konuş'a eklenenler: cevapta "Sonra bak" + benzer cümleler ───────────
+var _spReveal35 = spReveal;
+spReveal = function(){
+  _spReveal35.apply(this, arguments);
+  if(!sp || !sp.revealed) return;
+  var key = sp.queue[sp.i].key;
+  var box = document.getElementById('sp-extra');
+  if(box) box.innerHTML = '<div class="sp-tools">' + saveBtnHtml(key) + '</div>' + savedAnsHtml(key) + relatedHtml(key);
+};
+var _spRender35 = spRender;
+spRender = function(){ var box = document.getElementById('sp-extra'); if(box) box.innerHTML = ''; _spRender35.apply(this, arguments); };
+
+// ── Dönüştür oturumu ────────────────────────────────────────────────────
+function tfEligibleKey(k){ return !!SMAP[k] && !permDel.has(k) && !trulyDeleted.has(k); }
+function tfTypeOn(t){ return !tfPrefs.types.length || tfPrefs.types.indexOf(t) !== -1; }
+function tfAllIds(){
+  var out = [];
+  Object.keys(TF_DATA).forEach(function(k){ if(!tfEligibleKey(k)) return; TF_DATA[k].forEach(function(v, i){ out.push(tfId(k, i)); }); });
+  return out;
+}
+function tfNewToday(){ var dk = dateKey(), n = 0; Object.keys(tfData).forEach(function(id){ if(tfData[id].f === dk) n++; }); return n; }
+function tfCounts(){
+  var dk = dateKey(), due = 0, fresh = 0, total = 0;
+  tfAllIds().forEach(function(id){
+    var v = tfVariant(id); if(!v || !tfTypeOn(v[0])) return; total++;
+    var e = tfData[id]; if(!e) fresh++; else if(e.n <= dk) due++;
+  });
+  return { due:due, fresh:fresh, total:total, newLeft:Math.max(0, tfPrefs.newPerDay - tfNewToday()) };
+}
+function buildTfQueue(){
+  var dk = dateKey(), due = [], fresh = [];
+  tfAllIds().forEach(function(id){
+    var v = tfVariant(id); if(!v || !tfTypeOn(v[0])) return;
+    var e = tfData[id]; if(!e) fresh.push(id); else if(e.n <= dk) due.push(id);
+  });
+  due.sort(function(a, b){ return tfData[a].n < tfData[b].n ? -1 : tfData[a].n > tfData[b].n ? 1 : 0; });
+  fresh = shuffleArr(fresh);
+  var perKey = {}, out = [], size = tfPrefs.size, newLeft = Math.max(0, tfPrefs.newPerDay - tfNewToday());
+  function take(list, limit){
+    for(var i = 0; i < list.length && out.length < size && limit > 0; i++){
+      var k = tfParse(list[i]).key;
+      if((perKey[k] || 0) >= 2) continue;                // aynı kalıptan en fazla 2 dönüşüm
+      perKey[k] = (perKey[k] || 0) + 1; out.push(list[i]); limit--;
+    }
+  }
+  take(due, size);
+  take(fresh, newLeft);
+  return shuffleArr(out);
+}
+function tfPickMode(){ return tfPrefs.mode === 'mix' ? (Math.random() < 0.5 ? 'yapi' : 'anlam') : tfPrefs.mode; }
+function startTf(ids){
+  ids = ids || buildTfQueue();
+  if(!ids.length){ toastListen('Şu an çalışılacak dönüşüm yok'); return; }
+  stopCurrentAudio();
+  tf = { queue: ids.map(function(id){ return { id:id, again:false, mode:tfPickMode() }; }), i:0, stats:{ t:0, y:0, a:0 }, byType:{}, stuck:[], requeued:{}, revealed:false, busy:false };
+  document.getElementById('tf-session').style.display = '';
+  document.getElementById('tf-finish').style.display = 'none';
+  document.getElementById('tf-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  tfRender();
+}
+function closeTf(){
+  stopCurrentAudio();
+  document.getElementById('tf-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+  tf = null;
+  if(curTab === 'speak') renderSpeak();
+}
+function tfRender(){
+  if(!tf) return;
+  if(tf.i >= tf.queue.length){ tfFinish(); return; }
+  var item = tf.queue[tf.i], p = tfParse(item.id), v = tfVariant(item.id), s = SMAP[p.key], T = TF_TYPES[v[0]] || { l:v[0], lv:1 };
+  tf.revealed = false; tf.busy = false;
+  stopCurrentAudio();
+  var total = tf.queue.length;
+  document.getElementById('tf-count').textContent = (tf.i + 1) + ' / ' + total;
+  document.getElementById('tf-bar').style.transform = 'scaleX(' + (tf.i / total) + ')';
+  var e = tfData[item.id], chips = '<span class="sp-chip tf-type">' + escHtml(T.l) + '</span>';
+  chips += item.again ? '<span class="sp-chip acc">Bir daha</span>' : (!e ? '<span class="sp-chip acc">Yeni</span>' : '<span class="sp-chip">' + ((e.r || 0) + 1) + '. tekrar</span>');
+  document.getElementById('tf-chips').innerHTML = chips;
+  document.getElementById('tf-base-nl').textContent = s.nl;
+  var bt = knownTr(p.key);
+  document.getElementById('tf-base-tr').textContent = bt || '';
+  var lbl = document.getElementById('tf-task-lbl'), task = document.getElementById('tf-task');
+  if(item.mode === 'anlam'){ lbl.textContent = 'Hollandaca söyle'; task.textContent = v[3]; task.classList.add('tr'); }
+  else { lbl.textContent = 'Görev'; task.textContent = v[1]; task.classList.remove('tr'); }
+  var hint = document.getElementById('tf-hint'); hint.style.display = 'none'; hint.textContent = prodHint(v[2]);
+  document.getElementById('tf-hint-btn').classList.remove('used');
+  document.getElementById('tf-say').style.display = '';
+  var ans = document.getElementById('tf-ans'); ans.style.display = 'none'; ans.classList.remove('in');
+  document.getElementById('tf-q-actions').style.display = '';
+  document.getElementById('tf-grades').style.display = 'none';
+}
+function tfPlayBase(btn){ if(!tf) return; speakNL(SMAP[tfParse(tf.queue[tf.i].id).key].nl, btn); }
+function tfHint(){ if(!tf || tf.revealed) return; document.getElementById('tf-hint').style.display = ''; document.getElementById('tf-hint-btn').classList.add('used'); }
+function tfReveal(){
+  if(!tf || tf.revealed) return;
+  tf.revealed = true;
+  var item = tf.queue[tf.i], p = tfParse(item.id), v = tfVariant(item.id), T = TF_TYPES[v[0]] || { r:'' }, e = tfData[item.id];
+  document.getElementById('tf-nl').textContent = v[2];
+  document.getElementById('tf-mean').innerHTML = item.mode === 'anlam'
+    ? '<b>Görev:</b> ' + escHtml(v[1])
+    : escHtml(v[3]);
+  var rule = '<div class="tf-rule-h">' + ic('bulb') + escHtml(T.l || v[0]) + '</div><div>' + escHtml(T.r || '') + '</div>';
+  if(v[4]) rule += '<div class="tf-note"><b>Not:</b> ' + escHtml(v[4]) + '</div>';
+  document.getElementById('tf-rule').innerHTML = rule;
+  document.getElementById('tf-extra').innerHTML = '<div class="sp-tools">' + saveBtnHtml('tf:' + item.id) + '</div>' + savedAnsHtml('tf:' + item.id) + relatedHtml(p.key, v[2]);
+  ['t','y','a'].forEach(function(g){
+    document.getElementById('tf-g-' + g).textContent = item.again ? 'bu turda' : (g === 't' ? 'birazdan' : fmtDays(prodNextStep(e, g).days));
+  });
+  document.getElementById('tf-say').style.display = 'none';
+  document.getElementById('tf-q-actions').style.display = 'none';
+  var ans = document.getElementById('tf-ans'); ans.style.display = ''; ans.classList.add('in');
+  document.getElementById('tf-grades').style.display = '';
+  if(prodPrefs.autoAudio) tfListen(document.getElementById('tf-listen'));
+}
+function tfListen(btn){ if(!tf) return; var v = tfVariant(tf.queue[tf.i].id); speakNL(v[2], btn); }
+function tfGrade(g){
+  if(!tf || !tf.revealed || tf.busy) return;
+  tf.busy = true;
+  var item = tf.queue[tf.i], v = tfVariant(item.id), e = tfData[item.id], isNew = !e;
+  if(!e) e = { s:0, n:dateKey(), g:'', r:0, t:0, f:dateKey() };
+  if(!item.again || isNew){
+    var nx = prodNextStep(isNew ? null : e, g);
+    e.s = nx.s; e.n = dateKey(addDays(today(), nx.days)); e.g = g; e.r = (e.r || 0) + 1;
+  }
+  e.t = Date.now();
+  tfData[item.id] = e;
+  if(!item.again){
+    tf.stats[g]++;
+    var bt = tf.byType[v[0]] = tf.byType[v[0]] || { t:0, y:0, a:0 }; bt[g]++;
+    if(g === 't') tf.stuck.push(item.id);
+  }
+  if(g === 't' && !item.again && !tf.requeued[item.id]){
+    tf.requeued[item.id] = true;
+    tf.queue.splice(Math.min(tf.queue.length, tf.i + 4), 0, { id:item.id, again:true, mode:item.mode });
+  }
+  // Günlük konuşma sayacına da işlensin (seri ve "bugün çalıştıklarım")
+  var dk = dateKey(), pl = prodLog[dk] || { n:0, nw:0 }; pl.n = (pl.n || 0) + 1; prodLog[dk] = pl;
+  saveProdLocal();
+  save35();
+  if(navigator.vibrate){ try{ navigator.vibrate(12); }catch(err){} }
+  var card = document.getElementById('tf-card');
+  card.classList.add('out');
+  setTimeout(function(){ card.classList.remove('out'); if(!tf) return; tf.i++; tfRender(); }, 180);
+}
+function tfFinish(){
+  document.getElementById('tf-session').style.display = 'none';
+  var box = document.getElementById('tf-finish'); box.style.display = '';
+  document.getElementById('tf-bar').style.transform = 'scaleX(1)';
+  ['a','y','t'].forEach(function(g){ document.getElementById('tf-fin-' + g).textContent = tf.stats[g]; });
+  var weak = Object.keys(tf.byType).map(function(t){ var b = tf.byType[t], n = b.a + b.y + b.t; return { t:t, n:n, bad:b.t + b.y * 0.5 }; })
+    .filter(function(x){ return x.bad > 0; }).sort(function(a, b){ return b.bad / b.n - a.bad / a.n; }).slice(0, 3);
+  document.getElementById('tf-fin-weak').innerHTML = weak.length
+    ? '<div class="sp-lbl">Bu turda zorlandığın yapılar</div>' + weak.map(function(x){ return '<div class="tf-weak">' + escHtml(TF_TYPES[x.t] ? TF_TYPES[x.t].l : x.t) + '</div>'; }).join('')
+    : '<div class="tf-weak ok">Bu turda hiçbir yapıda takılmadın.</div>';
+  document.getElementById('tf-fin-retry').style.display = tf.stuck.length ? '' : 'none';
+}
+function tfRetryStuck(){ var ids = tf ? tf.stuck.slice() : []; if(ids.length) startTf(ids); }
+function tfMoreRound(){ startTf(); }
+
+// Tür bazında genel durum (en son verilen nota göre)
+function tfTypeStats(){
+  var out = {};
+  Object.keys(tfData).forEach(function(id){
+    var v = tfVariant(id), e = tfData[id]; if(!v || !e.g) return;
+    var o = out[v[0]] = out[v[0]] || { a:0, y:0, t:0, n:0 }; o[e.g]++; o.n++;
+  });
+  return out;
+}
+function setTfMode(m){ tfPrefs.mode = m; save35(); renderSpeak(); }
+function setTfSize(n){ tfPrefs.size = n; save35(); renderSpeak(); }
+function setTfNew(n){ tfPrefs.newPerDay = n; save35(); renderSpeak(); }
+function toggleTfType(t){
+  if(t === '*'){ tfPrefs.types = []; }
+  else {
+    var i = tfPrefs.types.indexOf(t);
+    if(i === -1) tfPrefs.types.push(t); else tfPrefs.types.splice(i, 1);
+  }
+  save35(); renderSpeak();
+}
+function toggleTfLevel(lv){
+  var ts = Object.keys(TF_TYPES).filter(function(t){ return TF_TYPES[t].lv === lv; });
+  var allOn = ts.every(function(t){ return tfPrefs.types.indexOf(t) !== -1; });
+  tfPrefs.types = tfPrefs.types.filter(function(t){ return ts.indexOf(t) === -1; });
+  if(!allOn) tfPrefs.types = tfPrefs.types.concat(ts);
+  save35(); renderSpeak();
+}
+function tfCardHtml(){
+  var c = tfCounts(), qn = buildTfQueue().length, st = tfTypeStats();
+  var avail = {}; tfAllIds().forEach(function(id){ var v = tfVariant(id); if(v) avail[v[0]] = (avail[v[0]] || 0) + 1; });
+  var h = '<div class="prog-card tf-card-home"><div class="prog-card-title">' + ic('repeat') + 'Dönüştür</div>' +
+    '<div class="prog-card-desc">Ezberlediğin kalıbı başka yapılarda kur: zaman, olumsuz, soru, zarfla başlatma, <i>er</i>, <i>zou</i>, edilgen… Önce sesli söyle, sonra kontrol et.</div>';
+  h += '<div class="tf-home-nums"><span><b>' + c.due + '</b> tekrar</span><span><b>' + Math.min(c.fresh, c.newLeft) + '</b> yeni (bugün)</span><span><b>' + c.total + '</b> dönüşüm</span></div>';
+  h += qn ? '<button class="prog-action-btn" onclick="startTf()">' + ic('repeat') + ' Dönüştür (' + qn + ' kart)</button>'
+          : '<div class="spk-note">Bu ayarlarla şu an çalışılacak dönüşüm yok' + (c.fresh && !c.newLeft ? ' (bugünkü yeni sınırı doldu)' : '') + '.</div>';
+  // Tür seçimi
+  h += '<div class="spk-pref-lbl" style="margin-top:16px">Hangi yapılar? <button class="tf-all-link" onclick="toggleTfType(\'*\')">' + (tfPrefs.types.length ? 'Hepsini aç' : 'Hepsi açık') + '</button></div>';
+  [1,2,3].forEach(function(lv){
+    var ts = Object.keys(TF_TYPES).filter(function(t){ return TF_TYPES[t].lv === lv && avail[t]; });
+    if(!ts.length) return;
+    h += '<div class="tf-lv"><button class="tf-lv-h" onclick="toggleTfLevel(' + lv + ')">' + TF_LEVELS[lv] + '</button><div class="tf-chips">';
+    ts.forEach(function(t){
+      var on = tfPrefs.types.length && tfPrefs.types.indexOf(t) !== -1, s = st[t];
+      var bad = s && s.n ? Math.round((s.t + s.y * 0.5) / s.n * 100) : null;
+      h += '<button class="tf-chip' + (on ? ' on' : '') + '" onclick="toggleTfType(\'' + t + '\')">' + escHtml(TF_TYPES[t].l) +
+        '<span class="tf-chip-n">' + avail[t] + '</span>' + (bad !== null && bad >= 40 ? '<span class="tf-chip-warn" title="Son notlarında zorlanma oranı">%' + bad + '</span>' : '') + '</button>';
+    });
+    h += '</div></div>';
+  });
+  h += '<div class="spk-note">Hiçbiri seçili değilse hepsi karışık gelir. Kırmızı yüzde: o yapıda son notlarının ne kadarı Takıldım/Yavaş.</div>';
+  var tg = function(fn, val, cur, label){ return '<button class="goal-btn' + (cur === val ? ' active' : '') + '" onclick="' + fn + '(' + (typeof val === 'number' ? val : '\'' + val + '\'') + ')">' + label + '</button>'; };
+  h += '<details class="tf-more"><summary>Görev ve tur ayarları</summary>' +
+    '<div class="spk-pref-lbl">Görev türü</div><div class="goal-toggle" style="flex-wrap:wrap">' +
+      tg('setTfMode','mix',tfPrefs.mode,'Karışık') + tg('setTfMode','yapi',tfPrefs.mode,'Yapı görevi') + tg('setTfMode','anlam',tfPrefs.mode,'Türkçeden söyle') + '</div>' +
+    '<div class="spk-note">Yapı görevi: "Soru yap", "\'Toen\' ile başlat". Türkçeden söyle: Türkçe anlamı görür, Hollandacasını kurarsın.</div>' +
+    '<div class="spk-pref-lbl" style="margin-top:12px">Bir turda kaç kart?</div><div class="goal-toggle">' + tg('setTfSize',10,tfPrefs.size,'10') + tg('setTfSize',15,tfPrefs.size,'15') + tg('setTfSize',25,tfPrefs.size,'25') + '</div>' +
+    '<div class="spk-pref-lbl" style="margin-top:12px">Günde kaç yeni dönüşüm?</div><div class="goal-toggle">' + tg('setTfNew',5,tfPrefs.newPerDay,'5') + tg('setTfNew',15,tfPrefs.newPerDay,'15') + tg('setTfNew',30,tfPrefs.newPerDay,'30') + '</div>' +
+  '</details></div>';
+  return h;
+}
+
+// Klavye: Dönüştür açıkken boşluk = cevap, 1–3 = not, Esc = kapat
+document.addEventListener('keydown', function(ev){
+  var ov = document.getElementById('tf-overlay');
+  if(!ov || !ov.classList.contains('show') || !tf) return;
+  if(/INPUT|TEXTAREA/.test((ev.target && ev.target.tagName) || '')) return;
+  if(ev.key === 'Escape'){ closeTf(); ev.preventDefault(); }
+  else if(ev.key === ' ' && !tf.revealed){ tfReveal(); ev.preventDefault(); }
+  else if(tf.revealed && ['1','2','3'].indexOf(ev.key) !== -1){ tfGrade({ '1':'t', '2':'y', '3':'a' }[ev.key]); ev.preventDefault(); }
+});
+document.addEventListener('keydown', function(ev){
+  var ov = document.getElementById('sv-overlay');
+  if(ov && ov.classList.contains('show') && ev.key === 'Escape') closeSaved();
+});
+
+// Dinleme oynatıcısındaki "Sonra bak": o an çalan cümle
+function lpToggleSave(){ if(_currentListenKey) toggleSaved(_currentListenKey); }
+var _updListenUI35 = updateListenPlayerUI;
+updateListenPlayerUI = function(key){
+  _updListenUI35.apply(this, arguments);
+  var b = document.getElementById('lp-save'); if(b){ b.dataset.sv = key; updateSaveButtons(); }
+};
+
+// Saklama/senkron bağlantıları: konuşma verisiyle aynı yoldan geçer
+var _loadProdLocal35 = loadProdLocal;
+loadProdLocal = function(){ _loadProdLocal35.apply(this, arguments); loadV35Local(); };
+var _saveProdLocal35 = saveProdLocal;
+saveProdLocal = function(){ _saveProdLocal35.apply(this, arguments); saveV35Local(); };
+var _applyProd35 = applyProdFromCloud;
+applyProdFromCloud = function(data){ var a = _applyProd35.apply(this, arguments); var b = applyV35FromCloud(data); return a || b; };
+
+// Açılışta: kayıtlı hız + profil zaten yüklendiyse v35 verisi
+loadListenSpeed();
+setTimeout(function(){ setListenSpeed(listenSettings.speed); if(activeProfile && !Object.keys(tfData).length && !Object.keys(savedItems).length) loadV35Local(); updateSaveButtons(); }, 0);
 
 </script>
 </body>

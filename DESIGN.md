@@ -147,3 +147,9 @@ Her ekran dört durumu tasarlar: yükleniyor, boş, hata, dolu.
 
 ## v34 (2026-10-29)
 - Dinleme modu: "Dinlediklerimi Say (N)" hap düğmesi (kontrollerin altında, `--tag` zemin, yeşil ikon). Seçim listesi `.lp-pick`: satırlar `--card` zemin, 14px köşe, yeşil onay kutusu; ana eylem turuncu `.lp-markall-btn`. Gece mavisi sahne korunur. Kısa onay mesajı `.lp-toast`.
+
+## v35 (2026-10-31)
+- Dönüştür: Konuş'un tam ekran düzeni (`sp-*` sınıfları) yeniden kullanıldı. Kalıp kutusu `--card` zeminde küçük; görev büyük ve kalın (anlam görevinde normal ağırlık). Kural kutusu `--accent` %7 zemin. Tür çipleri yuvarlak (`.tf-chip`), seçili olan `--cta` tonu; zorlanma yüzdesi `--red`.
+- Senin cümlelerinden: katlanır kutu `.rel-box`, satırlar dokununca seslendirir.
+- Sonra bak: yer imi ikonu (`i-bookmark`), kayıtlıyken `--cta`. Liste ekranı "Bugün çalıştıklarım" düzeninde (`td-seg`, `td-tip`).
+- Hız: −/+ yuvarlak düğmeler + Fraunces değer + `--cta` kaydırıcı; oynatıcıda küçük −/+ satırı.
