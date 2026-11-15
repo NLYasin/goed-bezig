@@ -1423,6 +1423,81 @@ input[type=search],select{background:var(--surface);border-color:var(--border);b
 .tr-edit-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
 .tr-edit-actions button{border:1px solid var(--border);border-radius:8px;padding:8px 13px;background:var(--tag);color:var(--text);cursor:pointer}
 .tr-edit-actions .tr-edit-save{background:var(--cta);color:var(--on-cta);border-color:transparent}
+
+/* v41 — Günlük planın gerçek tamamlanma işaretleri */
+.smart-overall{height:7px;border-radius:10px;background:var(--tag);overflow:hidden;margin:0 0 13px}
+.smart-overall span{display:block;background:var(--green);height:100%;border-radius:10px;transition:width .2s}
+.smart-status{display:flex;align-items:center;justify-content:center;width:25px;height:25px;flex-shrink:0;border-radius:50%;background:var(--tag);color:var(--muted);font-weight:800;font-size:13px}
+.smart-done{border-color:var(--green);background:color-mix(in srgb,var(--green) 5%,var(--card))}
+.smart-done .smart-status{background:var(--green);color:white}
+.smart-step-count{font-size:12px;font-weight:800;color:var(--accent);margin-top:5px}
+.smart-done .smart-step-count{color:var(--green)}
+@media(max-width:480px){.smart-step{gap:8px}.smart-step-text{min-width:0;flex-basis:calc(100% - 40px)}.smart-step button{width:100%}}
+
+/* v40 — Telefonu yatay çevirince sayfa ve çalışma pencereleri kaydırılabilir. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+.sp-overlay{height:100vh;height:100dvh;overscroll-behavior-y:contain;touch-action:pan-y pinch-zoom;}
+.listen-overlay.show{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
+.listen-config-box,.listen-player-box{min-width:0;}
+
+/* Günlük Plan'dan açılan oturumlar: tam ekran yerine kompakt, kaydırılabilir pencere. */
+.sp-overlay.smart-launch.show{
+  display:flex;align-items:center;justify-content:center;padding:12px;
+  background:rgba(6,12,27,.76);overflow-y:auto;
+}
+.sp-overlay.smart-launch .sp-wrap{
+  width:100%;max-width:520px;min-height:0;max-height:calc(100vh - 24px);
+  max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;margin:auto;padding:14px;
+  border:1px solid var(--border);border-radius:22px;background:var(--bg);
+  box-shadow:0 18px 60px rgba(0,0,0,.35);gap:10px;
+}
+.sp-overlay.smart-launch .sp-session{flex:none;gap:10px;}
+.sp-overlay.smart-launch .sp-card{flex:0 0 auto;min-height:0;padding:16px;gap:12px;}
+.sp-overlay.smart-launch .sp-top{position:sticky;top:-14px;z-index:3;padding:6px 0;background:var(--bg);}
+#listen-player-overlay.smart-launch{padding:12px;background:rgba(6,12,27,.76);align-items:center;}
+#listen-player-overlay.smart-launch .listen-player-box{
+  display:block;flex:none;width:100%;max-width:470px;min-height:0;
+  max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  padding:52px 18px 18px;border:1px solid #2C416D;border-radius:22px;
+  box-shadow:0 18px 60px rgba(0,0,0,.35);
+}
+#listen-player-overlay.smart-launch .lp-close{top:8px;left:10px;right:auto;}
+
+/* Kısa yatay ekranlarda alttaki düğmeleri erişilebilir tut. */
+@media (orientation:landscape) and (max-height:560px){
+  html,body{height:auto;min-height:100%;overflow-y:auto;}
+  body{overflow-x:hidden;}
+  header{position:relative;top:auto;}
+  .profile-overlay{overflow-y:auto;align-items:flex-start;justify-content:center;}
+  .profile-box{margin:auto 0;}
+  .sp-overlay{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .sp-overlay .sp-wrap{min-height:100%;height:auto;gap:8px;padding:8px 14px 14px;}
+  .sp-overlay .sp-session{flex:none;gap:9px;}
+  .sp-overlay .sp-card{flex:0 0 auto;min-height:0;padding:12px 14px;gap:10px;}
+  .sp-overlay .sp-nl{font-size:calc(20px * var(--fs-scale));}
+  .sp-overlay .sp-tr,.sp-overlay .tf-task{font-size:calc(17px * var(--fs-scale));}
+  .sp-overlay .sp-actions .sp-btn{min-height:44px;}
+  .sp-overlay.smart-launch.show{align-items:flex-start;padding:8px;}
+  .sp-overlay.smart-launch .sp-wrap{min-height:0;max-height:calc(100dvh - 16px);padding:10px 14px 14px;margin:auto;}
+  .sp-overlay.smart-launch .sp-top{top:-10px;}
+  .listen-overlay.show{align-items:flex-start;justify-content:center;padding:8px;}
+  .listen-config-box{flex:none;width:100%;max-width:620px;max-height:calc(100dvh - 16px);overflow-y:auto;padding:14px;}
+  #listen-player-overlay{padding:8px;background:#16233F;}
+  #listen-player-overlay .listen-player-box{
+    flex:none;display:block;max-width:620px;width:100%;min-height:0;
+    max-height:calc(100dvh - 16px);overflow-y:auto;
+    border-radius:16px;padding:50px 16px 16px;
+  }
+  #listen-player-overlay .lp-nl{font-size:calc(20px * var(--fs-scale));min-height:0;margin-bottom:8px;}
+  #listen-player-overlay .lp-tr{margin-bottom:8px;}
+  #listen-player-overlay .lp-lesson{margin-bottom:8px;}
+  #listen-player-overlay .lp-repeat-dots{margin-bottom:10px;}
+  #listen-player-overlay.smart-launch{padding:8px;align-items:flex-start;}
+  #listen-player-overlay.smart-launch .listen-player-box{max-height:calc(100dvh - 16px);}
+}
+
 </style>
 </head>
 <body>
@@ -2137,6 +2212,10 @@ var learned  = new Set();
 var permDel  = new Set();
 var prios    = {};
 var repData  = {};
+// v41: Profil bazlı, tarihle sabitlenen günlük plan + tamamlanan dinlemeler.
+var smartPlan = null;
+var smartListenLog = {};
+var smartQuickKeys = null;
 var curTab   = 'study';
 var prioFilt = null;
 var pendingUndo = null;
@@ -2192,6 +2271,7 @@ function load(){
   try{
     if(!activeProfile){ console.warn('load() çağrıldı ama activeProfile boş!'); return; }
     loadProdLocal(); // konuşma modu verisi (profil bazlı)
+    loadSmartLocal(); // v41: günlük plan ve dinleme tamamlanmaları
     var prefix = 'gb3-' + activeProfile + '-';
     var hasAnyData = localStorage.getItem(prefix+'l') || localStorage.getItem(prefix+'seeded');
     // Tohum veri profile özel — sadece SEED_DATA[profil] dolu ise kullanılır (şu an sadece Ortak)
@@ -2271,6 +2351,8 @@ function pushToCloud(){
       prodLog: prodLog,
       tfData: tfData,
       saved: savedItems,
+      smartPlan: smartPlan,
+      smartListenLog: smartListenLog,
       updatedAt: firebase.database.ServerValue.TIMESTAMP,
       updatedBy: (window.deviceId || 'unknown')
     };
@@ -2306,6 +2388,7 @@ function listenToCloud(profileName){
   if(fbRef) fbRef.off(); // önceki dinleyiciyi kapat
   fbRef = firebase.database().ref('profiles/' + profileName);
   fbRef.on('value', function(snap){
+    if(activeProfile!==profileName) return;
     var data = snap.val();
     if(!data) return;
     // Kendi yazdığımız güncelleme geri geliyorsa yeniden çizme. Veri zaten
@@ -2326,11 +2409,12 @@ function listenToCloud(profileName){
     dayLog = mergeDayLogs(dayLog, data.dayLog || {});
     activityLog = dayLog; timeLog = dayLog;
     var prodNeedsPush = applyProdFromCloud(data);
+    var smartNeedsPush = applySmartFromCloud(data);
     saveLocal();
     saveActivityDataLocal();
     setSyncIndicator('online');
     renderCurrentTab();
-    if(prodNeedsPush && cloudSynced) scheduleCloudSync(); // eski sürümden gelen yazım konuşma verisini silmiş olabilir
+    if((prodNeedsPush || smartNeedsPush) && cloudSynced) scheduleCloudSync(); // eski sürümden gelen yazım konuşma verisini silmiş olabilir
     setTimeout(function(){ syncing=false; }, 300);
   }, function(err){
     console.log('Dinleme hatası:', err);
@@ -2764,8 +2848,9 @@ function checkGoalReached(previousDone){
 }
 
 // ── HIZLI TEKRAR MODU ────────────────────────────────────────────────────
-function enterQuickMode(){
+function enterQuickMode(keys){
   quickMode = true;
+  smartQuickKeys = Array.isArray(keys) ? new Set(keys) : null;
   var banner = document.getElementById('quick-banner');
   if(banner) banner.classList.add('show');
   // Tekrarlar sekmesine geç, sadece bugün/gecikmiş göster
@@ -2774,6 +2859,7 @@ function enterQuickMode(){
 
 function exitQuickMode(){
   quickMode = false;
+  smartQuickKeys = null;
   var banner = document.getElementById('quick-banner');
   if(banner) banner.classList.remove('show');
   renderRepeat();
@@ -3241,7 +3327,7 @@ function renderRepeat(){
   up.sort(function(a,b){return a.rs.df-b.rs.df;});
   // Quick mode: sadece bugün/gecikmiş olanlardan max 5 göster
   if(quickMode){
-    var combined = ov.concat(td).slice(0,5);
+    var combined = ov.concat(td).filter(function(e){return !smartQuickKeys || smartQuickKeys.has(e.key);}).slice(0,5);
     ov = combined.filter(function(e){return e.rs.status==='ov';});
     td = combined.filter(function(e){return e.rs.status==='td';});
     up = []; cm = [];
@@ -3609,7 +3695,9 @@ function exportData(){
       prodCues: prodCues,
       prodLog: prodLog,
       tfData: tfData,
-      saved: savedItems
+      saved: savedItems,
+      smartPlan: smartPlan,
+      smartListenLog: smartListenLog
     }
   };
   var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
@@ -3649,6 +3737,9 @@ function importData(event){
       if(d.prodLog)  prodLog  = d.prodLog;
       if(d.tfData)   tfData   = d.tfData;
       if(d.saved)    savedItems = d.saved;
+      smartPlan = d.smartPlan || null;
+      smartListenLog = d.smartListenLog || {};
+      saveSmartLocal();
 
       // dayLog — yeni format veya eski activityLog+timeLog birleştir
       if(d.dayLog && Object.keys(d.dayLog).length > 0){
@@ -3689,6 +3780,7 @@ function resetAllData(){
   prios = {};
   repData = {};
   prodData = {}; prodCues = {}; prodLog = {}; tfData = {}; savedItems = {};
+  smartPlan = null; smartListenLog = {}; saveSmartLocal();
   collapsedLessons = new Set(lessons.map(function(l){ return l.id; })); // varsayılan: hepsi kapalı
   save();
   renderStudy();
@@ -4457,7 +4549,9 @@ function startListenMode(overrideKeys){
   unlockListenAudio();
   initMediaSessionHandlers();
   closeListenConfig();
+  document.getElementById('listen-player-overlay').classList.remove('smart-launch');
   document.getElementById('listen-player-overlay').classList.add('show');
+  document.getElementById('listen-player-overlay').scrollTop = 0;
   document.getElementById('lp-playpause').innerHTML = ic('pause');
   runListenLoop(listenRunToken);
 }
@@ -4477,7 +4571,8 @@ function stopListenMode(){
   hardStopListenAudio();
   clearMediaSession();
   hideListenFinish();
-  document.getElementById('listen-player-overlay').classList.remove('show');
+  document.getElementById('listen-player-overlay').classList.remove('show', 'smart-launch');
+  if(curTab === 'progress') renderSmartPlan(); // v41
 }
 
 function listenTogglePause(){
@@ -4667,6 +4762,7 @@ function updateListenTr(key){
 // bir kez sonuna kadar çalındı. Ezberlenmemiş ve bugün sayılmışlar listelenmez.
 function noteListenHeard(key){
   if(listenHeard.indexOf(key) === -1) listenHeard.push(key);
+  smartRecordListen(key);
   updateHeardBtn();
 }
 function getUnmarkedHeardKeys(){
@@ -4961,98 +5057,208 @@ function renderStatsCard(){
   }
 }
 
-// ── v38: Kişisel günlük çalışma planı ─────────────────────────────────
-// Tamamen mevcut profil verilerinden hesaplanır; yeni/çakışabilecek Firebase alanı oluşturmaz.
+// ── v41: Her gün için sabit, gerçekten kaldığın yerden devam edilen akıllı plan ──
+// Başlama bir tamamlanma değildir: Konuş ve Dönüştür not verme kayıtlarından,
+// Tekrar gerçekten yapılmış tekrar adımlarından, Dinle tam çalınan sesten sayılır.
+function saveSmartLocal(){
+  if(!activeProfile) return;
+  try{
+    var pre='gb3-'+activeProfile+'-';
+    localStorage.setItem(pre+'smartplan-v41',JSON.stringify(smartPlan));
+    localStorage.setItem(pre+'smartlisten-v41',JSON.stringify(smartListenLog));
+  }catch(e){ console.warn('Günlük plan yerel kayıt hatası:',e); }
+}
+function loadSmartLocal(){
+  smartPlan=null; smartListenLog={}; smartQuickKeys=null;
+  if(!activeProfile) return;
+  try{
+    var pre='gb3-'+activeProfile+'-';
+    smartPlan=JSON.parse(localStorage.getItem(pre+'smartplan-v41')||'null');
+    smartListenLog=JSON.parse(localStorage.getItem(pre+'smartlisten-v41')||'{}')||{};
+  }catch(e){ smartPlan=null; smartListenLog={}; }
+}
+function applySmartFromCloud(data){
+  var remote=data||{}, other=remote.smartPlan, local=smartPlan;
+  var changed=false, day=dateKey(), merged={};
+  // Farklı cihazdaki dinlenmiş cümleler kaybolmasın.
+  var a=smartListenLog||{}, b=remote.smartListenLog||{};
+  Object.keys(a).concat(Object.keys(b)).forEach(function(d){
+    if(d<dateKey(addDays(today(),-14))) return;
+    merged[d]=Array.from(new Set((a[d]||[]).concat(b[d]||[])));
+  });
+  Object.keys(merged).forEach(function(d){if((merged[d]||[]).length>(b[d]||[]).length) changed=true;});
+  smartListenLog=merged;
+  // Aynı güne ait iki plan varsa daha önce oluşturulan listeyi koru.
+  if(other && other.date===day && (!local || local.date!==day || (other.created||0)<(local.created||0))){
+    smartPlan=other;
+  } else if(local && local.date===day && (!other || other.date!==day || (local.created||0)<(other.created||0))){
+    changed=true;
+  }
+  saveSmartLocal();
+  return changed;
+}
+function smartRecordListen(key){
+  if(!activeProfile) return;
+  var day=dateKey(), arr=smartListenLog[day]||[];
+  if(arr.indexOf(key)!==-1) return;
+  arr.push(key); smartListenLog[day]=arr;
+  // En fazla son 14 gün sakla.
+  Object.keys(smartListenLog).forEach(function(d){if(d<dateKey(addDays(today(),-14))) delete smartListenLog[d];});
+  saveSmartLocal(); scheduleCloudSync();
+}
+function smartTodayNewCount(){
+  var day=dateKey(), n=0;
+  learned.forEach(function(k){
+    var e=repData[k];
+    if(e && e.at && dateKey(new Date(e.at))===day) n++;
+  });
+  return n;
+}
 function smartPlanData(){
-  var priority={red:0, yellow:1, green:2};
-  var score=function(k){return priority[prios[k]] === undefined ? 3 : priority[prios[k]];};
+  var priority={red:0,yellow:1,green:2};
+  var score=function(k){return priority[prios[k]]===undefined?3:priority[prios[k]];};
+  var eligible=function(k){return prodEligible(k);};
   var due=[];
   learned.forEach(function(k){
-    if(!prodEligible(k)) return;
-    var r=getRep(k);
-    if(r && (r.status==='ov' || r.status==='td')) due.push(k);
+    if(!eligible(k)) return;
+    var r=getRep(k); if(r && (r.status==='ov'||r.status==='td')) due.push(k);
   });
-  due.sort(function(a,b){
-    var ra=getRep(a), rb=getRep(b);
-    return ra.df-rb.df || score(a)-score(b);
+  due.sort(function(a,b){return getRep(a).df-getRep(b).df || score(a)-score(b);});
+  var repeatDone=[];
+  learned.forEach(function(k){if(eligible(k) && hasReviewedToday(k)) repeatDone.push(k);});
+  var repeats=[];
+  // Önceden bugün çalışılmış olanları da görünür yap; kalanları doldur.
+  repeatDone.slice(0,4).concat(due).forEach(function(k){
+    if(repeats.length<8 && repeats.indexOf(k)===-1) repeats.push(k);
   });
   var hard=Object.keys(prodData).filter(function(k){
-    if(!prodEligible(k)) return false;
-    var e=prodData[k];
-    return e.g==='t' || e.g==='y' || prodRatio(k)>1;
+    if(!eligible(k)) return false;
+    var e=prodData[k]; return e.g==='t'||e.g==='y'||prodRatio(k)>1;
   }).sort(function(a,b){
-    var ga=(prodData[a].g==='t'?0:prodData[a].g==='y'?1:2);
-    var gb=(prodData[b].g==='t'?0:prodData[b].g==='y'?1:2);
-    return ga-gb || score(a)-score(b) || prodAvgLat(b)-prodAvgLat(a);
+    return (prodData[a].g==='t'?0:prodData[a].g==='y'?1:2)-
+           (prodData[b].g==='t'?0:prodData[b].g==='y'?1:2) || score(a)-score(b);
   });
-  var dueSpeak=prodDueKeys();
-  var speak=[], seen={};
-  hard.concat(dueSpeak).concat(due).forEach(function(k){
-    if(!seen[k] && prodEligible(k) && speak.length<10){speak.push(k);seen[k]=true;}
+  var speak=[],seen={};
+  var spokenToday=((prodLog[dateKey()]||{}).k||[]).filter(eligible).slice(0,5);
+  spokenToday.concat(hard,prodDueKeys(),due).forEach(function(k){
+    if(!seen[k] && eligible(k) && speak.length<10){speak.push(k);seen[k]=true;}
   });
-  if(speak.length<5){
-    learned.forEach(function(k){if(!seen[k] && prodEligible(k) && speak.length<10){speak.push(k);seen[k]=true;}});
-  }
-  var tfDue=[], tfFresh=[];
+  if(speak.length<5) learned.forEach(function(k){
+    if(!seen[k] && eligible(k) && speak.length<10){speak.push(k);seen[k]=true;}
+  });
+  var tfDue=[],tfFresh=[],tfToday=[];
   tfAllIds('kur').forEach(function(id){
-    var p=tfParse(id), e=tfData[id];
-    if(e && (e.n<=dateKey() || e.g==='t' || e.g==='y')) tfDue.push(id);
+    var e=tfData[id];
+    if(e && e.t && dateKey(new Date(e.t))===dateKey()) tfToday.push(id);
+    else if(e && (e.n<=dateKey() || e.g==='t' || e.g==='y')) tfDue.push(id);
     else if(!e) tfFresh.push(id);
   });
   var rankTf=function(a,b){
-    var pa=tfParse(a), pb=tfParse(b);
-    var ha=(hard.indexOf(pa.key)!==-1?0:due.indexOf(pa.key)!==-1?1:2);
-    var hb=(hard.indexOf(pb.key)!==-1?0:due.indexOf(pb.key)!==-1?1:2);
-    return ha-hb || score(pa.key)-score(pb.key);
+    var ka=tfParse(a).key,kb=tfParse(b).key;
+    var ha=(hard.indexOf(ka)!==-1?0:due.indexOf(ka)!==-1?1:2);
+    var hb=(hard.indexOf(kb)!==-1?0:due.indexOf(kb)!==-1?1:2);
+    return ha-hb || score(ka)-score(kb);
   };
   tfDue.sort(rankTf); tfFresh.sort(rankTf);
-  var transforms=[], tfSeen={};
-  tfDue.concat(tfFresh).forEach(function(id){
-    if(transforms.length>=6) return;
+  var transforms=[],tfSeen={};
+  tfToday.slice(0,3).concat(tfDue,tfFresh).forEach(function(id){
+    if(transforms.length>=6 || transforms.indexOf(id)!==-1) return;
     var k=tfParse(id).key;
-    if((tfSeen[k] || 0)>=2) return;
-    transforms.push(id); tfSeen[k]=(tfSeen[k] || 0)+1;
+    if((tfSeen[k]||0)>=2) return;
+    transforms.push(id);tfSeen[k]=(tfSeen[k]||0)+1;
   });
-  var listen=[], heard={};
-  due.concat(hard).concat(speak).forEach(function(k){
-    if(!heard[k] && prodEligible(k) && listen.length<12){listen.push(k);heard[k]=true;}
+  var listen=[],heard={};
+  var listenedToday=(smartListenLog[dateKey()]||[]).filter(eligible).slice(0,6);
+  listenedToday.concat(due,hard,speak).forEach(function(k){
+    if(!heard[k] && eligible(k) && listen.length<12){listen.push(k);heard[k]=true;}
   });
-  if(listen.length<6) learned.forEach(function(k){ if(!heard[k] && prodEligible(k) && listen.length<12){listen.push(k);heard[k]=true;} });
+  if(listen.length<6) learned.forEach(function(k){
+    if(!heard[k] && eligible(k) && listen.length<12){listen.push(k);heard[k]=true;}
+  });
   var newKeys=[];
   if(!due.length){
-    Object.keys(SMAP).forEach(function(k){if(!learned.has(k) && prodEligible(k)) newKeys.push(k);});
+    Object.keys(SMAP).forEach(function(k){if(!learned.has(k)&&eligible(k)) newKeys.push(k);});
     newKeys.sort(function(a,b){return score(a)-score(b);});
-    // Tekrar yoksa, yeni kalıplar öner. Konuş/Dinle listeleri yalnızca boşsa doldur.
     if(!speak.length) speak=newKeys.slice(0,5);
     if(!listen.length) listen=newKeys.slice(0,8);
   }
-  return {due:due, speak:speak, transforms:transforms, listen:listen, newKeys:newKeys};
+  return {date:dateKey(),created:Date.now(),kind:repeats.length?'repeat':'new',
+          due:repeats,newKeys:newKeys.slice(0,1),speak:speak,transforms:transforms,listen:listen};
+}
+function getSmartPlan(){
+  var day=dateKey();
+  if(!smartPlan || smartPlan.date!==day || !Array.isArray(smartPlan.speak)){
+    smartPlan=smartPlanData();
+    saveSmartLocal();
+    if(cloudSynced) scheduleCloudSync();
+  }
+  return smartPlan;
+}
+function smartRemaining(which,p){
+  p=p||getSmartPlan();
+  if(which==='repeat') return (p.due||[]).filter(function(k){return prodEligible(k) && !hasReviewedToday(k);});
+  if(which==='new') return smartTodayNewCount()?[]:(p.newKeys||[]).filter(prodEligible);
+  if(which==='speak'){
+    var done=((prodLog[dateKey()]||{}).k||[]);
+    return (p.speak||[]).filter(function(k){return prodEligible(k) && done.indexOf(k)===-1;});
+  }
+  if(which==='tf') return (p.transforms||[]).filter(function(id){
+    var e=tfData[id];return tfVariant(id) && (!e || !e.t || dateKey(new Date(e.t))!==dateKey());
+  });
+  if(which==='listen'){
+    var done=smartListenLog[dateKey()]||[];
+    return (p.listen||[]).filter(function(k){return prodEligible(k) && done.indexOf(k)===-1;});
+  }
+  return [];
 }
 function smartStart(which){
-  var p=smartPlanData();
-  if(which==='repeat'){if(p.due.length) enterQuickMode(); else switchTab('study');}
-  else if(which==='speak' && p.speak.length) startSpeak('keys',p.speak);
-  else if(which==='tf' && p.transforms.length) startTf(p.transforms,'kur');
-  else if(which==='listen' && p.listen.length){ listenContext='learned'; startListenMode(p.listen); }
-  else if(which==='new') switchTab('study');
+  var p=getSmartPlan(),remaining=smartRemaining(which,p),target=null;
+  if(!remaining.length){ renderSmartPlan(); return; }
+  if(which==='repeat'){
+    enterQuickMode(remaining);
+    window.scrollTo({top:0,behavior:'auto'});
+  } else if(which==='new'){
+    switchTab('study'); window.scrollTo({top:0,behavior:'auto'});
+  } else if(which==='speak'){ startSpeak('keys',remaining); target='sp-overlay'; }
+  else if(which==='tf'){ startTf(remaining,'kur'); target='tf-overlay'; }
+  else if(which==='listen'){ listenContext='learned'; startListenMode(remaining); target='listen-player-overlay'; }
+  if(target){
+    var modal=document.getElementById(target);
+    if(modal && modal.classList.contains('show')){
+      modal.classList.add('smart-launch');modal.scrollTop=0;
+      var inner=modal.querySelector('.sp-wrap,.listen-player-box');
+      if(inner) inner.scrollTop=0;
+    }
+  }
 }
 function renderSmartPlan(){
-  var el=document.getElementById('smart-plan-card'); if(!el || !activeProfile) return;
-  var p=smartPlanData(), hasDue=p.due.length>0;
-  var h='<div class="smart-head"><div class="prog-card-title">'+ic('target')+' Bugünkü akıllı çalışma planın</div><span class="pill">15–20 dk</span></div>'+
-   '<div class="smart-caption">'+escHtml(activeProfile==='Tugba'?'Tuğba':activeProfile)+
-   ' profiline göre: zamanı gelen tekrarlar, konuşmada zorlandığın cümleler ve Dönüştür geçmişin dikkate alındı. Her açışta güncellenir.</div>';
-  var step=function(name, desc, how, n, label){
-    return '<div class="smart-step"><div class="smart-step-text"><div class="smart-step-title">'+name+'</div><div class="smart-step-desc">'+escHtml(desc)+'</div></div>'+
-      '<button type="button" onclick="smartStart(&quot;'+how+'&quot;)" '+(!n?'disabled':'')+'>'+escHtml(label)+'</button></div>';
-  };
+  var el=document.getElementById('smart-plan-card'); if(!el||!activeProfile) return;
+  var p=getSmartPlan(),parts=[p.kind==='repeat'?'repeat':'new','speak','tf','listen'];
+  var r=parts.map(function(which){
+    var total=which==='new'?1:(p[which==='repeat'?'due':which==='tf'?'transforms':which]||[]).length;
+    var left=smartRemaining(which,p).length;
+    return {which:which,total:total,left:left,done:Math.max(0,total-left)};
+  });
+  var complete=r.filter(function(x){return x.total===0||x.left===0;}).length;
+  var h='<div class="smart-head"><div class="prog-card-title">'+ic('target')+' Bugünkü akıllı çalışma planın</div><span class="pill">'+complete+'/4 tamamlandı</span></div>'+
+    '<div class="smart-caption">'+escHtml(activeProfile==='Tugba'?'Tuğba':activeProfile)+
+    ' profiline özel · Bugün için seçilen cümleler sabit kalır. Daha önce yaptıkların sayılır; yarım bıraktığın yerden devam edersin.</div>'+
+    '<div class="smart-overall" role="progressbar" aria-label="Bugünkü plan" aria-valuenow="'+complete+'" aria-valuemin="0" aria-valuemax="4"><span style="width:'+(complete*25)+'%"></span></div>';
+  var names={repeat:'Hafıza tekrarı · 3 dk',new:'Yeni kalıp · 3 dk',speak:'Sesli üretim · 5 dk',tf:'Dönüştür · 5 dk',listen:'Dinleyerek pekiştir · 3–5 dk'};
+  var descriptions={repeat:'Zamanı gelen tekrarlar. Sadece kalan kartlar açılır.',new:'Bugün yeni bir cümle ezberle.',speak:'Türkçe ipucundan Hollandaca söyle.',tf:'Cümleyi istenen yapıya dönüştür.',listen:'Cümleleri en az bir kez sonuna kadar dinle.'};
   h+='<div class="smart-plan-rows">';
-  if(hasDue) h+=step('1 · Hafıza tekrarı · 3 dk',p.due.length+' zamanı gelen cümle. En gecikmiş olanlardan başla.','repeat',p.due.length,'Hızlı tekrara git');
-  else h+=step('1 · Yeni kalıp · 3 dk',p.newKeys.length?'Bugün ezberlenmemiş bir kalıpla başla.':'Bugün zamanı gelen hafıza tekrarı yok.','new',p.newKeys.length,'Ezber listesine git');
-  h+=step('2 · Sesli üretim · 5 dk',p.speak.length+' kalıp. '+(learned.size?'Yavaş / Takıldım notları ve konuşma tekrarları öncelikli.':'İlk kalıpları Türkçe ipucundan sesli söyle.'),'speak',p.speak.length,'Konuş ('+p.speak.length+')');
-  h+=step('3 · Dönüştür · 5 dk',p.transforms.length+' yapı alıştırması. Gecikmiş, zorlanılan ve seçili kalıplar.','tf',p.transforms.length,'Dönüştür ('+p.transforms.length+')');
-  h+=step('4 · Dinleyerek pekiştir · 3–5 dk',p.listen.length+' cümle. '+(learned.size?'Tekrar ve konuşmada zorlanılanlar karışık.':'Yeni kalıpları dinleyerek pekiştir.'),'listen',p.listen.length,'Dinle ('+p.listen.length+')');
-  h+='</div><div class="smart-small">Plan öneridir; çalışman otomatik tamamlandı diye işaretlenmez. İlerleme mevcut tekrar ve konuşma kayıtlarından izlenir.</div>';
+  r.forEach(function(x,i){
+    var done=x.left===0,none=x.total===0;
+    var label=none?'Bugün gerekli değil':done?'✓ Tamamlandı':(x.done?x.done+' / '+x.total+' yapıldı':'0 / '+x.total+' yapıldı');
+    var action=done?'Tamamlandı':x.done?'Devam et ('+x.left+')':'Başla ('+x.left+')';
+    h+='<div class="smart-step'+(done?' smart-done':'')+'">'+
+      '<div class="smart-status" aria-hidden="true">'+(done?'✓':(i+1))+'</div>'+
+      '<div class="smart-step-text"><div class="smart-step-title">'+names[x.which]+'</div>'+
+      '<div class="smart-step-desc">'+descriptions[x.which]+'</div>'+
+      '<div class="smart-step-count">'+label+'</div></div>'+
+      '<button type="button" onclick="smartStart(&quot;'+x.which+'&quot;)" '+(done?'disabled':'')+'>'+action+'</button></div>';
+  });
+  h+='</div><div class="smart-small">✓ yalnızca gerçekten tamamlanan çalışmalar için çıkar. Yarım kalan oturumu kapatabilir ve daha sonra devam edebilirsin.</div>';
   el.innerHTML=h;
 }
 
@@ -5345,6 +5551,16 @@ function showProfilePicker(){
 }
 
 function selectProfile(name){
+  // v41: Başka profile geçerken önceki profilin bekleyen kaydını kapat,
+  // sonraki profil için bulut doğrulanmadan veri gönderme.
+  if(activeProfile && activeProfile!==name){
+    if(saveDebounceTimer){
+      clearTimeout(saveDebounceTimer); saveDebounceTimer=null;
+      if(cloudSynced) pushToCloud();
+    }
+    if(fbRef){try{fbRef.off();}catch(e){} fbRef=null;}
+    cloudSynced=false;
+  }
   activeProfile = name;
   try{ localStorage.setItem('gb3-active-profile', name); }catch(e){}
 
@@ -5368,6 +5584,7 @@ function selectProfile(name){
   if(fbReady){
     try{
       pullFromCloud(name, function(success, cloudData){
+        if(activeProfile!==name) return;
         try{
           if(success && cloudData){
             // Buluttaki veri varsa ve yerelden daha güncelse, onu kullan
@@ -5379,6 +5596,7 @@ function selectProfile(name){
             dayLog = mergeDayLogs(dayLog, cloudData.dayLog || {});
             activityLog = dayLog; timeLog = dayLog;
             applyProdFromCloud(cloudData);
+            applySmartFromCloud(cloudData);
             cloudSynced = true; // buluttan gerçek veri doğrulandı, artık push güvenli
             saveLocal();
             saveActivityData();
@@ -6058,7 +6276,9 @@ function startSpeak(mode, arg){
   };
   document.getElementById('sp-session').style.display = '';
   document.getElementById('sp-finish').style.display = 'none';
+  document.getElementById('sp-overlay').classList.remove('smart-launch');
   document.getElementById('sp-overlay').classList.add('show');
+  document.getElementById('sp-overlay').scrollTop = 0;
   prefetchCues(keys.slice(1));
   document.body.style.overflow = 'hidden';
   spRender();
@@ -6066,11 +6286,12 @@ function startSpeak(mode, arg){
 
 function closeSpeak(){
   stopCurrentAudio();
-  document.getElementById('sp-overlay').classList.remove('show');
+  document.getElementById('sp-overlay').classList.remove('show', 'smart-launch');
   document.body.style.overflow = '';
   sp = null;
   updateSpeakBadge();
   if(curTab === 'speak') renderSpeak();
+  if(curTab === 'progress') renderSmartPlan(); // v41: kapanır kapanmaz ✓ güncelle
 }
 
 function spLessonChips(item, key){
@@ -6583,6 +6804,7 @@ if(savedProfile){
   if(fbReady){
     try{
       pullFromCloud(savedProfile, function(success, cloudData){
+        if(activeProfile!==savedProfile) return;
         try{
           if(success && cloudData){
             learned = new Set(cloudData.learned || []);
@@ -6593,6 +6815,7 @@ if(savedProfile){
             dayLog = mergeDayLogs(dayLog, cloudData.dayLog || {});
             activityLog = dayLog; timeLog = dayLog;
             applyProdFromCloud(cloudData);
+            applySmartFromCloud(cloudData);
             cloudSynced = true; // buluttan gerçek veri doğrulandı, artık push güvenli
             saveLocal();
             saveActivityData();
@@ -7120,16 +7343,19 @@ function startTf(ids, kind){
   tf = { kind:kind, queue: ids.map(function(id){ return { id:id, again:false, mode:tfPickMode() }; }), i:0, stats:{ t:0, y:0, a:0 }, byType:{}, stuck:[], requeued:{}, revealed:false, busy:false };
   document.getElementById('tf-session').style.display = '';
   document.getElementById('tf-finish').style.display = 'none';
+  document.getElementById('tf-overlay').classList.remove('smart-launch');
   document.getElementById('tf-overlay').classList.add('show');
+  document.getElementById('tf-overlay').scrollTop = 0;
   document.body.style.overflow = 'hidden';
   tfRender();
 }
 function closeTf(){
   stopCurrentAudio();
-  document.getElementById('tf-overlay').classList.remove('show');
+  document.getElementById('tf-overlay').classList.remove('show', 'smart-launch');
   document.body.style.overflow = '';
   tf = null;
   if(curTab === 'speak') renderSpeak();
+  if(curTab === 'progress') renderSmartPlan(); // v41
 }
 function tfShow(id, on){ var el = document.getElementById(id); if(el) el.style.display = on ? '' : 'none'; }
 function tfSetTarget(text, hidden){
