@@ -4015,6 +4015,15 @@ function speakNLFallback(text, btn){
   speechSynthesis.speak(utter);
 }
 
+document.addEventListener('keydown', function(ev){
+  if(ev.key!=='Escape') return;
+  if(document.getElementById('listen-player-overlay').classList.contains('show')){
+    requestCloseListen();ev.preventDefault();
+  }else if(document.getElementById('listen-config-overlay').classList.contains('show')){
+    closeListenConfig();ev.preventDefault();
+  }
+});
+
 // ══════════════════════════════════════════════════════════════════════
 // DİNLEME MODU (sürekli/otomatik dinleme)
 // ══════════════════════════════════════════════════════════════════════
@@ -4079,6 +4088,28 @@ function hardStopListenAudio(){
   setWaveActive(false);
 }
 
+// v42 — Dinleme ekranları tarayıcı geçmişine kaydedilir.
+// Android geri tuşu/iOS tarayıcı geri düğmesi önce uygulama içi ekrana döner.
+var listenNavReady = false;
+function initListenNavigation(){
+  if(listenNavReady) return;
+  listenNavReady = true;
+  try{
+    history.replaceState(Object.assign({}, history.state || {}, {gbListenNav:'base'}), '');
+  }catch(e){}
+  window.addEventListener('popstate', function(ev){
+    var target=(ev.state && ev.state.gbListenNav) || 'base';
+    if(document.getElementById('listen-player-overlay').classList.contains('show')){
+      // Geri tuşu uygulamadan çıkarmadan önce oynatıcıyı sonlandırır.
+      finishListenMode();
+    }
+    document.getElementById('listen-config-overlay').classList.toggle('show',target==='config');
+  });
+}
+function pushListenNavigation(target){
+  initListenNavigation();
+  try{ history.pushState(Object.assign({},history.state || {},{gbListenNav:target}), ''); }catch(e){}
+}
 function openListenConfig(context){
   listenContext = context || 'learned';
   populateListenLessonSelect();
@@ -4096,9 +4127,11 @@ function openListenConfig(context){
   }
   updateListenCountPreview();
   document.getElementById('listen-config-overlay').classList.add('show');
+  pushListenNavigation('config');
 }
 function closeListenConfig(){
   document.getElementById('listen-config-overlay').classList.remove('show');
+  if(history.state && history.state.gbListenNav==='config') history.back();
 }
 
 function setListenScope(scope){
@@ -4495,11 +4528,39 @@ function speedToEdgeRate(speedMultiplier){
 }
 
 // Sırayla Edge TTS → Web Speech dener. Ses gerçekten çaldıysa true döner.
+// v42 — Sıradaki cümlenin MP3'ünü mevcut cümle çalarken hazırla.
+// Arka plana geçince yeni ağ isteği başlatma ihtiyacını azaltır.
+var listenPrefetch = null;
+function clearListenPrefetch(){
+  var slot=listenPrefetch;
+  listenPrefetch=null;
+  if(slot && slot.promise) slot.promise.then(function(url){if(url) URL.revokeObjectURL(url);}).catch(function(){});
+}
+function prepareNextListenAudio(index){
+  if(index >= listenQueue.length || listenStopped) return;
+  var item=SMAP[listenQueue[index]];
+  if(!item) return;
+  var text=item.nl, rate=speedToEdgeRate(listenSettings.speed);
+  if(listenPrefetch && listenPrefetch.text===text && listenPrefetch.rate===rate) return;
+  clearListenPrefetch();
+  var slot={text:text,rate:rate,used:false,promise:null};
+  slot.promise=fetchEdgeTTSBlobUrl(text,EDGE_TTS_VOICE,rate).catch(function(){return null;});
+  listenPrefetch=slot;
+}
+function consumeListenPrefetch(text,rate){
+  var slot=listenPrefetch;
+  if(!slot || slot.text!==text || slot.rate!==rate || slot.used) return null;
+  slot.used=true;
+  listenPrefetch=null;
+  return slot.promise;
+}
 function speakQueued(text, lang, edgeVoice, speedMultiplier, token){
   var edgeRate = speedToEdgeRate(speedMultiplier);
   var seq = listenSpeechSeq;
-  return fetchEdgeTTSBlobUrl(text, edgeVoice, edgeRate)
+  var prepared=consumeListenPrefetch(text, edgeRate);
+  return (prepared || fetchEdgeTTSBlobUrl(text, edgeVoice, edgeRate))
     .then(function(url){
+      if(!url) throw new Error('prefetch unavailable');
       // Ses indirilirken cümle değiştiyse çalma — yoksa yeni cümlenin üstüne biniyor
       if(token !== undefined && listenCancelled(token, seq)){
         URL.revokeObjectURL(url);
@@ -4529,6 +4590,7 @@ function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 function startListenMode(overrideKeys){
   listenCustomQueue = Array.isArray(overrideKeys);
   listenQueue = listenCustomQueue ? overrideKeys.filter(function(k){return !!SMAP[k] && !trulyDeleted.has(k) && !permDel.has(k);}) : getListenKeysScoped();
+  clearListenPrefetch();
   listenHeard = [];
   setTimeout(updateHeardBtn, 0);
   if(listenQueue.length === 0){
@@ -4548,7 +4610,8 @@ function startListenMode(overrideKeys){
   // arka planda oynatmanın devam edebilmesi buna bağlı
   unlockListenAudio();
   initMediaSessionHandlers();
-  closeListenConfig();
+  document.getElementById('listen-config-overlay').classList.remove('show');
+  pushListenNavigation('player');
   document.getElementById('listen-player-overlay').classList.remove('smart-launch');
   document.getElementById('listen-player-overlay').classList.add('show');
   document.getElementById('listen-player-overlay').scrollTop = 0;
@@ -4564,6 +4627,11 @@ function requestCloseListen(){
 }
 
 function stopListenMode(){
+  finishListenMode();
+  if(history.state && history.state.gbListenNav==='player') history.back();
+}
+function finishListenMode(){
+  clearListenPrefetch();
   hideListenPick();
   listenStopped = true;
   listenRunToken++; // aktif döngüyü geçersiz kıl
@@ -4595,6 +4663,7 @@ function listenTogglePause(){
 }
 
 function listenJump(delta){
+  clearListenPrefetch();
   var next=listenIndex+delta;
   if(listenStopped || next<0 || next>=listenQueue.length) return;
   listenIndex=next;
@@ -4912,6 +4981,7 @@ function hideListenFinish(){
 // Bitiş ekranından baştan dinlemeye dön
 function restartListenMode(){
   if(!listenQueue.length) return;
+  clearListenPrefetch();
   hideListenFinish();
   hideListenPick();
   listenIndex = 0;
@@ -4944,6 +5014,7 @@ async function runListenLoop(token){
       updateListenPlayerUI(key, r);
       updateMediaSession(info);
       setWaveActive(true);
+      if(r===0) prepareNextListenAudio(listenIndex+1);
       var played = false;
       try{ played = await speakQueued(info.nl, 'nl-NL', EDGE_TTS_VOICE, listenSettings.speed, token); }catch(e){}
       setWaveActive(false);
