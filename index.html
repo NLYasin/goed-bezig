@@ -2158,11 +2158,7 @@ main {max-width:59rem;}
   <div class="panel show" id="pn-progress" style="padding-bottom:40px">
     <div id="focus-shell" hidden></div>
     <div id="today-tools">
-      <details class="focus-fold" id="focus-shelf" hidden>
-        <summary><svg class="ic" aria-hidden="true"><use href="#i-bookmark"/></svg>Çalıştığım kalıplar</summary>
-        <div class="focus-shelf-body"></div>
-      </details>
-      <details class="focus-fold" id="focus-plan" ontoggle="if(this.open &amp;&amp; phraseReady) renderSmartPlan()">
+      <details class="focus-fold" id="focus-plan" open ontoggle="if(this.open &amp;&amp; phraseReady) renderSmartPlan()">
         <summary><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Günlük planım <small>15–20 dakika</small></summary>
     <div id="smart-plan-card" class="prog-card smart-plan-card"></div>
       </details>
@@ -2586,7 +2582,6 @@ var curTab = 'progress';
 var phraseWork = {};
 var phraseReady = false;
 var focusMode = 'home', focusKey = null;
-var focusShelfFilter = 'all', focusShelfLimit = 16;
 var prioFilt = null;
 var pendingUndo = null;
 var undoTimer   = null;
@@ -5778,7 +5773,7 @@ function renderSmartPlan(){
 
 function renderProgress(){
   renderPhraseScreen(false);
-  if (document.getElementById('focus-plan').open) renderSmartPlan();
+  if (phraseReady && document.getElementById('focus-plan').open) renderSmartPlan();
   if (document.getElementById('focus-stats').open) renderDetailStats();
 }
 function renderDetailStats(){
@@ -6081,7 +6076,7 @@ function selectProfile(name){
     cloudSynced=false;
   }
   stopCurrentAudio();
-  focusMode = 'home'; focusKey = null; focusShelfFilter = 'all'; focusShelfLimit = 16;
+  focusMode = 'home'; focusKey = null;
   document.querySelectorAll('#today-tools > details').forEach(function(panel){ panel.open=false; });
   activeProfile = name;
   try{ localStorage.setItem('gb3-active-profile', name); }catch(e){}
@@ -6512,7 +6507,7 @@ function fmtDays(d){
 
 function fmtSec(ms){ return (Math.round(ms / 100) / 10).toFixed(1).replace('.', ',') + ' sn'; }
 
-function prodEligible(key){ return phraseAvailable(key) && phraseGoal(key) !== 'read'; }
+function prodEligible(key){ return phraseAvailable(key); }
 
 function prodAvgLat(k){
   var e = prodData[k];
@@ -7236,13 +7231,11 @@ function tdCollect(range){
   Object.keys(days).forEach(function(d){ var pl = prodLog[d]; (pl && pl.k || []).forEach(function(k){ spoken[k] = true; }); });
   Object.keys(prodData).forEach(function(k){ var e = prodData[k]; if(e && e.t && days[dateKey(new Date(e.t))]) spoken[k] = true; });
   var spokenArr = Object.keys(spoken).filter(function(k){ return SMAP[k] && !permDel.has(k) && !trulyDeleted.has(k); });
-  var read=[], adapted=[];
-  Object.keys(phraseWork).filter(phraseAvailable).forEach(function(k){
-    var r=phraseWork[k],dates=Object.keys(days);
-    if(dates.some(function(d){return r.readDays && r.readDays[d];})) read.push(k);
-    if(dates.some(function(d){return r.useDays && r.useDays[d];})) adapted.push(k);
+  var practiced = Object.keys(phraseWork).filter(phraseAvailable).filter(function(k) {
+    var r = phraseWork[k];
+    return Object.keys(days).some(function(d) { return r.useDays && r.useDays[d]; });
   });
-  return { learnedNew: learnedNew, repeated: repeated, spoken: spokenArr, read:read, adapted:adapted };
+  return { learnedNew: learnedNew, repeated: repeated, spoken: spokenArr, practiced: practiced };
 }
 function openToday(){
   document.getElementById('td-overlay').classList.add('show');
@@ -7272,7 +7265,7 @@ function tdRow(k, extra){
 function renderToday(){
   var el = document.getElementById('td-body'); if(!el) return;
   var d = tdCollect(tdRange);
-  var all = {}; d.learnedNew.concat(d.repeated, d.spoken, d.read, d.adapted).forEach(function(k){ all[k] = true; });
+  var all = {}; d.learnedNew.concat(d.repeated, d.spoken, d.practiced).forEach(function(k){ all[k] = true; });
   var total = Object.keys(all).length;
   var seg = function(id, label){ return '<button class="' + (tdRange === id ? 'on' : '') + '" onclick="setTdRange(\'' + id + '\')">' + label + '</button>'; };
   var h = '<div class="td-seg" role="group" aria-label="Gün">' + seg('today','Bugün') + seg('yesterday','Dün') + seg('week','Son 7 gün') + '</div>' +
@@ -7284,8 +7277,7 @@ function renderToday(){
     return '<div class="td-sec"><div class="td-sec-h">' + title + ' <span>' + keys.length + '</span></div>' + keys.map(function(k){ return tdRow(k, kind); }).join('') + '</div>';
   };
   h += sec('Konuş\'ta söylediklerin', d.spoken, 'spoken');
-  h += sec('Anlamını çalıştıkların', d.read, 'read');
-  h += sec('Uyarladığın kalıplar', d.adapted, 'adapted');
+  h += sec('Kalıp çalışması', d.practiced, 'practice');
   h += sec('Yeni ezberlediklerin', d.learnedNew, 'learned');
   h += sec('Tekrar ettiklerin', d.repeated.filter(function(k){ return d.spoken.indexOf(k) === -1; }), 'rep');
   if(!total) h += '<div class="spk-empty" style="margin-top:12px">' + ic('book') + '<span>Bu aralıkta çalışılan cümle yok.</span></div>';
@@ -8358,10 +8350,6 @@ function phraseAvailable(key) {
   return Object.prototype.hasOwnProperty.call(SMAP, key) && !permDel.has(key) && !trulyDeleted.has(key);
 }
 
-function phraseGoal(key) {
-  return phraseWork[key] && phraseWork[key].goal === 'read' ? 'read' : 'use';
-}
-
 function savePhraseLocal() {
   if (!activeProfile) return;
   try {
@@ -8393,9 +8381,9 @@ function cleanPhraseWork(raw) {
       u:Number.isFinite(r.u) ? r.u : 0,
       draft:typeof r.draft === 'string' ? r.draft.slice(0,500) : '',
       example:typeof r.example === 'string' ? r.example.slice(0,500) : '',
-      readDays:history(r.readDays), useDays:history(r.useDays),
-      goal: r.goal === 'read' ? 'read' : 'use',
-      stage: r.goal === 'read' && ['recall','adapt'].includes(r.stage) ? 'learn' : r.stage
+      readDays:{}, useDays:Object.assign({},history(r.readDays),history(r.useDays)),
+      goal:'use',
+      stage: r.stage
     });
   });
   return records;
@@ -8437,11 +8425,7 @@ function unfinishedPhrase() {
 function nextPhrase() {
   var day = dateKey();
   var available = function(k) { return phraseAvailable(k) && (!phraseWork[k] || (phraseWork[k].finished !== day && phraseWork[k].skipDay !== day)); };
-  var scheduled = Object.keys(phraseWork).filter(function(k) {
-    var r = phraseWork[k];
-    return available(k) && r.goal === 'read' && r.due && r.due <= day;
-  }).sort(function(a,b) { return phraseWork[a].due.localeCompare(phraseWork[b].due); });
-  var sources = [scheduled, prodDueKeys(), Array.from(learned).filter(function(k) {
+  var sources = [prodDueKeys(), Array.from(learned).filter(function(k) {
     return prodEligible(k) && !phraseWork[k] && TF_DATA[k];
   }), Object.keys(PHRASE_SCENES).filter(function(k) { return !phraseWork[k]; }),
     Object.keys(TF_DATA).filter(function(k) { return !phraseWork[k]; })];
@@ -8454,7 +8438,7 @@ function nextPhrase() {
 
 function dueSpokenPhrase(key) {
   var e = prodData[key];
-  return learned.has(key) && phraseGoal(key) === 'use' && !!e && e.n <= dateKey() && !!phraseMeaning(key);
+  return learned.has(key) && !!e && e.n <= dateKey() && !!phraseMeaning(key);
 }
 
 function openPhrase(key) {
@@ -8462,7 +8446,7 @@ function openPhrase(key) {
   var previous = phraseWork[key];
   if (!previous || previous.stage === 'done') {
     updatePhrase(key, {
-      goal: phraseGoal(key), stage:dueSpokenPhrase(key) ? 'recall' : 'learn', variant:phraseVariant(key),
+      goal: 'use', stage:dueSpokenPhrase(key) ? 'recall' : 'learn', variant:phraseVariant(key),
       revealed:false, hint:false, readHelp:false, quizWrong:false, recallHelp:false, adaptHelp:false, draft:'',
       recallLogged:false, skipDay:''
     });
@@ -8531,25 +8515,14 @@ function enrollLearnedPhrase(key) {
   logActivity();
 }
 
-function finishPhrase(readOnly) {
+function finishPhrase() {
   var key = focusKey, r = phraseWork[key];
   if (!r || r.stage === 'done') return;
   var patch = {stage:'done', finished:dateKey(), revealed:false};
-  if (readOnly) {
-    var level = r.readHelp ? 0 : Math.min((r.readLevel || 0) + 1, REP_DAYS.length - 1);
-    patch.readLevel = level;
-    patch.readHelp = false;
-    patch.due = dateKey(addDays(today(), Math.max(1, REP_DAYS[level])));
-  } else {
-    if (r.variant !== null && r.variant !== undefined) {
-      recordTransformAttempt(tfId(key, r.variant), r.adaptHelp ? 'y' : 'a', false);
-    }
-    if ((r.draft || '').trim()) patch.example = r.draft.trim();
-    
-  }
-  var historyField = readOnly ? 'readDays' : 'useDays';
-  patch[historyField] = Object.assign({}, r[historyField]);
-  patch[historyField][dateKey()] = true;
+  if (r.variant != null) recordTransformAttempt(tfId(key, r.variant), r.adaptHelp ? 'y' : 'a', false);
+  if ((r.draft || '').trim()) patch.example = r.draft.trim();
+  patch.useDays = Object.assign({}, r.useDays);
+  patch.useDays[dateKey()] = true;
   updatePhrase(key, patch);
   save();
   try { syncReminderToSW(); } catch (err) {}
@@ -8600,8 +8573,7 @@ function focusButton(action, label, style, icon) {
     (icon ? ic(icon) : '') + escHtml(label) + '</button>';
 }
 
-function focusRoute(stage, read) {
-  if (read) return '<p class="focus-read-label">' + ic('headphones') + ' Anlama çalışması</p>';
+function focusRoute(stage) {
   var stages = [['learn','Ezberle'],['recall','Söyle'],['adapt','Uyarla']];
   var current = stages.findIndex(function(s) { return s[0] === stage; });
   return '<ol class="focus-route" aria-label="Kalıp çalışmasının adımları">' + stages.map(function(s,i) {
@@ -8615,42 +8587,12 @@ function focusText(text, lang, cls) {
   return '<p' + (lang ? ' lang="' + lang + '"' : '') + ' class="' + cls + '">' + escHtml(text) + '</p>';
 }
 
-function phraseShelf() {
-  var box = document.getElementById('focus-shelf');
-  if (!box) return;
-  var keys = Object.keys(phraseWork).filter(phraseAvailable).sort(function(a,b) { return phraseWork[b].u - phraseWork[a].u; });
-  box.hidden = !keys.length;
-  if (!keys.length) { box.querySelector('.focus-shelf-body').innerHTML = ''; return; }
-  var list = box.querySelector('.focus-shelf-body');
-  var items = keys.filter(function(k) {
-    if (focusShelfFilter === 'read') return phraseGoal(k) === 'read';
-    if (focusShelfFilter === 'own') return !!phraseWork[k].example;
-    return true;
-  });
-  var filters = [['all','Tümü'],['read','Anlama'],['own','Kendi cümlelerim']];
-  var h = '<div class="focus-shelf-filters" role="group" aria-label="Çalıştığım kalıpları süz">' + filters.map(function(f) {
-    return '<button type="button" data-shelf-filter="' + f[0] + '" aria-pressed="' + (f[0] === focusShelfFilter) + '">' + f[1] + '</button>';
-  }).join('') + '</div>';
-  if (!items.length) h += '<p class="focus-muted">Bu seçimde henüz kayıt yok.</p>';
-  items.slice(0,focusShelfLimit).forEach(function(k) {
-    var r = phraseWork[k];
-    var label = r.goal === 'read' ? 'Anlama' : 'Konuşma';
-    if (r.skipDay === dateKey()) label += ' · Bugün geçildi'; else if (r.stage !== 'done') label += ' · Yarım kaldı';
-    var example = r.example ? '<span class="focus-shelf-example" lang="nl">' + escHtml(r.example) + '</span>' : '';
-    h += '<button type="button" class="focus-shelf-entry" data-phrase-key="' + escHtml(k) + '">' +
-      '<span><strong lang="nl">' + escHtml(SMAP[k].nl) + '</strong>' + example + '</span><small>' + label + '</small></button>';
-  });
-  if (items.length > focusShelfLimit) h += '<button class="focus-btn quiet" type="button" data-shelf-more>Daha fazla göster</button>';
-  list.innerHTML = h;
-}
-
 function phrasePractice(key) {
   var r = phraseWork[key], info = SMAP[key], scene = PHRASE_SCENES[key];
-  var read = r.goal === 'read', stage = r.stage, meaning = phraseMeaning(key);
-  var quiz = read && scene && scene.quiz;
+  var stage = r.stage, meaning = phraseMeaning(key);
   var situation = phraseSituation(key), v = r.variant == null ? null : (TF_DATA[key] || [])[r.variant];
-  var h = '<div class="focus-work-top">' + focusRoute(stage, read) + focusButton('pause','Ara ver','text') + '</div>';
-  var title = stage === 'learn' ? (read ? 'Ne demek istediğini düşün.' : 'Kalıbı sesli oku.') :
+  var h = '<div class="focus-work-top">' + focusRoute(stage) + focusButton('pause','Ara ver','text') + '</div>';
+  var title = stage === 'learn' ? 'Kalıbı sesli oku.' :
     stage === 'recall' ? 'Bakmadan Hollandaca söyle.' : 'Aynı kalıbı değiştir.';
   h += '<article class="focus-paper"><p class="focus-kicker">' + escHtml(scene ? scene.title : info.lesson.title) +
     '</p><h1 class="focus-instruction" tabindex="-1">' + title + '</h1>';
@@ -8658,21 +8600,14 @@ function phrasePractice(key) {
   if (stage === 'learn') {
     h += '<div class="focus-language">' + focusText(info.nl,'nl','focus-phrase') +
       focusButton('audio','Dinle','listen','volume') + '</div>';
-    if (situation && !read) h += focusText(situation,'tr','focus-context');
+    if (situation) h += focusText(situation,'tr','focus-context');
     if (r.revealed) {
       h += focusMeaningBox(key, meaning);
     }
-    if (quiz) {
-      h += '<p class="focus-quiz-title">' + escHtml(quiz.q) + '</p><div class="focus-quiz">';
-      quiz.options.forEach(function(label,i) { h += focusButton('choice-' + i,label,'quiet'); });
-      h += '</div>';
-      if (r.quizWrong) h += '<p class="focus-feedback" role="status">' + escHtml(quiz.help) + ' Bir daha seç.</p>';
-    } else if (!r.revealed) {
+    if (!r.revealed) {
       h += '<div class="focus-actions">' + focusButton('meaning','Anlamı göster','primary') + '</div>';
     } else {
-      h += '<div class="focus-actions">' + (read ?
-        focusButton('understood','Anladım','primary','check') + focusButton('retry-read','Tekrar dene','quiet') :
-        focusButton('recall','Hatırlamayı dene','primary','microphone')) + '</div>';
+      h += '<div class="focus-actions">' + focusButton('recall','Hatırlamayı dene','primary','microphone') + '</div>';
     }
   } else if (stage === 'recall') {
     h += focusMeaningBox(key, meaning, true);
@@ -8736,14 +8671,13 @@ function loadVisiblePhraseMeaning(key) {
 }
 
 function phraseFinish(key) {
-  var r = phraseWork[key], read = r.goal === 'read', v = r.variant == null ? null : (TF_DATA[key] || [])[r.variant];
+  var r = phraseWork[key], v = r.variant == null ? null : (TF_DATA[key] || [])[r.variant];
   var h = '<div class="focus-heading"><div><p class="focus-date">Kalıp çalışması</p><h1 tabindex="-1">Bu tur tamamlandı.</h1></div></div>' +
-    '<article class="focus-paper">' + focusRoute('done', read) + focusText(SMAP[key].nl,'nl','focus-phrase') +
-    focusText(read ? 'Bu kalıbın anlamını tekrar ettin.' : 'Kalıbı hatırladın ve yeni bir durumda kullandın.','tr','focus-context');
-  if (read) h += focusText(phraseMeaning(key),'tr','focus-meaning');
-  if (!read && r.draft && r.draft.trim()) h += '<div class="focus-answer"><p class="focus-label">Senin cümlen</p>' + focusText(r.draft,'nl','focus-answer-nl') + '</div>';
-  else if (!read && v) h += '<div class="focus-answer"><p class="focus-label">Çalıştığın örnek</p>' + focusText(v[2],'nl','focus-answer-nl') + '</div>';
-  h += '<div class="focus-actions">' + focusButton('home','Bugünü bitir','primary','check') +
+    '<article class="focus-paper">' + focusRoute('done') + focusText(SMAP[key].nl,'nl','focus-phrase') +
+    focusText('Kalıbı hatırladın ve yeni bir durumda kullandın.','tr','focus-context');
+  if (r.draft && r.draft.trim()) h += '<div class="focus-answer"><p class="focus-label">Senin cümlen</p>' + focusText(r.draft,'nl','focus-answer-nl') + '</div>';
+  else if (v) h += '<div class="focus-answer"><p class="focus-label">Çalıştığın örnek</p>' + focusText(v[2],'nl','focus-answer-nl') + '</div>';
+  h += '<div class="focus-actions">' + focusButton('home','Günlük plana dön','primary','check') +
     (nextPhrase() ? focusButton('another','Bir kalıp daha','quiet') : '') + '</div></article>';
   return h;
 }
@@ -8763,7 +8697,6 @@ function renderPhraseScreen(moveFocus) {
   shell.hidden = !dayTools.hidden;
   shell.innerHTML = practice ? phrasePractice(focusKey) : finished ? phraseFinish(focusKey) : '';
   if (practice) loadVisiblePhraseMeaning(focusKey);
-  else if (!finished) phraseShelf();
   if (moveFocus) {
     var target = dayTools.hidden ? shell.querySelector('h1') : dayTools.querySelector('details:not([hidden]) > summary');
     if (target) target.focus({preventScroll:true});
@@ -8807,31 +8740,20 @@ function bindPhraseControls() {
       else { focusMode='home'; focusKey=null; renderPhraseScreen(true); }
       return;
     }
-    if (action.startsWith('choice-') && r.stage === 'learn' && r.goal === 'read') {
-      var quiz = PHRASE_SCENES[key] && PHRASE_SCENES[key].quiz;
-      if (!quiz) return;
-      if (Number(action.slice(7)) === quiz.answer) { finishPhrase(true); return; }
-      updatePhrase(key,{readHelp:true,quizWrong:true});
-      renderPhraseScreen(false);
-      var retry = shell.querySelector('[data-focus="' + action + '"]');
-      if (retry) retry.focus({preventScroll:true});
-      return;
-    }
     if (action === 'meaning' || action === 'reveal-recall' || action === 'model') {
       updatePhrase(key,{revealed:true});
     } else if (action === 'hint') {
       updatePhrase(key,{hint:true, recallHelp:true});
-    } else if (action === 'retry-read' || action === 'retry-recall' || action === 'retry-adapt') {
+    } else if (action === 'retry-recall' || action === 'retry-adapt') {
       var patch = {revealed:false, hint:false};
-      patch[{'retry-read':'readHelp','retry-recall':'recallHelp','retry-adapt':'adaptHelp'}[action]] = true;
+      patch[{'retry-recall':'recallHelp','retry-adapt':'adaptHelp'}[action]] = true;
       updatePhrase(key, patch);
-    } else if (action === 'recall' || action === 'understood') {
+    } else if (action === 'recall') {
       if (!phraseMeaning(key)) {
         var cue = document.getElementById('focus-own-cue');
         if (cue) { cue.focus(); cue.setCustomValidity('Önce bir Türkçe ipucu kaydet.'); cue.reportValidity(); cue.setCustomValidity(''); }
         return;
       }
-      if (action === 'understood') { finishPhrase(true); return; }
       updatePhrase(key,{stage:'recall',revealed:false,hint:false});
     } else if ((action === 'spoke' || action === 'spoke-help') && r.stage === 'recall' && r.revealed) {
       if (!r.recallLogged) {
@@ -8842,23 +8764,12 @@ function bindPhraseControls() {
       }
       updatePhrase(key,{stage:'adapt',recallLogged:true,revealed:false,hint:false}); save(); updateHeaderStats();
     } else if (action === 'adapted' && r.stage === 'adapt') {
-      finishPhrase(false); return;
+      finishPhrase(); return;
     } else return;
     stopCurrentAudio();
     renderPhraseScreen(true);
   });
-  document.getElementById('focus-shelf').addEventListener('click', function(event) {
-    var button = event.target.closest('button');
-    if (!button) return;
-    if (button.dataset.phraseKey) { openPhrase(button.dataset.phraseKey); return; }
-    if (button.dataset.shelfFilter) { focusShelfFilter = button.dataset.shelfFilter; focusShelfLimit = 16; }
-    else if (button.hasAttribute('data-shelf-more')) focusShelfLimit += 24;
-    else return;
-    phraseShelf();
-    var selector = button.dataset.shelfFilter ? '[data-shelf-filter="' + focusShelfFilter + '"]' : '[data-shelf-more]';
-    var focus = document.querySelector('#focus-shelf ' + selector);
-    if (focus) focus.focus({preventScroll:true});
-  });
+
 }
 
 phraseReady = true;
