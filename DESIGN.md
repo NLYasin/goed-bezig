@@ -165,3 +165,7 @@ Her ekran dört durumu tasarlar: yükleniyor, boş, hata, dolu.
 - Dinle, tanı: büyük "Dönüşmüş cümleyi dinle" düğmesi (`.tf-play-q`, `--cta` tonu) + numaralı seçenek kartları (`.tf-choice`; doğru `--green`, yanlış `--red`) + tam genişlik "Devam" (`.tf-next`, doğruysa yeşil).
 - Geri çevir: kalıp kutusunda "Dönüşmüş cümle", görevin altında soluk "Bu cümlede yapılan değişiklik: …".
 - Mod çipi `.tf-kind` (`--accent` tonu). Seviye 4 türleri yalnızca Kur modunda.
+
+
+## v44 — Mobil alt gezinme ve günlük plan
+Dikey telefonda beş ana alt menü öğesi kullanılır; kısa yatay ve masaüstü ekranlarda üst sekmeler korunur. Günlük planın ilk kalan görevi tek turuncu eylemdir. Tamamlanmış işler yeşil işaret ve sayı, gerekmeyen işler nötr çizgi ile gösterilir.
