@@ -1733,10 +1733,7 @@ main {max-width:59rem;}
 .focus-btn.listen {padding:.43rem .72rem;font-size:.89rem;}
 .focus-context,.focus-task {font-size:1.04rem;color:var(--text);line-height:1.62;max-width:66ch;margin:.65rem 0;}
 .focus-task {font-size:1.14rem;font-weight:650;}
-.focus-goals {display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;min-width:0;border:0;margin:1.05rem 0 0;}
-.focus-goals legend,.focus-input-label,.focus-label {font-size:.85rem;font-weight:750;color:var(--muted);}
-.focus-goals label {display:inline-flex;align-items:center;gap:.5rem;min-height:44px;color:var(--text);font-size:.95rem;cursor:pointer;}
-.focus-goals input {width:1.06rem;height:1.06rem;accent-color:var(--accent);}
+.focus-input-label,.focus-label {font-size:.85rem;font-weight:750;color:var(--muted);}
 .focus-gloss,.focus-answer,.focus-cue {margin:.85rem 0;padding:.85rem 1rem;border-left:3px solid var(--focus-rule);border-radius:0 .6rem .6rem 0;background:var(--focus-wash);}
 .focus-answer {border-color:var(--accent);}
 .focus-label {margin:0 0 .25rem;}
@@ -8717,9 +8714,6 @@ function phrasePractice(key) {
     if (r.revealed) {
       h += focusMeaningBox(key, meaning);
     }
-    h += '<fieldset class="focus-goals"><legend>Bu kalıp için hedefim</legend>' +
-      '<label><input type="radio" name="phrase-goal" value="use"' + (!read ? ' checked' : '') + '>Kullanmak istiyorum</label>' +
-      '<label><input type="radio" name="phrase-goal" value="read"' + (read ? ' checked' : '') + '>Anlamam yeterli</label></fieldset>';
     if (quiz) {
       h += '<p class="focus-quiz-title">' + escHtml(quiz.q) + '</p><div class="focus-quiz">';
       quiz.options.forEach(function(label,i) { h += focusButton('choice-' + i,label,'quiet'); });
@@ -8762,7 +8756,7 @@ function phrasePractice(key) {
       (v ? focusButton('retry-adapt','Tekrar dene','quiet') : '')) + '</div>';
   }
   if (stage !== 'learn') h += '<details class="focus-mini focus-goal-change"><summary>Çalışma seçenekleri</summary>' +
-    focusButton('change-goal','Kalıbın hedefini değiştir','quiet') + focusButton('skip','Bugün geç','text') + '</details>';
+    focusButton('skip','Bugün geç','text') + '</details>';
   else h += focusButton('skip','Bugün geç','text');
   return h + '</article>';
 }
@@ -8832,13 +8826,6 @@ function bindPhraseControls() {
   shell.addEventListener('input', function(event) {
     if (event.target.id === 'focus-draft' && focusMode === 'work') updatePhrase(focusKey, {draft:event.target.value});
   });
-  shell.addEventListener('change', function(event) {
-    if (event.target.name !== 'phrase-goal' || focusMode !== 'work') return;
-    updatePhrase(focusKey, {goal:event.target.value, revealed:false, readHelp:false, quizWrong:false});
-    renderPhraseScreen(false);
-    var selected = shell.querySelector('input[name="phrase-goal"]:checked');
-    if (selected) selected.focus({preventScroll:true});
-  });
   shell.addEventListener('click', function(event) {
     var btn = event.target.closest('button[data-focus]');
     if (!btn) return;
@@ -8870,10 +8857,6 @@ function bindPhraseControls() {
       if (nextKey) openPhrase(nextKey);
       else { focusMode='home'; focusKey=null; renderPhraseScreen(true); }
       return;
-    }
-    if (action === 'change-goal') {
-      updatePhrase(key,{stage:'learn',revealed:false,hint:false,quizWrong:false});
-      renderPhraseScreen(true); return;
     }
     if (action.startsWith('choice-') && r.stage === 'learn' && r.goal === 'read') {
       var quiz = PHRASE_SCENES[key] && PHRASE_SCENES[key].quiz;
