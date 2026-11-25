@@ -1688,16 +1688,11 @@ main {max-width:59rem;}
 .focus-heading h1:focus,.focus-instruction:focus {outline:none;}
 .focus-date,.focus-kicker,.focus-label {font:700 .82rem/1.45 var(--font-ui);letter-spacing:.015em;color:var(--muted);}
 .focus-date {margin:0 0 .35rem;}
-.focus-completed,.focus-read-label {display:flex;align-items:center;gap:.45rem;color:var(--green);font-size:.88rem;font-weight:700;}
+.focus-read-label {display:flex;align-items:center;gap:.45rem;color:var(--green);font-size:.88rem;font-weight:700;}
 .focus-read-label {color:var(--accent);}
-.focus-feature {background:var(--focus-tint);border:1px solid var(--focus-rule);border-radius:1.25rem;display:grid;grid-template-columns:minmax(0,1.62fr) minmax(14rem,.82fr);align-items:center;overflow:hidden;}
-.focus-feature-main {padding:clamp(1.3rem,4vw,2.6rem);}
 .focus-kicker {display:flex;align-items:center;gap:.5rem;color:var(--focus-caption);}
 .focus-kicker .ic {width:1rem;height:1rem;}
 .focus-phrase {font:500 clamp(1.9rem,4.2vw,3.1rem)/1.16 var(--font-display);letter-spacing:-.035em;color:var(--focus-ink);overflow-wrap:break-word;text-wrap:pretty;margin:.65rem 0;}
-.focus-scene-name {color:var(--focus-caption);font-size:1.02rem;margin:0 0 1.4rem;}
-.focus-feature-side {padding:.4rem clamp(1rem,3vw,2rem);margin-right:.4rem;border-left:1px solid var(--focus-rule);}
-.focus-feature-side>p:last-child {color:var(--focus-caption);font-size:.94rem;line-height:1.58;margin:.9rem 0 0;max-width:28ch;}
 .focus-btn {
   display:inline-flex;align-items:center;justify-content:center;gap:.47rem;min-height:44px;padding:.62rem .98rem;font:730 .94rem/1.38 var(--font-ui);
   border:1px solid transparent;border-radius:.72rem;cursor:pointer;word-wrap:break-word;max-width:100%;
@@ -1714,7 +1709,6 @@ main {max-width:59rem;}
 .focus-route [aria-current="step"] {color:var(--focus-ink);font-weight:800;}
 .focus-route [aria-current="step"]>span {background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
 .focus-route li.complete>span {background:var(--focus-tint);color:var(--green);}
-.focus-feature-side .focus-route {flex-direction:column;gap:.6rem;}
 #today-tools {margin:1.25rem 0 2rem;}
 .focus-fold {margin:0;border-bottom:1px solid var(--border);color:var(--text);}
 .focus-fold>summary,.study-filters>summary {display:flex;align-items:center;gap:.75rem;min-height:56px;cursor:pointer;list-style:none;color:var(--text);font-weight:750;font-size:.98rem;}
@@ -1780,12 +1774,6 @@ main {max-width:59rem;}
 .lc .lc-nl {padding-top:.2rem;}
 @media (max-width:700px) {
   .focus-heading {margin:1.25rem .1rem .8rem;}
-  .focus-feature {display:block;}
-  .focus-feature-main {padding:1.2rem;}
-  .focus-feature-side {border-left:0;border-top:1px solid var(--focus-rule);margin:0;padding:.7rem 1.2rem;}
-  .focus-feature-side .focus-route {flex-direction:row;justify-content:space-between;gap:.35rem;}
-  .focus-feature-side>p:last-child:not(.focus-read-label) {display:none;}
-  .focus-scene-name {margin-bottom:1.05rem;}
   .focus-work-top {margin:.7rem 0 .55rem;gap:.2rem;}
   .focus-route {gap:.48rem;}
   .focus-route li {font-size:.82rem;gap:.28rem;}
@@ -1809,10 +1797,8 @@ main {max-width:59rem;}
   .focus-language {gap:.3rem;}
 }
 @media(prefers-reduced-motion:reduce) {#focus-shell *, .focus-fold * {animation:none!important;transition:none!important;}}
-.focus-scene-name {max-width:48ch;line-height:1.55;}
 .focus-change-note {margin-top:.7rem;padding-top:.6rem;border-top:1px solid var(--focus-rule);color:var(--text);font-size:.94rem;line-height:1.55;}
 .focus-diff strong {font-weight:750;color:var(--focus-ink);text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:#ca835d;text-underline-offset:.15em;}
-.focus-daily-done .quiet {margin-top:.45rem;}
 .focus-work-top>.focus-btn {flex-shrink:0;white-space:nowrap;}
 .ipa-line:not(.show) {display:none;}
 @media(max-width:390px) {
@@ -2170,7 +2156,7 @@ main {max-width:59rem;}
   </div>
 
   <div class="panel show" id="pn-progress" style="padding-bottom:40px">
-    <div id="focus-shell"></div>
+    <div id="focus-shell" hidden></div>
     <div id="today-tools">
       <details class="focus-fold" id="focus-shelf" hidden>
         <summary><svg class="ic" aria-hidden="true"><use href="#i-bookmark"/></svg>Çalıştığım kalıplar</summary>
@@ -7135,7 +7121,7 @@ function renderSpeak(){
   if(!base.length && !due){
     h += '<div class="spk-hero-top">İlk kalıbını söyle</div>' +
          '<div class="spk-hero-sub">Bir kalıp çalıştığında burada sesli tekrar yapabilirsin.</div>' +
-         '<button class="prog-action-btn" onclick="gbNavigate(&quot;progress&quot;)">Bugünün kalıbını aç</button>';
+         '<button class="prog-action-btn" onclick="gbNavigate(&quot;study&quot;)">Derslerden bir kalıp seç</button>';
   } else {
     h += '<div class="spk-hero-top">' + (todayN ? 'Bugün ' + todayN + ' kalıp söyledin' : 'Bugün henüz konuşmadın') + '</div>';
     if(dueIn + fillIn > 0){
@@ -8629,44 +8615,6 @@ function focusText(text, lang, cls) {
   return '<p' + (lang ? ' lang="' + lang + '"' : '') + ' class="' + cls + '">' + escHtml(text) + '</p>';
 }
 
-function phraseHome() {
-  var pending = unfinishedPhrase(), key = pending || nextPhrase();
-  var todayCount = Object.keys(phraseWork).filter(function(k) {
-    return phraseAvailable(k) && phraseWork[k].finished === dateKey();
-  }).length;
-  var date = new Date().toLocaleDateString('tr-TR', {weekday:'long',day:'numeric',month:'long'});
-  var h = '<div class="focus-heading"><div><p class="focus-date">' + escHtml(date) +
-    '</p><h1 tabindex="-1">Bugünün kalıbı</h1></div>' +
-    (todayCount ? '<span class="focus-completed">' + ic('check') + ' Bugün ' + todayCount + ' kalıp çalıştın</span>' : '') + '</div>';
-  if (todayCount && !pending) {
-    var reviewed = Object.keys(phraseWork).filter(function(k){ return phraseAvailable(k) && phraseWork[k].finished === dateKey(); })
-      .sort(function(a,b){return phraseWork[b].u - phraseWork[a].u;});
-    var recent = reviewed[0], last = phraseWork[recent];
-    h = h.replace('Bugünün kalıbı','Bugünkü çalışman');
-    return h + '<article class="focus-paper focus-daily-done"><p class="focus-kicker">' + ic('circle-check') +
-      ' Son çalıştığın kalıp</p>' + focusText(SMAP[recent].nl,'nl','focus-phrase') +
-      focusText(last.goal === 'read' ? 'Anlamını hatırladın.' : 'Bakmadan söyledin ve uyarladın.','tr','focus-context') +
-      (key ? focusButton('another','Bir kalıp daha','quiet') : '') + '</article>';
-  }
-  if (!key) return h + '<div class="focus-paper"><p>Bugün için önerilen kalıp kalmadı.</p>' +
-    focusButton('lessons','Derslerden seç','primary','book') + '</div>';
-  var scene = PHRASE_SCENES[key], rec = phraseWork[key], read = phraseGoal(key) === 'read';
-  var recall = pending ? rec.stage === 'recall' : dueSpokenPhrase(key);
-  var stage = pending ? rec.stage : recall ? 'recall' : null;
-  var title = scene ? scene.title : SMAP[key].lesson.title;
-  var issue = pending ? 'Kaldığın yer · ' + title : (learned.has(key) || (rec && rec.due) ? 'Tekrar · ' + title : title);
-  var front = recall ? (phraseMeaning(key) || phraseSituation(key) || 'Aklından Hollandaca söyle.') : SMAP[key].nl;
-  h += '<article class="focus-feature"><div class="focus-feature-main"><div class="focus-kicker">' + ic(read ? 'headphones' : 'book') +
-    escHtml(issue) + '</div><h2 class="focus-phrase" lang="' + (recall ? 'tr' : 'nl') + '">' + escHtml(front) + '</h2>' +
-    '<p class="focus-scene-name">' + escHtml(!read && scene ? scene.cue : read ? 'Dinlediğinde ya da okuduğunda anlamını hatırla.' : 'Bu cümleyi öğren ve kendi hayatına uyarla.') + '</p>' +
-    focusButton('start', pending ? 'Çalışmaya devam et' : todayCount ? 'Bir kalıp daha çalış' : 'Kalıbı çalış','primary',(pending ? 'play' : 'book')) +
-    '</div><div class="focus-feature-side">' + focusRoute(stage,read) +
-    '<p>' + (read ? 'Cümleyi dinle veya oku. Anlamını kendin hatırla.' :
-    'Önce kalıbı öğren. Sonra bakmadan söyle ve yeni bir duruma uyarla.') +
-    '</p></div></article>';
-  return h;
-}
-
 function phraseShelf() {
   var box = document.getElementById('focus-shelf');
   if (!box) return;
@@ -8810,13 +8758,15 @@ function renderPhraseScreen(moveFocus) {
       shell.dataset.card === focusKey && shell.dataset.stage === phraseWork[focusKey].stage) return;
   shell.dataset.card = practice ? focusKey : '';
   shell.dataset.stage = practice ? phraseWork[focusKey].stage : '';
-  document.getElementById('today-tools').hidden = practice || finished;
-  shell.innerHTML = practice ? phrasePractice(focusKey) : finished ? phraseFinish(focusKey) : phraseHome();
+  var dayTools = document.getElementById('today-tools');
+  dayTools.hidden = practice || finished;
+  shell.hidden = !dayTools.hidden;
+  shell.innerHTML = practice ? phrasePractice(focusKey) : finished ? phraseFinish(focusKey) : '';
   if (practice) loadVisiblePhraseMeaning(focusKey);
   else if (!finished) phraseShelf();
   if (moveFocus) {
-    var heading = shell.querySelector('h1');
-    if (heading) heading.focus({preventScroll:true});
+    var target = dayTools.hidden ? shell.querySelector('h1') : dayTools.querySelector('details:not([hidden]) > summary');
+    if (target) target.focus({preventScroll:true});
     window.scrollTo({top:0,behavior:'auto'});
   }
 }
@@ -8830,9 +8780,8 @@ function bindPhraseControls() {
     var btn = event.target.closest('button[data-focus]');
     if (!btn) return;
     var action = btn.dataset.focus, key = focusKey, r = phraseWork[key];
-    if (action === 'lessons') { gbNavigate('study'); return; }
-    if (action === 'start' || action === 'another') {
-      var next = (action === 'start' && unfinishedPhrase()) || nextPhrase();
+    if (action === 'another') {
+      var next = nextPhrase();
       if (next) openPhrase(next);
       return;
     }
