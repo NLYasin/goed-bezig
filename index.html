@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Goed Bezig · Hollandaca kalıp çalışması</title>
+<title>Goed Bezig v46 · Günlük Plan</title>
 
 <!-- PWA: Manifest -->
 <link rel="manifest" href="manifest.json">
@@ -1895,7 +1895,7 @@ main {max-width:59rem;}
   <div class="htop">
     <div>
       <div class="logo"><span class="brand-tile" aria-hidden="true"><svg class="ic"><use href="#i-book"/></svg></span>Goed Bezig</div>
-      <div class="sub">Hollandaca kalıp çalışması</div>
+      <div class="sub">Hollandaca kalıp çalışması · v46</div>
     </div>
     <div class="stats">
       <button class="pill profile-pill" id="active-profile-pill" onclick="showProfilePicker()" title="Profili değiştir"><svg class="ic"><use href="#i-user"/></svg> <span id="active-profile-name">—</span><span class="sync-indicator offline" id="sync-dot" title="Senkron durumu"></span></button>
@@ -2158,10 +2158,10 @@ main {max-width:59rem;}
   <div class="panel show" id="pn-progress" style="padding-bottom:40px">
     <div id="focus-shell" hidden></div>
     <div id="today-tools">
-      <details class="focus-fold" id="focus-plan" open ontoggle="if(this.open &amp;&amp; phraseReady) renderSmartPlan()">
-        <summary><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg>Günlük planım <small>15–20 dakika</small></summary>
-    <div id="smart-plan-card" class="prog-card smart-plan-card"></div>
-      </details>
+      <section id="smart-plan-card" class="prog-card smart-plan-card" aria-labelledby="daily-plan-title">
+        <h1 class="prog-card-title" id="daily-plan-title">Günlük planım</h1>
+        <button type="button" class="prog-action-btn" onclick="gbNavigate('study')">Derslerden bir kalıp seç</button>
+      </section>
       <details class="focus-fold" id="focus-tools">
         <summary><svg class="ic" aria-hidden="true"><use href="#i-headphones"/></svg>Serbest çalışma</summary>
     <div class="gb-quick">
@@ -5746,8 +5746,8 @@ function renderSmartPlan(){
   var planned=r.filter(function(x){return x.total>0;}).length;
   var dateLabel=new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',weekday:'long'});
   var next=r.findIndex(function(x){return x.left>0;});
-  var h='<div class="smart-kicker">'+escHtml(dateLabel)+' · Günlük plan</div>'+
-    '<div class="smart-head"><div class="prog-card-title">Bugünkü çalışma planın</div><span class="pill">'+complete+'/'+planned+' bitti</span></div>'+
+  var h='<div class="smart-kicker">'+escHtml(dateLabel)+'</div>'+
+    '<div class="smart-head"><h1 id="daily-plan-title" class="prog-card-title">Günlük planım</h1><span class="pill">'+complete+'/'+planned+' bitti</span></div>'+
     '<div class="smart-caption">'+(next===-1?'Bugünkü planın tamamlandı. İstersen serbest çalışabilirsin.':'Kaldığın yerden devam et. Yaklaşık 15–20 dakikalık kişisel çalışma.')+'</div>'+
     '<div class="smart-overall" role="progressbar" aria-label="Bugünkü plan" aria-valuenow="'+complete+'" aria-valuemin="0" aria-valuemax="'+Math.max(1,planned)+'"><span style="width:'+(planned?complete/planned*100:0)+'%"></span></div>';
   var names={repeat:'Hafıza tekrarı',new:'Yeni kalıp',speak:'Sesli üretim',tf:'Dönüştür',listen:'Dinleme'};
@@ -5773,7 +5773,7 @@ function renderSmartPlan(){
 
 function renderProgress(){
   renderPhraseScreen(false);
-  if (phraseReady && document.getElementById('focus-plan').open) renderSmartPlan();
+  if (phraseReady) renderSmartPlan();
   if (document.getElementById('focus-stats').open) renderDetailStats();
 }
 function renderDetailStats(){
